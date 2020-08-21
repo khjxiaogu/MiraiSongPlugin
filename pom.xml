@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.khjxiaogu</groupId>
 	<artifactId>MiraiSongPlugin</artifactId>
-	<version>0.0.2-STABLE</version>
+	<version>0.0.3-STABLE</version>
 	<name>QQ音乐点歌</name>
 	<description>使用“#音乐 关键词”进行点歌</description>
 	<build>

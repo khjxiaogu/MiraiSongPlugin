@@ -71,7 +71,7 @@ public class MusicToVoice extends PluginBase{
 	        				eg.sendMessage("无法找到音乐");
 	        				return;
 	        			}
-	        			Message msg=new ServiceMessage(2, "<msg serviceID=\"2\" templateID=\"1\" action=\"web\" brief=\"[分享]"+song.get("songname").getAsString()+"\" sourceMsgId=\"0\" url=\""+song.get("songurl").getAsString()+"\" flag=\"0\" adverSign=\"0\" multiMsgFlag=\"0\">\r\n" + 
+	        			Message msg=new ServiceMessage(2, "<msg serviceID=\"2\" templateID=\"1\" action=\"web\" brief=\"[分享]"+song.get("songname").getAsString()+"\" sourceMsgId=\"0\" url=\"https://i.y.qq.com/v8/playsong.html?_wv=1&amp;songid="+song.get("songid").getAsString()+"&amp;souce=qqshae&amp;source=qqshare&amp;ADTAG=qqshare\" flag=\"0\" adverSign=\"0\" multiMsgFlag=\"0\">\r\n" + 
 	        					"<item layout=\"2\">\r\n" + 
 	        					"<audio cover=\"http://y.gtimg.cn/music/photo_new/T002R300x300M000"+song.get("albummid").getAsString()+".jpg\" src=\""+musicURL.replaceAll("\\&","&amp;")+"\"/>\r\n" + 
 	        					"<title>"+song.get("songname").getAsString()+"</title>\r\n" + 
@@ -79,10 +79,12 @@ public class MusicToVoice extends PluginBase{
 	        					"</item>\r\n" + 
 	        					"<source name=\"QQ音乐\" icon=\"https://url.cn/PwqZ4Jpi\" url=\"https://url.cn/5MKvjPY\" action=\"app\" a_actionData=\"com.tencent.qqmusic\" i_actionData=\"tencent1101079856://\" appid=\"1101079856\"/>\r\n" + 
 	        					"</msg>");
-	        			eg.sendMessage(msg);
+	        			
+	        			eg.sendMessage(msg.plus("https://i.y.qq.com/v8/playsong.html?_wv=1&songid="+song.get("songid").getAsString()+"&souce=qqshae&source=qqshare&ADTAG=qqshare"));
 	        			//event.getGroup().sendMessage(RichMessage.Templates.share(musicURL.replaceAll("\\&","&amp;"),song.get("songname").getAsString(),song.get("albumname").getAsString(),"http://y.gtimg.cn/music/photo_new/T002R300x300M000"+song.get("albummid").getAsString()+".jpg"));
 					} catch (Throwable e) {
 						event.getGroup().sendMessage("无法找到音乐");
+						e.printStackTrace();
 					}});
         		
         	}
