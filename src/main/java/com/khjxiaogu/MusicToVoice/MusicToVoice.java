@@ -254,13 +254,15 @@ public class MusicToVoice extends PluginBase{
 	public void onEnable() {
         this.getEventListener().subscribeAlways(GroupMessageEvent.class, event -> {
         		PlainText pt=event.getMessage().first(PlainText.Key);
+        		if(pt==null)
+        			return;
         		String[] args=pt.getContent().trim().split(" ");
         		Group eg=event.getGroup();
 				if (args[0].startsWith("#音乐")) {
 
 					String sn = null;
 					try {
-						sn = URLEncoder.encode(String.join(",", Arrays.copyOfRange(args, 1, args.length)), "UTF-8");
+						sn = URLEncoder.encode(String.join(" ", Arrays.copyOfRange(args, 1, args.length)), "UTF-8");
 					} catch (UnsupportedEncodingException ignored) {
 					}
 					String songname = sn;
@@ -276,7 +278,7 @@ public class MusicToVoice extends PluginBase{
 				}else if (args[0].startsWith("#Q音")) {
 					String sn = null;
 					try {
-						sn = URLEncoder.encode(String.join(",", Arrays.copyOfRange(args, 1, args.length)), "UTF-8");
+						sn = URLEncoder.encode(String.join(" ", Arrays.copyOfRange(args, 1, args.length)), "UTF-8");
 					} catch (UnsupportedEncodingException ignored) {
 					}
 					String songname = sn;
@@ -288,7 +290,7 @@ public class MusicToVoice extends PluginBase{
 				}else if (args[0].startsWith("#网易")) {
 					String sn = null;
 					try {
-						sn = URLEncoder.encode(String.join(",", Arrays.copyOfRange(args, 1, args.length)), "UTF-8");
+						sn = URLEncoder.encode(String.join(" ", Arrays.copyOfRange(args, 1, args.length)), "UTF-8");
 					} catch (UnsupportedEncodingException ignored) {
 					}
 					String songname = sn;
