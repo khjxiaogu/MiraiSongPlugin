@@ -3,11 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.khjxiaogu</groupId>
-	<artifactId>MusicToVoice</artifactId>
+	<artifactId>MiraiSongPlugin</artifactId>
 	<version>0.0.2-STABLE</version>
-	<name>音乐语音</name>
+	<name>QQ音乐点歌</name>
+	<description>使用“#音乐 关键词”进行点歌</description>
 	<build>
-		<finalName>${project.name}-${project.version}-hr</finalName>
+		<finalName>${project.name}-${project.version}</finalName>
 		<sourceDirectory>src</sourceDirectory>
 		<resources>
 			<resource>
