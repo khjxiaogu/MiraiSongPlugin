@@ -11,7 +11,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
-import com.google.gson.JsonObject;
+
+import com.khjxiaogu.MiraiSongPlugin.cardprovider.LightAppCardProvider;
+import com.khjxiaogu.MiraiSongPlugin.cardprovider.XMLCardProvider;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.KugouMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.QQMusicSource;
@@ -19,9 +21,6 @@ import com.khjxiaogu.MiraiSongPlugin.musicsource.QQMusicSource;
 import net.mamoe.mirai.console.plugins.PluginBase;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.MessageEvent;
-import net.mamoe.mirai.message.data.LightApp;
-import net.mamoe.mirai.message.data.Message;
-import net.mamoe.mirai.message.data.ServiceMessage;
 
 public class MiraiSongPlugin extends PluginBase {
 	private Executor exec = Executors.newFixedThreadPool(8);
@@ -33,52 +32,8 @@ public class MiraiSongPlugin extends PluginBase {
 		// sources.put("QQ音乐HQ",new QQMusicHQSource());
 		sources.put("网易", new NetEaseMusicSource());
 		sources.put("酷狗", new KugouMusicSource());
-		cards.put("LightApp", mi -> {
-			JsonObject appmsg = new JsonObject();
-			appmsg.addProperty("app", "com.tencent.structmsg");
-			JsonObject cfg = new JsonObject();
-			cfg.addProperty("autosize", true);
-			cfg.addProperty("ctime", Utils.getTime() / 1000);
-			cfg.addProperty("token", "a2c42c48922ed97efffe962a4072a6de");
-			cfg.addProperty("type", "normal");
-			cfg.addProperty("forward", true);
-			appmsg.add("config", cfg);
-			appmsg.addProperty("view", "music");
-			appmsg.addProperty("ver", "0.0.0.1");
-			appmsg.addProperty("desc", "音乐");
-			appmsg.addProperty("prompt", mi.title);
-			JsonObject meta = new JsonObject();
-			appmsg.add("meta", meta);
-			JsonObject music = new JsonObject();
-			meta.add("music", music);
-			music.addProperty("action", "");
-			music.addProperty("android_pkg_name", "");
-			music.addProperty("app_type", 1);
-			music.addProperty("appid", mi.appid);
-			music.addProperty("preview", mi.purl);
-			music.addProperty("desc", mi.desc);
-			music.addProperty("jumpUrl", mi.jurl);
-			music.addProperty("musicUrl", mi.murl);
-			music.addProperty("sourceMsgId", "0");
-			music.addProperty("source_icon", mi.icon);
-			music.addProperty("source_url", "");
-			music.addProperty("tag", mi.source);
-			music.addProperty("title", mi.title);
-			return new LightApp(appmsg.toString()).plus(mi.jurl);
-		});
-		cards.put("XML", mi -> {
-			StringBuilder xmb = new StringBuilder("<msg serviceID=\"2\" templateID=\"1\" action=\"web\" brief=\"[音乐]")
-					.append(mi.title).append("\" sourceMsgId=\"0\" url=\"").append(mi.jurl.replaceAll("\\&", "&amp;"))
-					.append("\" flag=\"0\" adverSign=\"0\" multiMsgFlag=\"0\">\r\n<item layout=\"2\">\r\n")
-					.append("<audio cover=\"").append(mi.purl.replaceAll("\\&", "&amp;")).append("\" src=\"")
-					.append(mi.murl.replaceAll("\\&", "&amp;")).append("\"/>\r\n").append("<title>").append(mi.title)
-					.append("</title>\r\n<summary>").append(mi.desc).append("</summary>\r\n</item>\r\n<source name=\"")
-					.append(mi.source).append("\" icon=\"").append(mi.icon)
-					.append("\" url=\"\" action=\"\" a_actionData=\"\" i_actionData=\"\" appid=\"").append(mi.appid)
-					.append("\"/>\r\n</msg>");
-			Message msg = new ServiceMessage(2, xmb.toString());
-			return msg.plus(mi.jurl);
-		});
+		cards.put("LightApp",new LightAppCardProvider());
+		cards.put("XML",new XMLCardProvider());
 	}
 	static {
 		HttpURLConnection.setFollowRedirects(true);
@@ -86,7 +41,11 @@ public class MiraiSongPlugin extends PluginBase {
 
 	public BiConsumer<MessageEvent, String[]> makeTemplate(String source, String card) {
 		MusicCardProvider cb = cards.get(card);
+		if(cb==null)
+			throw new IllegalArgumentException("card template not exists");
 		MusicSource mc = sources.get(source);
+		if(mc==null)
+			throw new IllegalArgumentException("music source not exists");
 		return (event, args) -> {
 			String sn;
 			try {
