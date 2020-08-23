@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.khjxiaogu</groupId>
 	<artifactId>MiraiSongPlugin</artifactId>
-	<version>0.0.5-STABLE</version>
+	<version>0.0.6-STABLE</version>
 	<name>MiraiSongPlugin</name>
 	<description>使用“#音乐 关键词”、“#Q音 关键词”、“#网易 关键词”进行点歌，</description>
 	<build>
