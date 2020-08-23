@@ -1,4 +1,4 @@
-package com.khjxiaogu.MusicToVoice;
+package com.khjxiaogu.MiraiSongPlugin;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -6,6 +6,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+
+import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.PlainText;
 
 public final class Utils {
 	public static byte[] readAll(InputStream i) throws IOException {
@@ -41,5 +44,14 @@ public final class Utils {
 			hexString.append(hex);
 		}
 		return hexString.toString();
+	}
+	public static String getPlainText(MessageChain msg) {
+		PlainText pt=msg.first(PlainText.Key);
+		if(pt==null)
+			return "";
+		return pt.getContent().trim();
+	}
+	public static String removeLeadings(String leading,String orig) {
+		return orig.replace(leading,"").trim();
 	}
 }

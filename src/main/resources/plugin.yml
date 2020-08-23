@@ -1,5 +1,5 @@
 name: ${project.artifactId}
 author: "khjxiaogu"
 version: ${project.version}
-main: "com.khjxiaogu.MusicToVoice.MusicToVoice"
-info: "${project.description}"
+main: ${project.groupId}.${project.artifactId}.${project.artifactId}
+info: ""

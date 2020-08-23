@@ -1,4 +1,4 @@
-package com.khjxiaogu.MusicToVoice;
+package com.khjxiaogu.MiraiSongPlugin;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
