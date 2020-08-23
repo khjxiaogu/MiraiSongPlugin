@@ -1,14 +1,7 @@
 package com.khjxiaogu.MiraiSongPlugin;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,18 +11,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-
 import com.google.gson.JsonObject;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.KugouMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.QQMusicSource;
 
 import net.mamoe.mirai.console.plugins.PluginBase;
-import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.MessageEvent;
-import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.LightApp;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.ServiceMessage;
@@ -102,7 +91,9 @@ public class MiraiSongPlugin extends PluginBase {
 			String sn;
 			try {
 				sn = URLEncoder.encode(String.join(" ", Arrays.copyOfRange(args, 1, args.length)), "UTF-8");
-			} catch (UnsupportedEncodingException ignored) {return;}
+			} catch (UnsupportedEncodingException ignored) {
+				return;
+			}
 			exec.execute(() -> {
 				try {
 					event.getSender().sendMessage(cb.process(mc.get(sn)));
@@ -118,7 +109,9 @@ public class MiraiSongPlugin extends PluginBase {
 			String sn;
 			try {
 				sn = URLEncoder.encode(String.join(" ", Arrays.copyOfRange(args, 1, args.length)), "UTF-8");
-			} catch (UnsupportedEncodingException ignored) {return;}
+			} catch (UnsupportedEncodingException ignored) {
+				return;
+			}
 			exec.execute(() -> {
 				MusicCardProvider mcp = cards.get("LightApp");
 				for (MusicSource mc : sources.values()) {
@@ -131,14 +124,16 @@ public class MiraiSongPlugin extends PluginBase {
 				event.getSender().sendMessage("无法找到歌曲");
 			});
 		});
-		commands.put("#QQ",makeTemplate("QQ音乐","XML"));
-		commands.put("#网易",makeTemplate("网易","LightApp"));
-		commands.put("#酷狗",makeTemplate("酷狗","LightApp"));
-		commands.put("#点歌",(event,args)->{
+		commands.put("#QQ", makeTemplate("QQ音乐", "XML"));
+		commands.put("#网易", makeTemplate("网易", "LightApp"));
+		commands.put("#酷狗", makeTemplate("酷狗", "LightApp"));
+		commands.put("#点歌", (event, args) -> {
 			String sn;
 			try {
-				sn = URLEncoder.encode(String.join(" ", Arrays.copyOfRange(args,3, args.length)), "UTF-8");
-			} catch (UnsupportedEncodingException ignored) {return;}
+				sn = URLEncoder.encode(String.join(" ", Arrays.copyOfRange(args, 3, args.length)), "UTF-8");
+			} catch (UnsupportedEncodingException ignored) {
+				return;
+			}
 			exec.execute(() -> {
 				try {
 					MusicSource ms = sources.get(args[1]);
@@ -159,6 +154,7 @@ public class MiraiSongPlugin extends PluginBase {
 		});
 	}
 
+	@Override
 	public void onEnable() {
 		this.getEventListener().subscribeAlways(GroupMessageEvent.class, event -> {
 			String[] args = Utils.getPlainText(event.getMessage()).split(" ");
@@ -169,13 +165,4 @@ public class MiraiSongPlugin extends PluginBase {
 		getLogger().info("插件加载完毕!");
 	}
 
-	private void exeCmd(String commandStr) {
-		try {
-			getLogger().info("executing " + commandStr);
-			Process p = Runtime.getRuntime().exec(commandStr);
-			getLogger().info("finished return" + p.waitFor());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }
