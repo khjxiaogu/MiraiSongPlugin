@@ -12,8 +12,12 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
 
+import com.khjxiaogu.MiraiSongPlugin.cardprovider.AmrVoiceProvider;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.LightAppCardProvider;
+import com.khjxiaogu.MiraiSongPlugin.cardprovider.ShareCardProvider;
+import com.khjxiaogu.MiraiSongPlugin.cardprovider.SilkVoiceProvider;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.XMLCardProvider;
+import com.khjxiaogu.MiraiSongPlugin.musicsource.BaiduMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.KugouMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.QQMusicSource;
@@ -32,8 +36,12 @@ public class MiraiSongPlugin extends PluginBase {
 		// sources.put("QQ音乐HQ",new QQMusicHQSource());
 		sources.put("网易", new NetEaseMusicSource());
 		sources.put("酷狗", new KugouMusicSource());
+		sources.put("千千",new BaiduMusicSource());
 		cards.put("LightApp",new LightAppCardProvider());
 		cards.put("XML",new XMLCardProvider());
+		cards.put("Silk",new SilkVoiceProvider());
+		cards.put("AMR",new AmrVoiceProvider());
+		cards.put("Share",new ShareCardProvider());
 	}
 	static {
 		HttpURLConnection.setFollowRedirects(true);
@@ -55,7 +63,7 @@ public class MiraiSongPlugin extends PluginBase {
 			}
 			exec.execute(() -> {
 				try {
-					Utils.getRealSender(event).sendMessage(cb.process(mc.get(sn)));
+					Utils.getRealSender(event).sendMessage(cb.process(mc.get(sn),Utils.getRealSender(event)));
 				} catch (Throwable e) {
 					Utils.getRealSender(event).sendMessage("无法找到歌曲");
 				}
@@ -75,7 +83,7 @@ public class MiraiSongPlugin extends PluginBase {
 				MusicCardProvider mcp = cards.get("LightApp");
 				for (MusicSource mc : sources.values()) {
 					try {
-						Utils.getRealSender(event).sendMessage(mcp.process(mc.get(sn)));
+						Utils.getRealSender(event).sendMessage(mcp.process(mc.get(sn),Utils.getRealSender(event)));
 						return;
 					} catch (Throwable t) {
 					}
@@ -86,6 +94,7 @@ public class MiraiSongPlugin extends PluginBase {
 		commands.put("#QQ", makeTemplate("QQ音乐", "XML"));
 		commands.put("#网易", makeTemplate("网易", "LightApp"));
 		commands.put("#酷狗", makeTemplate("酷狗", "LightApp"));
+		commands.put("#千千", makeTemplate("千千", "LightApp"));
 		commands.put("#点歌", (event, args) -> {
 			String sn;
 			try {
@@ -105,7 +114,7 @@ public class MiraiSongPlugin extends PluginBase {
 						Utils.getRealSender(event).sendMessage("无法找到模板");
 						return;
 					}
-					Utils.getRealSender(event).sendMessage(mcp.process(ms.get(sn)));
+					Utils.getRealSender(event).sendMessage(mcp.process(ms.get(sn),Utils.getRealSender(event)));
 				} catch (Throwable e) {
 					Utils.getRealSender(event).sendMessage("无法找到歌曲");
 				}

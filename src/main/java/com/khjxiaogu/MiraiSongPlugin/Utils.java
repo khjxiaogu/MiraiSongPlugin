@@ -20,8 +20,9 @@ public final class Utils {
 		byte[] data = new byte[4096];
 
 		try {
-			while ((nRead = i.read(data, 0, data.length)) != -1)
+			while ((nRead = i.read(data, 0, data.length)) != -1) {
 				ba.write(data, 0, nRead);
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			throw e;
@@ -29,6 +30,7 @@ public final class Utils {
 
 		return ba.toByteArray();
 	}
+
 	public static byte[] readAll(File i) {
 		try (FileInputStream fis = new FileInputStream(i)) {
 			return Utils.readAll(fis);
@@ -37,30 +39,45 @@ public final class Utils {
 		}
 		return new byte[0];
 	}
-	public static long getTime() { return new Date().getTime(); }
+
+	public static long getTime() {
+		return new Date().getTime();
+	}
+
 	public static String bytesToHex(byte[] hash) {
 		StringBuffer hexString = new StringBuffer();
 		for (int i = 0; i < hash.length; i++) {
 			String hex = Integer.toHexString(0xff & hash[i]);
-			if (hex.length() == 1)
+			if (hex.length() == 1) {
 				hexString.append('0');
+			}
 			hexString.append(hex);
 		}
 		return hexString.toString();
 	}
+
 	public static String getPlainText(MessageChain msg) {
-		PlainText pt=msg.first(PlainText.Key);
-		if(pt==null)
+		PlainText pt = msg.first(PlainText.Key);
+		if (pt == null)
 			return "";
 		return pt.getContent().trim();
 	}
-	public static String removeLeadings(String leading,String orig) {
-		return orig.replace(leading,"").trim();
+
+	public static String removeLeadings(String leading, String orig) {
+		return orig.replace(leading, "").trim();
 	}
+
 	public static Contact getRealSender(MessageEvent ev) {
-		if(ev instanceof GroupMessageEvent) {
+		if (ev instanceof GroupMessageEvent)
 			return ((GroupMessageEvent) ev).getGroup();
-		}else
-			return ev.getSender();
+		return ev.getSender();
+	}
+	public static void exeCmd(String commandStr) {
+		try {
+			Process p = Runtime.getRuntime().exec(commandStr);
+			p.waitFor();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

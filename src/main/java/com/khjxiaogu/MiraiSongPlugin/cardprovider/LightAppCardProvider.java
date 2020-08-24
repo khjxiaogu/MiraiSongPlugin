@@ -5,6 +5,7 @@ import com.khjxiaogu.MiraiSongPlugin.MusicCardProvider;
 import com.khjxiaogu.MiraiSongPlugin.MusicInfo;
 import com.khjxiaogu.MiraiSongPlugin.Utils;
 
+import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.message.data.LightApp;
 import net.mamoe.mirai.message.data.MessageChain;
 
@@ -14,7 +15,7 @@ public class LightAppCardProvider implements MusicCardProvider {
 	}
 
 	@Override
-	public MessageChain process(MusicInfo mi) {
+	public MessageChain process(MusicInfo mi,Contact ct) {
 		JsonObject appmsg = new JsonObject();
 		appmsg.addProperty("app", "com.tencent.structmsg");
 		JsonObject cfg = new JsonObject();

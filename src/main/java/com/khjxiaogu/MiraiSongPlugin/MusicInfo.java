@@ -30,4 +30,14 @@ public class MusicInfo{
 		this.murl = murl;
 		this.jurl = jurl;
 	}
+	public MusicInfo(String title, String desc, String purl, String murl, String jurl, String source, String icon) {
+		this.title = title;
+		this.desc = desc;
+		this.purl = purl;
+		this.murl = murl;
+		this.jurl = jurl;
+		this.source = source;
+		this.icon = icon;
+		this.appid = 1234561234;
+	}
 }

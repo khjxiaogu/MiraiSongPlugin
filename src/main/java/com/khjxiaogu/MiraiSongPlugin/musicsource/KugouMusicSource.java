@@ -29,7 +29,7 @@ public class KugouMusicSource implements MusicSource {
 		ihuc.connect();
 		JsonObject info=JsonParser.parseString(new String(Utils.readAll(ihuc.getInputStream()), "UTF-8"))
 				.getAsJsonObject().get("data").getAsJsonObject();
-		return new MusicInfo(info.get("song_name").getAsString(),info.get("author_name").getAsString(),info.get("img").getAsString(),info.get("play_url").getAsString(),"https://www.kugou.com/song/#hash="+song+"&album_id="+info.get("album_id").getAsString(),"酷狗");
+		return new MusicInfo(info.get("song_name").getAsString(),info.get("author_name").getAsString(),info.get("img").getAsString(),info.get("play_url").getAsString(),"https://www.kugou.com/song/#hash="+song+"&album_id="+info.get("album_id").getAsString(),"酷狗","http://img.ixintu.com/download/jpg/201910/54e445b18984b6c4bca19e8e3c4476e3.jpg!con");
 	}
 
 }

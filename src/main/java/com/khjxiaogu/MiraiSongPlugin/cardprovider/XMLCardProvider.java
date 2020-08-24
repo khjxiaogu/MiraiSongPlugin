@@ -3,6 +3,7 @@ package com.khjxiaogu.MiraiSongPlugin.cardprovider;
 import com.khjxiaogu.MiraiSongPlugin.MusicCardProvider;
 import com.khjxiaogu.MiraiSongPlugin.MusicInfo;
 
+import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.ServiceMessage;
@@ -13,7 +14,7 @@ public class XMLCardProvider implements MusicCardProvider {
 	}
 
 	@Override
-	public MessageChain process(MusicInfo mi) {
+	public MessageChain process(MusicInfo mi,Contact ct) {
 		StringBuilder xmb = new StringBuilder("<msg serviceID=\"2\" templateID=\"1\" action=\"web\" brief=\"[音乐]")
 				.append(mi.title).append("\" sourceMsgId=\"0\" url=\"").append(mi.jurl.replaceAll("\\&", "&amp;"))
 				.append("\" flag=\"0\" adverSign=\"0\" multiMsgFlag=\"0\">\r\n<item layout=\"2\">\r\n")
