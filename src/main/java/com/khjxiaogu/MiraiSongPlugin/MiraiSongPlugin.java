@@ -55,9 +55,9 @@ public class MiraiSongPlugin extends PluginBase {
 			}
 			exec.execute(() -> {
 				try {
-					event.getSender().sendMessage(cb.process(mc.get(sn)));
+					Utils.getRealSender(event).sendMessage(cb.process(mc.get(sn)));
 				} catch (Throwable e) {
-					event.getSender().sendMessage("无法找到歌曲");
+					Utils.getRealSender(event).sendMessage("无法找到歌曲");
 				}
 			});
 		};
@@ -75,12 +75,12 @@ public class MiraiSongPlugin extends PluginBase {
 				MusicCardProvider mcp = cards.get("LightApp");
 				for (MusicSource mc : sources.values()) {
 					try {
-						event.getSender().sendMessage(mcp.process(mc.get(sn)));
+						Utils.getRealSender(event).sendMessage(mcp.process(mc.get(sn)));
 						return;
 					} catch (Throwable t) {
 					}
 				}
-				event.getSender().sendMessage("无法找到歌曲");
+				Utils.getRealSender(event).sendMessage("无法找到歌曲");
 			});
 		});
 		commands.put("#QQ", makeTemplate("QQ音乐", "XML"));
@@ -97,17 +97,17 @@ public class MiraiSongPlugin extends PluginBase {
 				try {
 					MusicSource ms = sources.get(args[1]);
 					if (ms == null) {
-						event.getSender().sendMessage("无法找到源");
+						Utils.getRealSender(event).sendMessage("无法找到源");
 						return;
 					}
 					MusicCardProvider mcp = cards.get(args[2]);
 					if (mcp == null) {
-						event.getSender().sendMessage("无法找到模板");
+						Utils.getRealSender(event).sendMessage("无法找到模板");
 						return;
 					}
-					event.getSender().sendMessage(mcp.process(ms.get(sn)));
+					Utils.getRealSender(event).sendMessage(mcp.process(ms.get(sn)));
 				} catch (Throwable e) {
-					event.getSender().sendMessage("无法找到歌曲");
+					Utils.getRealSender(event).sendMessage("无法找到歌曲");
 				}
 			});
 		});

@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
+import net.mamoe.mirai.contact.Contact;
+import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.message.MessageEvent;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
 
@@ -53,5 +56,11 @@ public final class Utils {
 	}
 	public static String removeLeadings(String leading,String orig) {
 		return orig.replace(leading,"").trim();
+	}
+	public static Contact getRealSender(MessageEvent ev) {
+		if(ev instanceof GroupMessageEvent) {
+			return ((GroupMessageEvent) ev).getGroup();
+		}else
+			return ev.getSender();
 	}
 }
