@@ -1,6 +1,6 @@
 # MiraiSongPlugin
 用mirai搜索qq音乐卡片并分享。  
-如果没有你常用的音乐平台或者你喜欢的音乐外观，欢迎发issue。    
+如果没有你常用的音乐平台或者你喜欢的音乐外观，欢迎发issue或者pr。    
 如果有什么新的功能建议或者bug，也可以发issue，我会尽快查看更新。  
 适配mirai-console-0.5.2，mirai-console-pure-0.1.0，应该目前最多人用的mirai console版本。  
 # 特色
