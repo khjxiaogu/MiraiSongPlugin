@@ -9,10 +9,19 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-public class NetEaseCrypto {
+// TODO: Auto-generated Javadoc
+/**
+ * Class NetEaseCrypto.
+ * 网易加密工具类
+ * @author khjxiaogu
+ * file: NetEaseCrypto.java
+ * time: 2020年8月26日
+ */
+public final class NetEaseCrypto {
 
-	public NetEaseCrypto() {}
+	private NetEaseCrypto() {}
 
+	/** Constant userAgentList.<br> 常量 userAgentList. */
 	static final String[] userAgentList = new String[] {
 	        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36",
 	        "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1",
@@ -34,6 +43,12 @@ public class NetEaseCrypto {
 	        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/13.10586",
 	        "Mozilla/5.0 (iPad; CPU OS 10_0 like Mac OS X) AppleWebKit/602.1.38 (KHTML, like Gecko) Version/10.0 Mobile/14A300 Safari/602.1" };
 
+	/**
+	 * Gets the user agent.<br>
+	 * 获取 user agent.
+	 *
+	 * @return user agent<br>
+	 */
 	public static String getUserAgent() {
 
 		Double index = Math.floor(Math.random() * NetEaseCrypto.userAgentList.length);

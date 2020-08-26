@@ -57,7 +57,7 @@
 		<dependency>
 			<groupId>net.namoe</groupId>
 			<artifactId>mirai-core-qqandroid</artifactId>
-			<version>1.3.2</version>
+			<version>LATEST</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

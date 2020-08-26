@@ -18,6 +18,7 @@ public class BaiduMusicSource implements MusicSource {
 	public MusicInfo get(String keyword) throws Exception {
 		JsonObject jo;
 		HttpURLConnection huc;
+		int requested=0;
 		do {
 		huc=(HttpURLConnection) new URL("http://tingapi.ting.baidu.com/v1/restserver/ting?format=json&calback=&from=webapp_music&method=baidu.ting.search.catalogSug&query="+keyword).openConnection();
 		huc.setRequestProperty("Host","tingapi.ting.baidu.com");
@@ -26,7 +27,7 @@ public class BaiduMusicSource implements MusicSource {
 		huc.setRequestMethod("GET");
 		huc.connect();
 		jo=JsonParser.parseString(new String(Utils.readAll(huc.getInputStream()), "UTF-8")).getAsJsonObject();
-		}while(jo.get("error_code").getAsInt()!=22000);
+		}while(jo.get("error_code").getAsInt()!=22000||requested++>20);//傻逼百度有时候会请求失败，不断请求直到成功。
 		String sid=jo.getAsJsonObject()
 		.getAsJsonObject().get("song").getAsJsonArray().get(0).getAsJsonObject().get("songid")
 		.getAsString();
@@ -40,12 +41,12 @@ public class BaiduMusicSource implements MusicSource {
 		JsonObject allinfo=JsonParser.parseString(new String(Utils.readAll(huc.getInputStream()), "UTF-8")).getAsJsonObject();
 		JsonObject sif=allinfo.getAsJsonObject().get("songinfo").getAsJsonObject();
 		huc.disconnect();
-		return new MusicInfo(sif.get("title").getAsString(),
+		return new MusicInfo(
+				sif.get("title").getAsString(),
 				sif.get("author").getAsString(),
 				sif.get("pic_big").getAsString(),
 				allinfo.get("bitrate").getAsJsonObject().get("file_link").getAsString(),
 				sif.get("share_url").getAsString(),
-			
 				"千千静听");
 	}
 
