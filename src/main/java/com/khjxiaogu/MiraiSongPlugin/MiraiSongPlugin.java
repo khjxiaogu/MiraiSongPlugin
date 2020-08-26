@@ -26,17 +26,34 @@ import net.mamoe.mirai.console.plugins.PluginBase;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.MessageEvent;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Class MiraiSongPlugin.
+ * 插件主类
+ * @author khjxiaogu
+ * file: MiraiSongPlugin.java
+ * time: 2020年8月26日
+ */
 public class MiraiSongPlugin extends PluginBase {
+	//请求音乐的线程池。
 	private Executor exec = Executors.newFixedThreadPool(8);
-	public static Map<String, BiConsumer<MessageEvent, String[]>> commands = new ConcurrentHashMap<>();
-	Map<String, MusicSource> sources = Collections.synchronizedMap(new LinkedHashMap<>());
-	Map<String, MusicCardProvider> cards = new ConcurrentHashMap<>();
-	{
+	
+	/** 命令列表. */
+	public static final Map<String, BiConsumer<MessageEvent, String[]>> commands = new ConcurrentHashMap<>();
+	
+	/** 音乐来源. */
+	public static final Map<String, MusicSource> sources = Collections.synchronizedMap(new LinkedHashMap<>());
+	
+	/** 外观来源 */
+	public static final Map<String, MusicCardProvider> cards = new ConcurrentHashMap<>();
+	static{
+		//注册音乐来源
 		sources.put("QQ音乐", new QQMusicSource());
-		// sources.put("QQ音乐HQ",new QQMusicHQSource());
+		// sources.put("QQ音乐HQ",new QQMusicHQSource());//这个音乐源已被tx禁用。
 		sources.put("网易", new NetEaseMusicSource());
 		sources.put("酷狗", new KugouMusicSource());
 		sources.put("千千",new BaiduMusicSource());
+		//注册外观
 		cards.put("LightApp",new LightAppCardProvider());
 		cards.put("XML",new XMLCardProvider());
 		cards.put("Silk",new SilkVoiceProvider());
@@ -47,6 +64,12 @@ public class MiraiSongPlugin extends PluginBase {
 		HttpURLConnection.setFollowRedirects(true);
 	}
 
+	/**
+	 * 使用现有的来源和外观制作指令执行器
+	 * @param source 音乐来源名称
+	 * @param card 音乐外观名称
+	 * @return return 返回一个指令执行器，可以注册到命令列表里面
+	 */
 	public BiConsumer<MessageEvent, String[]> makeTemplate(String source, String card) {
 		MusicCardProvider cb = cards.get(card);
 		if(cb==null)
@@ -85,13 +108,12 @@ public class MiraiSongPlugin extends PluginBase {
 					try {
 						Utils.getRealSender(event).sendMessage(mcp.process(mc.get(sn),Utils.getRealSender(event)));
 						return;
-					} catch (Throwable t) {
-					}
+					} catch (Throwable t) {}
 				}
 				Utils.getRealSender(event).sendMessage("无法找到歌曲");
 			});
 		});
-		commands.put("#QQ", makeTemplate("QQ音乐", "XML"));
+		commands.put("#QQ", makeTemplate("QQ音乐", "XML"));//标准样板
 		commands.put("#网易", makeTemplate("网易", "LightApp"));
 		commands.put("#酷狗", makeTemplate("酷狗", "LightApp"));
 		commands.put("#千千", makeTemplate("千千", "LightApp"));
