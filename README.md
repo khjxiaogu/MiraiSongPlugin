@@ -1,7 +1,13 @@
 # MiraiSongPlugin
-用mirai搜索qq音乐卡片并分享  
-指令列表：   
-
+用mirai搜索qq音乐卡片并分享。  
+如果没有你常用的音乐平台或者你喜欢的音乐外观，欢迎发issue。    
+如果有什么新的功能建议或者bug，也可以发issue，我会尽快查看更新。  
+适配mirai-console-0.5.2，mirai-console-pure-0.1.0，应该目前最多人用的mirai console版本。  
+# 特色
+- 支持各大国内音乐平台  
+- 在非语音模式下，网络和性能占用极低  
+- 支持高度自定义，添加音乐源成本极低
+# 指令列表   
 “#音乐 关键词”
 -----
 自动搜索所有源以找出来找最佳音频来源    
@@ -29,4 +35,4 @@
 |参数|值范围|用途|
 |------|------|------|
 |来源|QQ音乐<br>酷狗<br>千千<br>网易|设定搜索歌曲的来源|
-|外观|LightApp:小程序分享<br>XML:卡片分享<br>Share:普通分享(不能播放)<br>AMR:AMR语音，需要主目录下有ffmpeg.exe<br>Silk:SILK语音，需要主目录下同时有silk_v3_encoder.exe和ffmpeg.exe（不推荐使用|设定分享出来的音乐的外观|
+|外观|LightApp:小程序分享<br>XML:卡片分享<br>Share:普通分享(不能播放)<br>AMR:AMR语音，需要主目录下有ffmpeg.exe，由于tx限流，质量可能很差<br>Silk:SILK语音，需要主目录下同时有silk_v3_encoder.exe和ffmpeg.exe，由于tx限流，质量可能很差（不推荐使用）|设定分享出来的音乐的外观|
