@@ -56,35 +56,35 @@ public final class NetEaseCrypto {
 	}
 
 	/**
-	 * The preset key.<br />
+	 * The preset key.<br>
 	 * 预置密钥.
 	 */
 	private static String presetKey = "0CoJUm6Qyw8W8jud";
 
 	/**
-	 * The public key.<br />
+	 * The public key.<br>
 	 * 公钥.
 	 */
 	private static String publicKey = "010001";
 
 	/**
-	 * The modulus for RSA.<br />
+	 * The modulus for RSA.<br>
 	 * 模数.
 	 */
 	private static String modulus = "00e0b509f6259df8642dbc35662901477df22677ec152b5ff68ace615bb7b725152b3ab17a876aea8a5aa76d2e417629ec4ee341f56135fccf695280104e0312ecbda92557c93870114af6c9d05c4f7f0c3685b7a46bee255932575cce10b424d813cfe4875d3e82047b97ddef52741d546b8e289dc6935b3ece0462db0a22b8e7";
 
 	/**
-	 * The input vector for AES.<br />
+	 * The input vector for AES.<br>
 	 * 输入向量.
 	 */
 	private static String iv = "0102030405060708";
 
 	/**
-	 * Create a AES secret key.<br />
+	 * Create a AES secret key.<br>
 	 * 生成AES密钥
 	 *
-	 * @param size length/长度<br />
-	 * @return return the secret key <br />
+	 * @param size length/长度<br>
+	 * @return return the secret key <br>
 	 *         返回密钥串
 	 */
 	private static String createSecretKey(int size) {
@@ -98,16 +98,16 @@ public final class NetEaseCrypto {
 	}
 
 	/**
-	 * AES encrypt.<br />
+	 * AES encrypt.<br>
 	 * AES加密
 	 *
-	 * @param content the content<br />
+	 * @param content the content<br>
 	 *                要加密的内容
-	 * @param key     the key<br />
+	 * @param key     the key<br>
 	 *                密钥
-	 * @param iv      the iv<br />
+	 * @param iv      the iv<br>
 	 *                输入向量
-	 * @return return AES encrypted base64 string <br />
+	 * @return return AES encrypted base64 string <br>
 	 *         返回加密后的base64字符串
 	 */
 	private static String aesEncrypt(String content, String key, String iv) {
@@ -128,14 +128,14 @@ public final class NetEaseCrypto {
 	}
 
 	/**
-	 * pad the string from left with 0 to size.<br />
+	 * pad the string from left with 0 to size.<br>
 	 * 用0填充字符串到指定长度
 	 *
-	 * @param str  the source string<br />
+	 * @param str  the source string<br>
 	 *             源字符串
-	 * @param size the new size<br />
+	 * @param size the new size<br>
 	 *             新长度
-	 * @return return padded string <br />
+	 * @return return padded string <br>
 	 *         返回填充了的字符串
 	 */
 	private static String fillString(String str, int size) {
@@ -146,16 +146,16 @@ public final class NetEaseCrypto {
 	}
 
 	/**
-	 * RSA encrypt.<br />
+	 * RSA encrypt.<br>
 	 * RSA加密
 	 *
-	 * @param text    the text to encrypt<br />
+	 * @param text    the text to encrypt<br>
 	 *                明文
-	 * @param pubKey  the public key<br />
+	 * @param pubKey  the public key<br>
 	 *                公钥
-	 * @param modulus the modulus<br />
+	 * @param modulus the modulus<br>
 	 *                模数
-	 * @return return RSA encrypted base64 string <br />
+	 * @return return RSA encrypted base64 string <br>
 	 *         返回加密后的base64字符串
 	 */
 	private static String rsaEncrypt(String text, String pubKey, String modulus) {
@@ -173,12 +173,12 @@ public final class NetEaseCrypto {
 	}
 
 	/**
-	 * Encrypt as weapi parameters.<br />
+	 * Encrypt as weapi parameters.<br>
 	 * 按照Weapi标准加密
 	 *
-	 * @param content the content<br />
+	 * @param content the content<br>
 	 *                明文
-	 * @return return encrypted strings <br />
+	 * @return return encrypted strings <br>
 	 *         返回加密后的参数
 	 */
 	public static String[] weapiEncrypt(String content) {
