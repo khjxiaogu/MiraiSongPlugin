@@ -32,7 +32,6 @@ public class QQMusicSource implements MusicSource {
 			byte[] bs = Utils.readAll(conn.getInputStream());
 
 			JsonObject out = JsonParser.parseString(new String(bs, "UTF-8")).getAsJsonObject();
-			System.out.println(out);
 			if (out.get("code").getAsInt() != 0) {
 				return null;
 			}
