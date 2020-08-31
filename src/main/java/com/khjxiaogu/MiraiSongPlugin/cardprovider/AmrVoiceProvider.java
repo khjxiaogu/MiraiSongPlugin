@@ -18,7 +18,7 @@ import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.PlainText;
 
 public class AmrVoiceProvider implements MusicCardProvider {
-
+	public static File ffmpeg=new File("ffmpeg.exe");
 	public AmrVoiceProvider() {
 	}
 

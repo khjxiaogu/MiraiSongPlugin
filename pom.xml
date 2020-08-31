@@ -45,19 +45,19 @@
 		<dependency>
 			<groupId>net.namoe</groupId>
 			<artifactId>mirai-console</artifactId>
-			<version>LATEST</version>
+			<version>[0.5.2,)</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.namoe</groupId>
 			<artifactId>mirai-console-wrapper</artifactId>
-			<version>LATEST</version>
+			<version>[1.0.0,)</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.namoe</groupId>
 			<artifactId>mirai-core-qqandroid</artifactId>
-			<version>LATEST</version>
+			<version>[1.2.0,)</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

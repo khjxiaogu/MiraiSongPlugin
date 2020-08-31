@@ -5,6 +5,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.khjxiaogu.MiraiSongPlugin.MusicInfo;
@@ -61,6 +63,19 @@ public class QQMusicSource implements MusicSource {
 						new String(Utils.readAll(huc.getInputStream()), StandardCharsets.UTF_8))
 				.getAsJsonObject().get("data").getAsJsonObject().get("song").getAsJsonObject()
 				.get("list").getAsJsonArray().get(0).getAsJsonObject();// .data.song.list
+		String desc;
+		try {
+			JsonArray singers=song.get("singer").getAsJsonArray();
+			StringBuilder sgs=new StringBuilder();
+			for(JsonElement je:singers) {
+				sgs.append(je.getAsJsonObject().get("name").getAsString());
+				sgs.append(";");
+			}
+			sgs.deleteCharAt(sgs.length()-1);
+			desc=sgs.toString();
+		}catch(Exception e) {
+			desc=song.get("albumname").getAsString();
+		}
 		String mid = song.get("songmid").getAsString();
 		String musicURL = queryRealUrl(mid);
 		if (musicURL == null) {
@@ -68,7 +83,7 @@ public class QQMusicSource implements MusicSource {
 		}
 		return new MusicInfo(
 				song.get("songname").getAsString(),
-				song.get("albumname").getAsString(),
+				desc,
 				"http://y.gtimg.cn/music/photo_new/T002R300x300M000"+ song.get("albummid").getAsString() + ".jpg",
 				musicURL,
 				"https://i.y.qq.com/v8/playsong.html?_wv=1&songid="+ song.get("songid").getAsString() + "&source=qqshare&ADTAG=qqshare",

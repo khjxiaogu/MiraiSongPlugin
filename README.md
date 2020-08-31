@@ -7,16 +7,21 @@
 - 支持各大国内音乐平台  
 - 在非语音模式下，网络和性能占用极低  
 - 支持高度自定义，添加音乐源成本极低
-# 指令列表   
+# 指令列表  
+ 
 “#音乐 关键词”
 -----
 自动搜索所有源以找出来找最佳音频来源    
 
-“#QQ 关键词”
+“#外链 关键词”  
+-----
+自动搜索所有源，以外链信息的形式发出
+
+“#QQ 关键词”  
 -----
 搜索QQ音乐  
 
-“#网易 关键词”
+“#网易 关键词”  
 -----
 搜索网易云音乐  
 
@@ -35,4 +40,10 @@
 |参数|值范围|用途|
 |------|------|------|
 |来源|QQ音乐<br>酷狗<br>千千<br>网易|设定搜索歌曲的来源|
-|外观|LightApp:小程序分享<br>XML:卡片分享<br>Share:普通分享(不能播放)<br>AMR:AMR语音，需要主目录下有ffmpeg.exe，由于tx限流，质量可能很差<br>Silk:SILK语音，需要主目录下同时有silk_v3_encoder.exe和ffmpeg.exe，由于tx限流，质量可能很差（不推荐使用）|设定分享出来的音乐的外观|
+|外观|LightApp:小程序分享<br>XML:卡片分享<br>Share:普通分享(不能播放)<br>Message:以纯信息形式分享，可以很方便取得音乐的各种链接。<br>AMR:AMR语音，需要配置好`ffmpeg_path`，由于tx限流，质量可能很差<br>Silk:SILK语音，需要同时配置好`silkenc_path`和`ffmpeg_path`，由于tx限流，质量可能很差（不推荐使用）|设定分享出来的音乐的外观|
+
+# 配置项
+|名称|介绍|
+|-----|-----|
+|`silkenc_path`|silk编码器文件位置[windows二进制](https://github.com/khjxiaogu/MiraiSongPlugin/blob/master/silk_v3_encoder.exe)|
+|`ffmpeg_path`|ffmpeg编码器文件位置[ffmpeg github](https://github.com/FFmpeg/FFmpeg)|

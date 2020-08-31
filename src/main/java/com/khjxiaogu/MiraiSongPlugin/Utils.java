@@ -95,7 +95,7 @@ public final class Utils {
 	 * 获取消息中的第一条文本.
 	 *
 	 * @param msg the message to get<br>需要获取文本的消息
-	 * @return plain text<br>第一条文本，去除首尾空格
+	 * @return first trimmed plain text<br>第一条文本，去除首尾空格
 	 */
 	public static String getPlainText(MessageChain msg) {
 		PlainText pt = msg.first(PlainText.Key);
