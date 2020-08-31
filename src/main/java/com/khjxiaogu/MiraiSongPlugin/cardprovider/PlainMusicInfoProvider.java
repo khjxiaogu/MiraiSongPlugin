@@ -23,7 +23,7 @@ public class PlainMusicInfoProvider implements MusicCardProvider {
 		StringBuilder tsb=new StringBuilder()
 				.append("歌名：")
 				.append(mi.title)
-				.append("\n")
+				.append("\n作者：")
 				.append(mi.desc)
 				.append("\n封面："+mi.purl)
 				.append("\n外链："+mi.murl)
