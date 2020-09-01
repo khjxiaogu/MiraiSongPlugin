@@ -1,4 +1,4 @@
-# MiraiSongPlugin
+# Mirai点歌插件
 用mirai搜索qq音乐卡片并分享。  
 如果没有你常用的音乐平台或者你喜欢的音乐外观，欢迎发issue或者pr。    
 如果有什么新的功能建议或者bug，也可以发issue，我会尽快查看更新。  
