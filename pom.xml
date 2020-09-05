@@ -16,8 +16,6 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
-		<plugins>
-		</plugins>
 	</build>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -45,13 +43,7 @@
 		<dependency>
 			<groupId>net.namoe</groupId>
 			<artifactId>mirai-console</artifactId>
-			<version>[0.5.2,)</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.namoe</groupId>
-			<artifactId>mirai-console-wrapper</artifactId>
-			<version>[1.0.0,)</version>
+			<version>0.5.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

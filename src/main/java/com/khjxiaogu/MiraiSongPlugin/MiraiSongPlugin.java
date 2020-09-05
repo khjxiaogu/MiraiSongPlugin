@@ -162,6 +162,7 @@ public class MiraiSongPlugin extends PluginBase {
 		});
 	}
 
+	@SuppressWarnings("resource")
 	@Override
 	public void onEnable() {
 		Config cfg;

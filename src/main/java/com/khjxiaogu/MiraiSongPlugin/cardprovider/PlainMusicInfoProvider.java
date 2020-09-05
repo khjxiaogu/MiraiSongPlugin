@@ -9,7 +9,6 @@ import com.khjxiaogu.MiraiSongPlugin.MusicInfo;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.Message;
-import net.mamoe.mirai.message.data.MessageChainBuilder;
 import net.mamoe.mirai.utils.OverFileSizeMaxException;
 
 public class PlainMusicInfoProvider implements MusicCardProvider {
