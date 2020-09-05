@@ -17,6 +17,7 @@ import java.util.function.BiConsumer;
 
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.AmrVoiceProvider;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.LightAppCardProvider;
+import com.khjxiaogu.MiraiSongPlugin.cardprovider.LightAppXCardProvider;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.PlainMusicInfoProvider;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.ShareCardProvider;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.SilkVoiceProvider;
@@ -60,6 +61,7 @@ public class MiraiSongPlugin extends PluginBase {
 		sources.put("千千",new BaiduMusicSource());
 		//注册外观
 		cards.put("LightApp",new LightAppCardProvider());
+		cards.put("LightAppX",new LightAppXCardProvider());
 		cards.put("XML",new XMLCardProvider());
 		cards.put("Silk",new SilkVoiceProvider());
 		cards.put("AMR",new AmrVoiceProvider());
