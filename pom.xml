@@ -9,7 +9,7 @@
 	<description>使用“#音乐 关键词”、“#QQ 关键词”、“#网易 关键词”等方式进行点歌的插件。</description>
 	<build>
 		<finalName>${project.name}-${project.version}</finalName>
-		<sourceDirectory>src</sourceDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -17,6 +17,25 @@
 			</resource>
 		</resources>
 		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>templating-maven-plugin</artifactId>
+				<version>1.0.0</version>
+
+				<executions>
+					<execution>
+						<id>filter-src</id>
+						<goals>
+							<goal>filter-sources</goal>
+						</goals>
+						<configuration>
+							<delimiters>
+								<delimiter>@</delimiter>
+							</delimiters>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<properties>
@@ -45,7 +64,7 @@
 		<dependency>
 			<groupId>net.namoe</groupId>
 			<artifactId>mirai-console</artifactId>
-			<version>[0.5.2,)</version>
+			<version>1.0-M4-dev3</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -59,6 +78,11 @@
 			<artifactId>mirai-core-qqandroid</artifactId>
 			<version>[1.2.0,)</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.6</version>
 		</dependency>
 	</dependencies>
 </project>
