@@ -2,9 +2,8 @@
 用mirai搜索音乐平台并分享音乐卡片。  
 如果没有你常用的音乐平台或者你喜欢的音乐外观，欢迎发issue或者pr。    
 如果有什么新的功能建议或者bug，也可以发issue，我会尽快查看更新。  
-主要适配mirai-console-0.5.2，应该目前最多人用的mirai console版本。  
-~~主要是因为mirai-console-1.0版本似乎还并不支持自定义事件监听器，所以暂且搁置。~~  
-~~不过据称也是可以用的，具体也没测试，反正我用的是0.5.2~~
+同时支持0.5.2的旧版API和1.0+的新版API。  
+master是0.5.2的代码，1.0的版本位于[branch:mirai-console-1.0](https://github.com/khjxiaogu/MiraiSongPlugin/tree/mirai-console-1.0)  
 # 特色
 - 支持各大国内音乐平台  
 - 在非语音模式下，网络和性能占用极低  
