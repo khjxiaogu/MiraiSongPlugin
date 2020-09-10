@@ -50,19 +50,26 @@ public class QQMusicSource implements MusicSource {
 	}
 	@Override
 	public MusicInfo get(String keyword) throws Exception {
-		URL url = new URL(
-				"https://c.y.qq.com/soso/fcgi-bin/client_search_cp?p=1&cr=1&aggr=1&flag_qc=0&n=50&w="
+		URL url = new URL("https://c.y.qq.com/soso/fcgi-bin/client_search_cp?p=1&cr=1&aggr=1&flag_qc=0&n=3&w="
 						+ keyword + "&format=json");
 		HttpURLConnection huc = (HttpURLConnection) url.openConnection();
-		huc.setRequestProperty("User-Agent",
-				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36");
+		huc.setRequestProperty("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36");
 		huc.setRequestMethod("GET");
 		huc.connect();
-		JsonObject song = JsonParser
+		JsonArray ss=JsonParser
 				.parseString(
 						new String(Utils.readAll(huc.getInputStream()), StandardCharsets.UTF_8))
 				.getAsJsonObject().get("data").getAsJsonObject().get("song").getAsJsonObject()
-				.get("list").getAsJsonArray().get(0).getAsJsonObject();// .data.song.list
+				.get("list").getAsJsonArray();
+		JsonObject song = ss.get(0).getAsJsonObject();// .data.song.list
+		String mid = song.get("songmid").getAsString();
+		String musicURL = queryRealUrl(mid);
+		int i=0;
+		while(!Utils.isExistent(musicURL)) {
+			song = ss.get(++i).getAsJsonObject();
+			mid = song.get("songmid").getAsString();
+			musicURL = queryRealUrl(mid);
+		}
 		String desc;
 		try {
 			JsonArray singers=song.get("singer").getAsJsonArray();
@@ -76,8 +83,8 @@ public class QQMusicSource implements MusicSource {
 		}catch(Exception e) {
 			desc=song.get("albumname").getAsString();
 		}
-		String mid = song.get("songmid").getAsString();
-		String musicURL = queryRealUrl(mid);
+		
+		
 		if (musicURL == null) {
 			throw new FileNotFoundException();
 		}

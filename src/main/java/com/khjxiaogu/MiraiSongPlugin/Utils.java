@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Date;
 
 import net.mamoe.mirai.contact.Contact;
@@ -142,5 +144,13 @@ public final class Utils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	public static boolean isExistent(String urlstr) throws IOException {
+		URL url = new URL(urlstr);
+		HttpURLConnection huc = (HttpURLConnection) url.openConnection();
+		huc.setRequestProperty("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36");
+		huc.setRequestMethod("HEAD");
+		huc.connect();
+		return huc.getResponseCode()==200;
 	}
 }
