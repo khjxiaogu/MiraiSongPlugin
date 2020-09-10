@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -27,10 +28,16 @@ import com.khjxiaogu.MiraiSongPlugin.musicsource.KugouMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.QQMusicSource;
 
-import net.mamoe.mirai.console.plugins.Config;
-import net.mamoe.mirai.console.plugins.PluginBase;
+import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
+import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription;
+import net.mamoe.mirai.console.plugin.jvm.SimpleJvmPluginDescription;
+import net.mamoe.mirai.event.EventHandler;
+import net.mamoe.mirai.event.Events;
+import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.MessageEvent;
+import net.mamoe.yamlkt.Yaml;
+import net.mamoe.yamlkt.YamlMap;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -40,7 +47,11 @@ import net.mamoe.mirai.message.MessageEvent;
  * file: MiraiSongPlugin.java
  * time: 2020年8月26日
  */
-public class MiraiSongPlugin extends PluginBase {
+public class MiraiSongPlugin extends JavaPlugin{
+	public MiraiSongPlugin() {
+		super(new SimpleJvmPluginDescription(PluginData.name,PluginData.ver,PluginData.auth,PluginData.info));
+	}
+
 	//请求音乐的线程池。
 	private Executor exec = Executors.newFixedThreadPool(8);
 	
@@ -165,25 +176,28 @@ public class MiraiSongPlugin extends PluginBase {
 	@SuppressWarnings("resource")
 	@Override
 	public void onEnable() {
-		Config cfg;
+		YamlMap cfg;
 		if(!new File(this.getDataFolder(),"config.yml").exists()) {
-			cfg=this.getResourcesConfig("config.yml");
 			try {
-				new FileOutputStream(new File(this.getDataFolder(),"config.yml")).write(Utils.readAll(this.getResources("config.yml")));
+				new FileOutputStream(new File(this.getDataFolder(),"config.yml")).write(Utils.readAll(this.getResourceAsStream("config.yml")));
 			}catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}else
-		cfg=this.loadConfig("config.yml");
+		}
+		cfg=Yaml.getDefault().decodeYamlMapFromString(new String(Utils.readAll(new File(this.getDataFolder(),"config.yml")),StandardCharsets.UTF_8));
 		AmrVoiceProvider.ffmpeg=SilkVoiceProvider.ffmpeg=new File(cfg.getString("ffmpeg_path"));
 		SilkVoiceProvider.ffmpeg=new File(cfg.getString("silkenc_path"));
-		this.getEventListener().subscribeAlways(GroupMessageEvent.class, event -> {
-			String[] args = Utils.getPlainText(event.getMessage()).split(" ");
-			BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
-			if (exec != null)
-				exec.accept(event, args);
+		Events.registerEvents(this,new SimpleListenerHost(this.getCoroutineContext()) {
+			@EventHandler
+			public void onGroup(GroupMessageEvent event) {
+				String[] args = Utils.getPlainText(event.getMessage()).split(" ");
+				BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
+				if (exec != null)
+					exec.accept(event, args);
+			}
 		});
+
 		getLogger().info("插件加载完毕!");
 	}
 
