@@ -87,12 +87,6 @@
 		</dependency>
 		<dependency>
 			<groupId>net.namoe</groupId>
-			<artifactId>mirai-console-wrapper</artifactId>
-			<version>[1.0.0,)</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.namoe</groupId>
 			<artifactId>mirai-core-qqandroid</artifactId>
 			<version>[1.2.0,)</version>
 			<scope>provided</scope>

@@ -2,8 +2,8 @@
 用mirai搜索音乐平台并分享音乐卡片。  
 如果没有你常用的音乐平台或者你喜欢的音乐外观，欢迎发issue或者pr。    
 如果有什么新的功能建议或者bug，也可以发issue，我会尽快查看更新。  
-同时支持0.5.2的旧版API和1.0+的新版API。  
-master是0.5.2的代码，1.0的版本位于[branch:mirai-console-1.0](https://github.com/khjxiaogu/MiraiSongPlugin/tree/mirai-console-1.0)  
+0.5.2已经不再受到支持。  
+目前仅支持1.0+的API，如需使用旧版，可以从0.1.5版本前的release下载。  
 # 特色
 - 支持各大国内音乐平台  
 - 在非语音模式下，网络和性能占用极低  
