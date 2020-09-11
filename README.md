@@ -4,6 +4,9 @@
 如果有什么新的功能建议或者bug，也可以发issue，我会尽快查看更新。  
 0.5.2已经不再受到支持。  
 目前仅支持1.0+的API，如需使用旧版，可以从0.1.5版本前的release下载。  
+![GitHub All Releases](https://img.shields.io/github/downloads/khjxiaogu/MiraiSongPlugin/total?label=%E4%B8%8B%E8%BD%BD%E9%87%8F&style=social)
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/khjxiaogu/MiraiSongPlugin?label=%E5%BD%93%E5%89%8D%E7%89%88%E6%9C%AC)
+![GitHub stars](https://img.shields.io/github/stars/khjxiaogu/MiraiSongPlugin?style=social)
 # 特色
 - 支持各大国内音乐平台  
 - 在非语音模式下，网络和性能占用极低  
