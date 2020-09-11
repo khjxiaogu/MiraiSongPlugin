@@ -17,7 +17,6 @@ import net.mamoe.mirai.message.data.PlainText;
 
 // TODO: Auto-generated Javadoc
 /**
- * Class Utils.
  * 工具类
  * @author khjxiaogu
  * file: Utils.java

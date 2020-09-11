@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"com.khjxiaogu.MiraiSongPlugin"},{"l":"com.khjxiaogu.MiraiSongPlugin.cardprovider"},{"l":"com.khjxiaogu.MiraiSongPlugin.musicsource"},{"l":"所有程序包","url":"allpackages-index.html"}]
+packageSearchIndex = [{"l":"com.khjxiaogu.MiraiSongPlugin.cardprovider"},{"l":"com.khjxiaogu.MiraiSongPlugin.musicsource"},{"l":"com.khjxiaogu.MiraiSongPlugin.test"},{"l":"所有程序包","url":"allpackages-index.html"}]

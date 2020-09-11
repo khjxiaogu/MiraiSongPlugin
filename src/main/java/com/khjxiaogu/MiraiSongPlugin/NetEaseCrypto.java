@@ -11,7 +11,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 // TODO: Auto-generated Javadoc
 /**
- * Class NetEaseCrypto.
  * 网易加密工具类
  * @author khjxiaogu
  * file: NetEaseCrypto.java
@@ -21,7 +20,7 @@ public final class NetEaseCrypto {
 
 	private NetEaseCrypto() {}
 
-	/** Constant userAgentList.<br> 常量 userAgentList. */
+	/** Constant userAgentList.<br> UA列表. */
 	static final String[] userAgentList = new String[] {
 	        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36",
 	        "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1",

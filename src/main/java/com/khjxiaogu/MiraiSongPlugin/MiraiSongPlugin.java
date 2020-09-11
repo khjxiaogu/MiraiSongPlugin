@@ -41,7 +41,6 @@ import net.mamoe.yamlkt.YamlMap;
 
 // TODO: Auto-generated Javadoc
 /**
- * Class MiraiSongPlugin.
  * 插件主类
  * @author khjxiaogu
  * file: MiraiSongPlugin.java

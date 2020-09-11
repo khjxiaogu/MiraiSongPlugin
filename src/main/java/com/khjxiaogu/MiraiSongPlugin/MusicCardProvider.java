@@ -4,7 +4,6 @@ import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.message.data.Message;
 
 /**
- * Interface MusicCardProvider.
  * 生成音乐卡片的接口
  * @author khjxiaogu
  * file: MusicCardProvider.java

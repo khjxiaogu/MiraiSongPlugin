@@ -5,8 +5,7 @@ package com.khjxiaogu.MiraiSongPlugin;
 
 // TODO: Auto-generated Javadoc
 /**
- * Class MusicInfo.
- * 通用的音乐信息列表
+ * 通用的音乐信息数据类
  * @author khjxiaogu
  * file: MusicInfo.java
  * time: 2020年8月26日

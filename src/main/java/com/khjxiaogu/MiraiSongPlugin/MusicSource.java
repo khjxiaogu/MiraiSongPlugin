@@ -3,7 +3,6 @@ package com.khjxiaogu.MiraiSongPlugin;
 // TODO: Auto-generated Javadoc
 
 /**
- * Interface MusicSource.
  * 音乐来源接口
  * @author khjxiaogu
  * file: MusicSource.java
