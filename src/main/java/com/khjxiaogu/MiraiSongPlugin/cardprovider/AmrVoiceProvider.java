@@ -40,7 +40,7 @@ public class AmrVoiceProvider implements MusicCardProvider {
 		try {
 			f.getParentFile().mkdirs();
 			OutputStream os = new FileOutputStream(f);
-			huc2.getInputStream().transferTo(os);
+			os.write(Utils.readAll(huc2.getInputStream()));
 			os.close();
 			Utils.exeCmd('\"'+new File("ffmpeg.exe").getAbsolutePath() + "\" -i \"" + f.getAbsolutePath()
 					+ "\" -ab 12.2k -ar 8000 -ac 1 -y " + f2.getAbsolutePath());

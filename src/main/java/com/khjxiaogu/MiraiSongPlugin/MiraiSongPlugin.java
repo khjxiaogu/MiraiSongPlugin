@@ -104,10 +104,18 @@ public class MiraiSongPlugin extends JavaPlugin{
 				return;
 			}
 			exec.execute(() -> {
+				MusicInfo mi;
 				try {
-					Utils.getRealSender(event).sendMessage(cb.process(mc.get(sn),Utils.getRealSender(event)));
-				} catch (Throwable e) {
-					Utils.getRealSender(event).sendMessage("无法找到歌曲");
+					mi=mc.get(sn);
+				} catch (Throwable t) {
+					Utils.getRealSender(event).sendMessage("无法找到歌曲。");
+					return;
+				}
+				try {
+					Utils.getRealSender(event).sendMessage(cb.process(mi,Utils.getRealSender(event)));
+				} catch (Throwable t) {
+					Utils.getRealSender(event).sendMessage("无法生成分享。");
+					return;
 				}
 			});
 		};
@@ -130,12 +138,21 @@ public class MiraiSongPlugin extends JavaPlugin{
 			}
 			exec.execute(() -> {
 				for (MusicSource mc : sources.values()) {
+					MusicInfo mi;
 					try {
-						Utils.getRealSender(event).sendMessage(cb.process(mc.get(sn),Utils.getRealSender(event)));
+						mi=mc.get(sn);
+					} catch (Throwable t) {
+						Utils.getRealSender(event).sendMessage("无法找到歌曲。");
 						return;
-					} catch (Throwable t) {}
+					}
+					try {
+						Utils.getRealSender(event).sendMessage(cb.process(mi,Utils.getRealSender(event)));
+					} catch (Throwable t) {
+						Utils.getRealSender(event).sendMessage("无法生成分享。");
+						return;
+					}
 				}
-				Utils.getRealSender(event).sendMessage("无法找到歌曲");
+				
 			});
 		};
 	}
@@ -165,8 +182,21 @@ public class MiraiSongPlugin extends JavaPlugin{
 						Utils.getRealSender(event).sendMessage("无法找到模板");
 						return;
 					}
-					Utils.getRealSender(event).sendMessage(mcp.process(ms.get(sn),Utils.getRealSender(event)));
+					MusicInfo mi;
+					try {
+						mi=ms.get(sn);
+					} catch (Throwable t) {
+						Utils.getRealSender(event).sendMessage("无法找到歌曲。");
+						return;
+					}
+					try {
+						Utils.getRealSender(event).sendMessage(mcp.process(mi,Utils.getRealSender(event)));
+					} catch (Throwable t) {
+						Utils.getRealSender(event).sendMessage("无法生成分享。");
+						return;
+					}
 				} catch (Throwable e) {
+					e.printStackTrace();
 					Utils.getRealSender(event).sendMessage("无法找到歌曲");
 				}
 			});

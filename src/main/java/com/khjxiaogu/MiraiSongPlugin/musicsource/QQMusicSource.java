@@ -50,8 +50,7 @@ public class QQMusicSource implements MusicSource {
 	}
 	@Override
 	public MusicInfo get(String keyword) throws Exception {
-		URL url = new URL("https://c.y.qq.com/soso/fcgi-bin/client_search_cp?p=1&cr=1&aggr=1&flag_qc=0&n=3&w="
-						+ keyword + "&format=json");
+		URL url = new URL("https://c.y.qq.com/soso/fcgi-bin/client_search_cp?p=1&cr=1&aggr=1&flag_qc=0&n=3&w="+ keyword + "&format=json");
 		HttpURLConnection huc = (HttpURLConnection) url.openConnection();
 		huc.setRequestProperty("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36");
 		huc.setRequestMethod("GET");
