@@ -89,13 +89,13 @@
 	</repositories>
 	<dependencies>
 		<dependency>
-			<groupId>net.namoe</groupId>
+			<groupId>net.mamoe</groupId>
 			<artifactId>mirai-console</artifactId>
-			<version>1.0-M4-dev3</version>
+			<version>1.0-M4</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.namoe</groupId>
+			<groupId>net.mamoe</groupId>
 			<artifactId>mirai-core-qqandroid</artifactId>
 			<version>[1.2.0,)</version>
 			<scope>provided</scope>
