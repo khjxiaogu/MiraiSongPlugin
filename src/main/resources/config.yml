@@ -1,2 +1,9 @@
 ffmpeg_path: "ffmpeg.exe"
 silkenc_path: "silk_v3_encoder.exe"
+adddefault: true
+extracommands: 
+  "#语音": 
+    source: all
+    card: AMR
+  
+    

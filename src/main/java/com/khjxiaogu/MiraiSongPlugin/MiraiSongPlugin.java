@@ -37,7 +37,10 @@ import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.MessageEvent;
 import net.mamoe.yamlkt.Yaml;
+import net.mamoe.yamlkt.YamlElement;
+import net.mamoe.yamlkt.YamlLiteral;
 import net.mamoe.yamlkt.YamlMap;
+import net.mamoe.yamlkt.YamlPrimitive;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -89,6 +92,8 @@ public class MiraiSongPlugin extends JavaPlugin{
 	 * @return return 返回一个指令执行器，可以注册到命令列表里面
 	 */
 	public BiConsumer<MessageEvent, String[]> makeTemplate(String source, String card) {
+		if(source.equals("all"))
+			return makeSearchesTemplate(card);
 		MusicCardProvider cb = cards.get(card);
 		if(cb==null)
 			throw new IllegalArgumentException("card template not exists");
@@ -142,66 +147,18 @@ public class MiraiSongPlugin extends JavaPlugin{
 						mi=mc.get(sn);
 					} catch (Throwable t) {
 						Utils.getRealSender(event).sendMessage("无法找到歌曲。");
-						return;
+						continue;
 					}
 					try {
 						Utils.getRealSender(event).sendMessage(cb.process(mi,Utils.getRealSender(event)));
+						break;
 					} catch (Throwable t) {
 						Utils.getRealSender(event).sendMessage("无法生成分享。");
-						return;
 					}
 				}
-				
 			});
 		};
 	}
-	{
-		commands.put("#音乐",makeSearchesTemplate("LightApp"));
-		commands.put("#外链",makeSearchesTemplate("Message"));
-		commands.put("#QQ", makeTemplate("QQ音乐", "XML"));//标准样板
-		commands.put("#网易", makeTemplate("网易", "LightApp"));
-		commands.put("#酷狗", makeTemplate("酷狗", "LightApp"));
-		commands.put("#千千", makeTemplate("千千", "LightApp"));
-		commands.put("#点歌", (event, args) -> {
-			String sn;
-			try {
-				sn = URLEncoder.encode(String.join(" ", Arrays.copyOfRange(args, 3, args.length)), "UTF-8");
-			} catch (UnsupportedEncodingException ignored) {
-				return;
-			}
-			exec.execute(() -> {
-				try {
-					MusicSource ms = sources.get(args[1]);
-					if (ms == null) {
-						Utils.getRealSender(event).sendMessage("无法找到源");
-						return;
-					}
-					MusicCardProvider mcp = cards.get(args[2]);
-					if (mcp == null) {
-						Utils.getRealSender(event).sendMessage("无法找到模板");
-						return;
-					}
-					MusicInfo mi;
-					try {
-						mi=ms.get(sn);
-					} catch (Throwable t) {
-						Utils.getRealSender(event).sendMessage("无法找到歌曲。");
-						return;
-					}
-					try {
-						Utils.getRealSender(event).sendMessage(mcp.process(mi,Utils.getRealSender(event)));
-					} catch (Throwable t) {
-						Utils.getRealSender(event).sendMessage("无法生成分享。");
-						return;
-					}
-				} catch (Throwable e) {
-					e.printStackTrace();
-					Utils.getRealSender(event).sendMessage("无法找到歌曲");
-				}
-			});
-		});
-	}
-
 	@SuppressWarnings("resource")
 	@Override
 	public void onEnable() {
@@ -215,6 +172,58 @@ public class MiraiSongPlugin extends JavaPlugin{
 			}
 		}
 		cfg=Yaml.getDefault().decodeYamlMapFromString(new String(Utils.readAll(new File(this.getDataFolder(),"config.yml")),StandardCharsets.UTF_8));
+		YamlMap excs=(YamlMap) cfg.get(new YamlLiteral("extracommands"));
+		String addDefault=cfg.getStringOrNull("adddefault");
+		if(addDefault==null||addDefault.equals("true")) {
+			commands.put("#音乐",makeSearchesTemplate("LightApp"));
+			commands.put("#外链",makeSearchesTemplate("Message"));
+			commands.put("#QQ", makeTemplate("QQ音乐", "XML"));//标准样板
+			commands.put("#网易", makeTemplate("网易", "LightApp"));
+			commands.put("#酷狗", makeTemplate("酷狗", "LightApp"));
+			commands.put("#千千", makeTemplate("千千", "LightApp"));
+			commands.put("#点歌", (event, args) -> {
+				String sn;
+				try {
+					sn = URLEncoder.encode(String.join(" ", Arrays.copyOfRange(args, 3, args.length)), "UTF-8");
+				} catch (UnsupportedEncodingException ignored) {
+					return;
+				}
+				exec.execute(() -> {
+					try {
+						MusicSource ms = sources.get(args[1]);
+						if (ms == null) {
+							Utils.getRealSender(event).sendMessage("无法找到源");
+							return;
+						}
+						MusicCardProvider mcp = cards.get(args[2]);
+						if (mcp == null) {
+							Utils.getRealSender(event).sendMessage("无法找到模板");
+							return;
+						}
+						MusicInfo mi;
+						try {
+							mi=ms.get(sn);
+						} catch (Throwable t) {
+							Utils.getRealSender(event).sendMessage("无法找到歌曲。");
+							return;
+						}
+						try {
+							Utils.getRealSender(event).sendMessage(mcp.process(mi,Utils.getRealSender(event)));
+						} catch (Throwable t) {
+							Utils.getRealSender(event).sendMessage("无法生成分享。");
+							return;
+						}
+					} catch (Throwable e) {
+						e.printStackTrace();
+						Utils.getRealSender(event).sendMessage("无法找到歌曲");
+					}
+				});
+			});
+		}
+		if(excs!=null)
+			for(YamlElement cmd:excs.getKeys()) {
+				commands.put(cmd.toString(),makeTemplate(((YamlMap)excs.get(cmd)).getString("source"),((YamlMap)excs.get(cmd)).getString("card")));
+			}
 		AmrVoiceProvider.ffmpeg=SilkVoiceProvider.ffmpeg=new File(cfg.getString("ffmpeg_path"));
 		SilkVoiceProvider.ffmpeg=new File(cfg.getString("silkenc_path"));
 		Events.registerEvents(this,new SimpleListenerHost(this.getCoroutineContext()) {

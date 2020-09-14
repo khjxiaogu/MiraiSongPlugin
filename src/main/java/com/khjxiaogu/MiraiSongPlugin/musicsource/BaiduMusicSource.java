@@ -46,7 +46,7 @@ public class BaiduMusicSource implements MusicSource {
 				sif.get("author").getAsString(),
 				sif.get("pic_big").getAsString(),
 				allinfo.get("bitrate").getAsJsonObject().get("file_link").getAsString(),
-				sif.get("share_url").getAsString(),
+				sif.get("share_url")!=null?sif.get("share_url").getAsString():"",
 				"千千静听");
 	}
 
