@@ -43,7 +43,7 @@ public class AmrVoiceProvider implements MusicCardProvider {
 			os.write(Utils.readAll(huc2.getInputStream()));
 			os.close();
 			Utils.exeCmd('\"'+new File("ffmpeg.exe").getAbsolutePath() + "\" -i \"" + f.getAbsolutePath()
-					+ "\" -ab 12.2k -ar 8000 -ac 1 -y " + f2.getAbsolutePath());
+					+ "\" -ab 23.85k -ar 16000 -ac 1 -acodec libamr_wb -y " + f2.getAbsolutePath());
 			try (FileInputStream fis = new FileInputStream(f2)) {
 				if(ct instanceof Group)
 					return ((Group) ct).uploadVoice(fis);
