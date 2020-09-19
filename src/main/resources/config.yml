@@ -2,6 +2,7 @@ ffmpeg_path: "ffmpeg.exe"
 silkenc_path: "silk_v3_encoder.exe"
 adddefault: true
 amrqualityshift: false
+amrwb: true
 extracommands: 
   "#分享": 
     source: all
