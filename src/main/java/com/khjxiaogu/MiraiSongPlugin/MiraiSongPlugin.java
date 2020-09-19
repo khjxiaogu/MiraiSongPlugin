@@ -34,8 +34,10 @@ import net.mamoe.mirai.console.plugin.jvm.SimpleJvmPluginDescription;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.Events;
 import net.mamoe.mirai.event.SimpleListenerHost;
+import net.mamoe.mirai.message.FriendMessageEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.MessageEvent;
+import net.mamoe.mirai.message.TempMessageEvent;
 import net.mamoe.yamlkt.Yaml;
 import net.mamoe.yamlkt.YamlElement;
 import net.mamoe.yamlkt.YamlLiteral;
@@ -240,6 +242,20 @@ public class MiraiSongPlugin extends JavaPlugin {
 		Events.registerEvents(this, new SimpleListenerHost(this.getCoroutineContext()) {
 			@EventHandler
 			public void onGroup(GroupMessageEvent event) {
+				String[] args = Utils.getPlainText(event.getMessage()).split(" ");
+				BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
+				if (exec != null)
+					exec.accept(event, args);
+			}
+			@EventHandler
+			public void onFriend(FriendMessageEvent event) {
+				String[] args = Utils.getPlainText(event.getMessage()).split(" ");
+				BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
+				if (exec != null)
+					exec.accept(event, args);
+			}
+			@EventHandler
+			public void onTemp(TempMessageEvent event) {
 				String[] args = Utils.getPlainText(event.getMessage()).split(" ");
 				BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
 				if (exec != null)
