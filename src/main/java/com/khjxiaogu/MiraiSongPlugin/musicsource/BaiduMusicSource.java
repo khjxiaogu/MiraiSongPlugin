@@ -18,36 +18,39 @@ public class BaiduMusicSource implements MusicSource {
 	public MusicInfo get(String keyword) throws Exception {
 		JsonObject jo;
 		HttpURLConnection huc;
-		int requested=0;
+		int requested = 0;
 		do {
-		huc=(HttpURLConnection) new URL("http://tingapi.ting.baidu.com/v1/restserver/ting?format=json&calback=&from=webapp_music&method=baidu.ting.search.catalogSug&query="+keyword).openConnection();
-		huc.setRequestProperty("Host","tingapi.ting.baidu.com");
-		huc.setRequestProperty("Referrer","http://http://music.taihe.com/");
-		huc.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36");
+			huc = (HttpURLConnection) new URL(
+					"http://tingapi.ting.baidu.com/v1/restserver/ting?format=json&calback=&from=webapp_music&method=baidu.ting.search.catalogSug&query="
+							+ keyword).openConnection();
+			huc.setRequestProperty("Host", "tingapi.ting.baidu.com");
+			huc.setRequestProperty("Referrer", "http://http://music.taihe.com/");
+			huc.setRequestProperty("User-Agent",
+					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36");
+			huc.setRequestMethod("GET");
+			huc.connect();
+			jo = JsonParser.parseString(new String(Utils.readAll(huc.getInputStream()), "UTF-8")).getAsJsonObject();
+		} while (jo.get("error_code").getAsInt() != 22000 || requested++ > 20);// 傻逼百度有时候会请求失败，不断请求直到成功。
+		String sid = jo.getAsJsonObject().getAsJsonObject().get("song").getAsJsonArray().get(0).getAsJsonObject()
+				.get("songid").getAsString();
+		huc.disconnect();
+		huc = (HttpURLConnection) new URL(
+				"http://tingapi.ting.baidu.com/v1/restserver/ting?format=json&calback=&from=webapp_music&method=baidu.ting.song.play&songid="
+						+ sid).openConnection();
+		huc.setRequestProperty("Host", "tingapi.ting.baidu.com");
+		huc.setRequestProperty("Referrer", "http://http://music.taihe.com/");
+		huc.setRequestProperty("User-Agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36");
 		huc.setRequestMethod("GET");
 		huc.connect();
-		jo=JsonParser.parseString(new String(Utils.readAll(huc.getInputStream()), "UTF-8")).getAsJsonObject();
-		}while(jo.get("error_code").getAsInt()!=22000||requested++>20);//傻逼百度有时候会请求失败，不断请求直到成功。
-		String sid=jo.getAsJsonObject()
-		.getAsJsonObject().get("song").getAsJsonArray().get(0).getAsJsonObject().get("songid")
-		.getAsString();
+		JsonObject allinfo = JsonParser.parseString(new String(Utils.readAll(huc.getInputStream()), "UTF-8"))
+				.getAsJsonObject();
+		JsonObject sif = allinfo.getAsJsonObject().get("songinfo").getAsJsonObject();
 		huc.disconnect();
-		huc=(HttpURLConnection) new URL("http://tingapi.ting.baidu.com/v1/restserver/ting?format=json&calback=&from=webapp_music&method=baidu.ting.song.play&songid="+sid).openConnection();
-		huc.setRequestProperty("Host","tingapi.ting.baidu.com");
-		huc.setRequestProperty("Referrer","http://http://music.taihe.com/");
-		huc.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36");
-		huc.setRequestMethod("GET");
-		huc.connect();
-		JsonObject allinfo=JsonParser.parseString(new String(Utils.readAll(huc.getInputStream()), "UTF-8")).getAsJsonObject();
-		JsonObject sif=allinfo.getAsJsonObject().get("songinfo").getAsJsonObject();
-		huc.disconnect();
-		return new MusicInfo(
-				sif.get("title").getAsString(),
-				sif.get("author").getAsString(),
+		return new MusicInfo(sif.get("title").getAsString(), sif.get("author").getAsString(),
 				sif.get("pic_big").getAsString(),
 				allinfo.get("bitrate").getAsJsonObject().get("file_link").getAsString(),
-				sif.get("share_url")!=null?sif.get("share_url").getAsString():"",
-				"千千静听");
+				sif.get("share_url") != null ? sif.get("share_url").getAsString() : "", "千千静听");
 	}
 
 }

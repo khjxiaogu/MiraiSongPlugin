@@ -17,6 +17,7 @@ public class QQMusicSource implements MusicSource {
 
 	public QQMusicSource() {
 	}
+
 	public String queryRealUrl(String songmid) {
 		try {
 			StringBuilder urlsb = new StringBuilder(
@@ -48,55 +49,50 @@ public class QQMusicSource implements MusicSource {
 		}
 		return null;
 	}
+
 	@Override
 	public MusicInfo get(String keyword) throws Exception {
-		URL url = new URL("https://c.y.qq.com/soso/fcgi-bin/client_search_cp?p=1&cr=1&aggr=1&flag_qc=0&n=3&w="+ keyword + "&format=json");
+		URL url = new URL("https://c.y.qq.com/soso/fcgi-bin/client_search_cp?p=1&cr=1&aggr=1&flag_qc=0&n=3&w=" + keyword
+				+ "&format=json");
 		HttpURLConnection huc = (HttpURLConnection) url.openConnection();
-		huc.setRequestProperty("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36");
+		huc.setRequestProperty("User-Agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36");
 		huc.setRequestMethod("GET");
 		huc.connect();
-		JsonArray ss=JsonParser
-				.parseString(
-						new String(Utils.readAll(huc.getInputStream()), StandardCharsets.UTF_8))
-				.getAsJsonObject().get("data").getAsJsonObject().get("song").getAsJsonObject()
-				.get("list").getAsJsonArray();
+		JsonArray ss = JsonParser.parseString(new String(Utils.readAll(huc.getInputStream()), StandardCharsets.UTF_8))
+				.getAsJsonObject().get("data").getAsJsonObject().get("song").getAsJsonObject().get("list")
+				.getAsJsonArray();
 		JsonObject song = ss.get(0).getAsJsonObject();// .data.song.list
 		String mid = song.get("songmid").getAsString();
 		String musicURL = queryRealUrl(mid);
-		int i=0;
-		while(!Utils.isExistent(musicURL)) {
+		int i = 0;
+		while (!Utils.isExistent(musicURL)) {
 			song = ss.get(++i).getAsJsonObject();
 			mid = song.get("songmid").getAsString();
 			musicURL = queryRealUrl(mid);
 		}
 		String desc;
 		try {
-			JsonArray singers=song.get("singer").getAsJsonArray();
-			StringBuilder sgs=new StringBuilder();
-			for(JsonElement je:singers) {
+			JsonArray singers = song.get("singer").getAsJsonArray();
+			StringBuilder sgs = new StringBuilder();
+			for (JsonElement je : singers) {
 				sgs.append(je.getAsJsonObject().get("name").getAsString());
 				sgs.append(";");
 			}
-			sgs.deleteCharAt(sgs.length()-1);
-			desc=sgs.toString();
-		}catch(Exception e) {
-			desc=song.get("albumname").getAsString();
+			sgs.deleteCharAt(sgs.length() - 1);
+			desc = sgs.toString();
+		} catch (Exception e) {
+			desc = song.get("albumname").getAsString();
 		}
-		
-		
+
 		if (musicURL == null) {
 			throw new FileNotFoundException();
 		}
-		return new MusicInfo(
-				song.get("songname").getAsString(),
-				desc,
-				"http://y.gtimg.cn/music/photo_new/T002R300x300M000"+ song.get("albummid").getAsString() + ".jpg",
-				musicURL,
-				"https://i.y.qq.com/v8/playsong.html?_wv=1&songid="+ song.get("songid").getAsString() + "&source=qqshare&ADTAG=qqshare",
-				"QQ音乐",
-				"https://url.cn/PwqZ4Jpi",
-				1101079856
-			);
+		return new MusicInfo(song.get("songname").getAsString(), desc,
+				"http://y.gtimg.cn/music/photo_new/T002R300x300M000" + song.get("albummid").getAsString() + ".jpg",
+				musicURL, "https://i.y.qq.com/v8/playsong.html?_wv=1&songid=" + song.get("songid").getAsString()
+						+ "&source=qqshare&ADTAG=qqshare",
+				"QQ音乐", "https://url.cn/PwqZ4Jpi", 1101079856);
 	}
 
 }

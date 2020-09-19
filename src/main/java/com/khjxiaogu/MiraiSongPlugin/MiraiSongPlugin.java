@@ -45,41 +45,42 @@ import net.mamoe.yamlkt.YamlPrimitive;
 // TODO: Auto-generated Javadoc
 /**
  * 插件主类
+ * 
  * @author khjxiaogu
- * file: MiraiSongPlugin.java
- * time: 2020年8月26日
+ *         file: MiraiSongPlugin.java
+ *         time: 2020年8月26日
  */
-public class MiraiSongPlugin extends JavaPlugin{
+public class MiraiSongPlugin extends JavaPlugin {
 	public MiraiSongPlugin() {
-		super(new SimpleJvmPluginDescription(PluginData.name,PluginData.ver,PluginData.auth,PluginData.info));
+		super(new SimpleJvmPluginDescription(PluginData.name, PluginData.ver, PluginData.auth, PluginData.info));
 	}
 
-	//请求音乐的线程池。
+	// 请求音乐的线程池。
 	private Executor exec = Executors.newFixedThreadPool(8);
-	
+
 	/** 命令列表. */
 	public static final Map<String, BiConsumer<MessageEvent, String[]>> commands = new ConcurrentHashMap<>();
-	
+
 	/** 音乐来源. */
 	public static final Map<String, MusicSource> sources = Collections.synchronizedMap(new LinkedHashMap<>());
-	
+
 	/** 外观来源 */
 	public static final Map<String, MusicCardProvider> cards = new ConcurrentHashMap<>();
-	static{
-		//注册音乐来源
+	static {
+		// 注册音乐来源
 		sources.put("QQ音乐", new QQMusicSource());
 		// sources.put("QQ音乐HQ",new QQMusicHQSource());//这个音乐源已被tx禁用。
 		sources.put("网易", new NetEaseMusicSource());
 		sources.put("酷狗", new KugouMusicSource());
-		sources.put("千千",new BaiduMusicSource());
-		//注册外观
-		cards.put("LightApp",new LightAppCardProvider());
-		cards.put("LightAppX",new LightAppXCardProvider());
-		cards.put("XML",new XMLCardProvider());
-		cards.put("Silk",new SilkVoiceProvider());
-		cards.put("AMR",new AmrVoiceProvider());
-		cards.put("Share",new ShareCardProvider());
-		cards.put("Message",new PlainMusicInfoProvider());
+		sources.put("千千", new BaiduMusicSource());
+		// 注册外观
+		cards.put("LightApp", new LightAppCardProvider());
+		cards.put("LightAppX", new LightAppXCardProvider());
+		cards.put("XML", new XMLCardProvider());
+		cards.put("Silk", new SilkVoiceProvider());
+		cards.put("AMR", new AmrVoiceProvider());
+		cards.put("Share", new ShareCardProvider());
+		cards.put("Message", new PlainMusicInfoProvider());
 	}
 	static {
 		HttpURLConnection.setFollowRedirects(true);
@@ -87,18 +88,19 @@ public class MiraiSongPlugin extends JavaPlugin{
 
 	/**
 	 * 使用现有的来源和外观制作指令执行器
+	 * 
 	 * @param source 音乐来源名称
-	 * @param card 音乐外观名称
+	 * @param card   音乐外观名称
 	 * @return return 返回一个指令执行器，可以注册到命令列表里面
 	 */
 	public BiConsumer<MessageEvent, String[]> makeTemplate(String source, String card) {
-		if(source.equals("all"))
+		if (source.equals("all"))
 			return makeSearchesTemplate(card);
 		MusicCardProvider cb = cards.get(card);
-		if(cb==null)
+		if (cb == null)
 			throw new IllegalArgumentException("card template not exists");
 		MusicSource mc = sources.get(source);
-		if(mc==null)
+		if (mc == null)
 			throw new IllegalArgumentException("music source not exists");
 		return (event, args) -> {
 			String sn;
@@ -110,13 +112,13 @@ public class MiraiSongPlugin extends JavaPlugin{
 			exec.execute(() -> {
 				MusicInfo mi;
 				try {
-					mi=mc.get(sn);
+					mi = mc.get(sn);
 				} catch (Throwable t) {
 					Utils.getRealSender(event).sendMessage("无法找到歌曲。");
 					return;
 				}
 				try {
-					Utils.getRealSender(event).sendMessage(cb.process(mi,Utils.getRealSender(event)));
+					Utils.getRealSender(event).sendMessage(cb.process(mi, Utils.getRealSender(event)));
 				} catch (Throwable t) {
 					Utils.getRealSender(event).sendMessage("无法生成分享。");
 					return;
@@ -124,14 +126,16 @@ public class MiraiSongPlugin extends JavaPlugin{
 			});
 		};
 	}
+
 	/**
 	 * 自动搜索所有源并且以指定外观返回
+	 * 
 	 * @param card 音乐外观名称
 	 * @return return 返回一个指令执行器，可以注册到命令列表里面
 	 */
 	public BiConsumer<MessageEvent, String[]> makeSearchesTemplate(String card) {
 		MusicCardProvider cb = cards.get(card);
-		if(cb==null)
+		if (cb == null)
 			throw new IllegalArgumentException("card template not exists");
 		return (event, args) -> {
 			String sn;
@@ -144,13 +148,13 @@ public class MiraiSongPlugin extends JavaPlugin{
 				for (MusicSource mc : sources.values()) {
 					MusicInfo mi;
 					try {
-						mi=mc.get(sn);
+						mi = mc.get(sn);
 					} catch (Throwable t) {
 						Utils.getRealSender(event).sendMessage("无法找到歌曲。");
 						continue;
 					}
 					try {
-						Utils.getRealSender(event).sendMessage(cb.process(mi,Utils.getRealSender(event)));
+						Utils.getRealSender(event).sendMessage(cb.process(mi, Utils.getRealSender(event)));
 						break;
 					} catch (Throwable t) {
 						Utils.getRealSender(event).sendMessage("无法生成分享。");
@@ -159,26 +163,29 @@ public class MiraiSongPlugin extends JavaPlugin{
 			});
 		};
 	}
+
 	@SuppressWarnings("resource")
 	@Override
 	public void onEnable() {
 		YamlMap cfg;
-		if(!new File(this.getDataFolder(),"config.yml").exists()) {
+		if (!new File(this.getDataFolder(), "config.yml").exists()) {
 			try {
-				new FileOutputStream(new File(this.getDataFolder(),"config.yml")).write(Utils.readAll(this.getResourceAsStream("config.yml")));
-			}catch (IOException e) {
+				new FileOutputStream(new File(this.getDataFolder(), "config.yml"))
+						.write(Utils.readAll(this.getResourceAsStream("config.yml")));
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		cfg=Yaml.getDefault().decodeYamlMapFromString(new String(Utils.readAll(new File(this.getDataFolder(),"config.yml")),StandardCharsets.UTF_8));
-		YamlMap excs=(YamlMap) cfg.get(new YamlLiteral("extracommands"));
-		String addDefault=cfg.getStringOrNull("adddefault");
-		if(addDefault==null||addDefault.equals("true")) {
-			commands.put("#音乐",makeSearchesTemplate("LightApp"));
-			commands.put("#外链",makeSearchesTemplate("Message"));
-			commands.put("#语音",makeSearchesTemplate("AMR"));
-			commands.put("#QQ", makeTemplate("QQ音乐", "XML"));//标准样板
+		cfg = Yaml.getDefault().decodeYamlMapFromString(
+				new String(Utils.readAll(new File(this.getDataFolder(), "config.yml")), StandardCharsets.UTF_8));
+		YamlMap excs = (YamlMap) cfg.get(new YamlLiteral("extracommands"));
+		String addDefault = cfg.getStringOrNull("adddefault");
+		if (addDefault == null || addDefault.equals("true")) {
+			commands.put("#音乐", makeSearchesTemplate("LightApp"));
+			commands.put("#外链", makeSearchesTemplate("Message"));
+			commands.put("#语音", makeSearchesTemplate("AMR"));
+			commands.put("#QQ", makeTemplate("QQ音乐", "XML"));// 标准样板
 			commands.put("#网易", makeTemplate("网易", "LightApp"));
 			commands.put("#酷狗", makeTemplate("酷狗", "LightApp"));
 			commands.put("#千千", makeTemplate("千千", "LightApp"));
@@ -203,13 +210,13 @@ public class MiraiSongPlugin extends JavaPlugin{
 						}
 						MusicInfo mi;
 						try {
-							mi=ms.get(sn);
+							mi = ms.get(sn);
 						} catch (Throwable t) {
 							Utils.getRealSender(event).sendMessage("无法找到歌曲。");
 							return;
 						}
 						try {
-							Utils.getRealSender(event).sendMessage(mcp.process(mi,Utils.getRealSender(event)));
+							Utils.getRealSender(event).sendMessage(mcp.process(mi, Utils.getRealSender(event)));
 						} catch (Throwable t) {
 							Utils.getRealSender(event).sendMessage("无法生成分享。");
 							return;
@@ -221,13 +228,16 @@ public class MiraiSongPlugin extends JavaPlugin{
 				});
 			});
 		}
-		if(excs!=null)
-			for(YamlElement cmd:excs.getKeys()) {
-				commands.put(cmd.toString(),makeTemplate(((YamlMap)excs.get(cmd)).getString("source"),((YamlMap)excs.get(cmd)).getString("card")));
+		if (excs != null)
+			for (YamlElement cmd : excs.getKeys()) {
+				commands.put(cmd.toString(), makeTemplate(((YamlMap) excs.get(cmd)).getString("source"),
+						((YamlMap) excs.get(cmd)).getString("card")));
 			}
-		AmrVoiceProvider.ffmpeg=SilkVoiceProvider.ffmpeg=new File(cfg.getString("ffmpeg_path"));
-		SilkVoiceProvider.ffmpeg=new File(cfg.getString("silkenc_path"));
-		Events.registerEvents(this,new SimpleListenerHost(this.getCoroutineContext()) {
+		AmrVoiceProvider.ffmpeg = SilkVoiceProvider.ffmpeg = new File(cfg.getString("ffmpeg_path"));
+		String amras=cfg.getStringOrNull("amrqualityshift");
+		AmrVoiceProvider.autoSize = amras!=null&&amras.equals("true");
+		SilkVoiceProvider.ffmpeg = new File(cfg.getString("silkenc_path"));
+		Events.registerEvents(this, new SimpleListenerHost(this.getCoroutineContext()) {
 			@EventHandler
 			public void onGroup(GroupMessageEvent event) {
 				String[] args = Utils.getPlainText(event.getMessage()).split(" ");

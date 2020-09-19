@@ -18,18 +18,23 @@ import net.mamoe.mirai.message.data.PlainText;
 // TODO: Auto-generated Javadoc
 /**
  * 工具类
+ * 
  * @author khjxiaogu
- * file: Utils.java
- * time: 2020年8月26日
+ *         file: Utils.java
+ *         time: 2020年8月26日
  */
 public final class Utils {
-	
+
 	/**
 	 * Read all content from input stream.<br>
 	 * 从数据流读取全部数据
-	 * @param i the input stream<br>数据流
-	 * @return return all read data <br>返回读入的所有数据
-	 * @throws IOException Signals that an I/O exception has occurred.<br>发生IO错误
+	 * 
+	 * @param i the input stream<br>
+	 *          数据流
+	 * @return return all read data <br>
+	 *         返回读入的所有数据
+	 * @throws IOException Signals that an I/O exception has occurred.<br>
+	 *                     发生IO错误
 	 */
 	public static byte[] readAll(InputStream i) throws IOException {
 		ByteArrayOutputStream ba = new ByteArrayOutputStream(16384);
@@ -51,8 +56,11 @@ public final class Utils {
 	/**
 	 * Read all content from File.<br>
 	 * 从文件读取全部数据
-	 * @param i the file<br>文件
-	  @return return all read data <br>返回读入的所有数据
+	 * 
+	 * @param i the file<br>
+	 *          文件
+	 * @return return all read data <br>
+	 *         返回读入的所有数据
 	 */
 	public static byte[] readAll(File i) {
 		try (FileInputStream fis = new FileInputStream(i)) {
@@ -76,8 +84,11 @@ public final class Utils {
 	/**
 	 * byte array to hex string.<br>
 	 * 字节串转换为十六进制字符串。
-	 * @param hash the byte array<br>字节串。
-	 * @return return hex string<br>返回十六进制字符串。
+	 * 
+	 * @param hash the byte array<br>
+	 *             字节串。
+	 * @return return hex string<br>
+	 *         返回十六进制字符串。
 	 */
 	public static String bytesToHex(byte[] hash) {
 		StringBuffer hexString = new StringBuffer();
@@ -95,8 +106,10 @@ public final class Utils {
 	 * Gets the first plain text of the message.<br>
 	 * 获取消息中的第一条文本.
 	 *
-	 * @param msg the message to get<br>需要获取文本的消息
-	 * @return first trimmed plain text<br>第一条文本，去除首尾空格
+	 * @param msg the message to get<br>
+	 *            需要获取文本的消息
+	 * @return first trimmed plain text<br>
+	 *         第一条文本，去除首尾空格
 	 */
 	public static String getPlainText(MessageChain msg) {
 		PlainText pt = msg.first(PlainText.Key);
@@ -108,12 +121,16 @@ public final class Utils {
 	/**
 	 * Removes specific leadings from a string.<br>
 	 * 替换掉目标字符串的指定开头
-	 * @param leading the specific leading<br>指定的开头
-	 * @param orig the original string<br>源字符串
-	 * @return return result <br>返回去除的结果
+	 * 
+	 * @param leading the specific leading<br>
+	 *                指定的开头
+	 * @param orig    the original string<br>
+	 *                源字符串
+	 * @return return result <br>
+	 *         返回去除的结果
 	 */
 	public static String removeLeadings(String leading, String orig) {
-		if(orig.startsWith(leading))
+		if (orig.startsWith(leading))
 			return orig.substring(leading.length()).replace(leading, "").trim();
 		return orig;
 	}
@@ -122,19 +139,23 @@ public final class Utils {
 	 * Gets the sender to send message.<br>
 	 * 获取应该发信息的联系人.
 	 *
-	 * @param ev the message event<br>消息事件
-	 * @return sender to send message to<br>应该发信息的联系人
+	 * @param ev the message event<br>
+	 *           消息事件
+	 * @return sender to send message to<br>
+	 *         应该发信息的联系人
 	 */
 	public static Contact getRealSender(MessageEvent ev) {
 		if (ev instanceof GroupMessageEvent)
 			return ((GroupMessageEvent) ev).getGroup();
 		return ev.getSender();
 	}
-	
+
 	/**
 	 * Execute command,wait until finished.<br>
 	 * 执行操作平台命令，等待完成。
-	 * @param commandStr the command string<br>命令字符串
+	 * 
+	 * @param commandStr the command string<br>
+	 *                   命令字符串
 	 */
 	public static void exeCmd(String commandStr) {
 		try {
@@ -144,12 +165,14 @@ public final class Utils {
 			e.printStackTrace();
 		}
 	}
+
 	public static boolean isExistent(String urlstr) throws IOException {
 		URL url = new URL(urlstr);
 		HttpURLConnection huc = (HttpURLConnection) url.openConnection();
-		huc.setRequestProperty("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36");
+		huc.setRequestProperty("User-Agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36");
 		huc.setRequestMethod("HEAD");
 		huc.connect();
-		return huc.getResponseCode()==200;
+		return huc.getResponseCode() == 200;
 	}
 }

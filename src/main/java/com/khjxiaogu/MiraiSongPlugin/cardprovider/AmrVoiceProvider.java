@@ -16,14 +16,19 @@ import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.PlainText;
+import net.mamoe.mirai.utils.OverFileSizeMaxException;
 
 public class AmrVoiceProvider implements MusicCardProvider {
-	public static File ffmpeg=new File("ffmpeg.exe");
+	public static File ffmpeg = new File("ffmpeg.exe");
+	public static boolean autoSize = false;
+	private final static String[] brs = new String[] { "23.05k", "19.85k", "18.25k", "15.85k", "14.25k", "12.65k",
+			"8.85k", "6.6k" };
+
 	public AmrVoiceProvider() {
 	}
 
 	@Override
-	public Message process(MusicInfo mi,Contact ct) {
+	public Message process(MusicInfo mi, Contact ct) {
 		HttpURLConnection huc2 = null;
 		try {
 			huc2 = (HttpURLConnection) new URL(mi.murl).openConnection();
@@ -34,26 +39,36 @@ public class AmrVoiceProvider implements MusicCardProvider {
 			return new PlainText("获取音频失败");
 		}
 		File f = new File("./temp/", "wv" + System.currentTimeMillis() + ".m4a");
-		//File f2 = new File("./temp/", "wv" + System.currentTimeMillis() + ".silk");
-		//File ft = new File("./temp/", "wv" + System.currentTimeMillis() + ".pcm");
-		File f2=new File("./temp/","wv"+System.currentTimeMillis()+".amr");
+		// File f2 = new File("./temp/", "wv" + System.currentTimeMillis() + ".silk");
+		// File ft = new File("./temp/", "wv" + System.currentTimeMillis() + ".pcm");
+		File f2 = new File("./temp/", "wv" + System.currentTimeMillis() + ".amr");
 		try {
 			f.getParentFile().mkdirs();
 			OutputStream os = new FileOutputStream(f);
 			os.write(Utils.readAll(huc2.getInputStream()));
 			os.close();
-			Utils.exeCmd('\"'+new File("ffmpeg.exe").getAbsolutePath() + "\" -i \"" + f.getAbsolutePath()
-					+ "\" -ab 23.85k -ar 16000 -ac 1 -acodec libamr_wb -y " + f2.getAbsolutePath());
-			try (FileInputStream fis = new FileInputStream(f2)) {
-				if(ct instanceof Group)
-					return ((Group) ct).uploadVoice(fis);
-			}
+			Utils.exeCmd('\"' + new File("ffmpeg.exe").getAbsolutePath() + "\" -i \"" + f.getAbsolutePath()
+					+ "\" -ab 23.85k -ar 16000 -ac 1 -acodec libamr_wb "+(autoSize?"":"-fs 1000000")+" -y " + f2.getAbsolutePath());
+
+			int i = 0;
+			do {
+				try {
+					if (ct instanceof Group)
+						try (FileInputStream fis = new FileInputStream(f2)) {
+							return ((Group) ct).uploadVoice(fis);
+						}
+				} catch (OverFileSizeMaxException ofse) {
+					Utils.exeCmd('\"' + new File("ffmpeg.exe").getAbsolutePath() + "\" -i \"" + f.getAbsolutePath()
+							+ "\" -ab " + brs[i] + " -ar 16000 -ac 1 -acodec libamr_wb -y " + f2.getAbsolutePath());
+					i++;
+				}
+			} while (autoSize);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} finally {
 			f.delete();
-			//ft.delete();
+			// ft.delete();
 			f2.delete();
 		}
 		return new PlainText("当前状态不支持音频");

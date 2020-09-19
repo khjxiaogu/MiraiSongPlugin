@@ -15,7 +15,7 @@ public class LightAppCardProvider implements MusicCardProvider {
 	}
 
 	@Override
-	public MessageChain process(MusicInfo mi,Contact ct) {
+	public MessageChain process(MusicInfo mi, Contact ct) {
 		JsonObject appmsg = new JsonObject();
 		appmsg.addProperty("app", "com.tencent.structmsg");
 		JsonObject cfg = new JsonObject();

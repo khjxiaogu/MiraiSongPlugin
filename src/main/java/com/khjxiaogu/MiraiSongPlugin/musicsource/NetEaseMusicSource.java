@@ -19,6 +19,7 @@ public class NetEaseMusicSource implements MusicSource {
 
 	public NetEaseMusicSource() {
 	}
+
 	public String queryRealUrl(String id) throws Exception {
 		JsonObject params = new JsonObject();
 		params.add("ids", new JsonPrimitive("[" + id + "]"));
@@ -65,6 +66,7 @@ public class NetEaseMusicSource implements MusicSource {
 		}
 		return null;
 	}
+
 	@Override
 	public MusicInfo get(String keyword) throws Exception {
 		URL url = new URL("http://music.163.com/api/search/pc");
@@ -82,25 +84,19 @@ public class NetEaseMusicSource implements MusicSource {
 		if (huc.getResponseCode() == 200) {
 			ja = JsonParser.parseString(new String(Utils.readAll(huc.getInputStream()), StandardCharsets.UTF_8))
 					.getAsJsonObject().get("result").getAsJsonObject().get("songs").getAsJsonArray();
-		}else
+		} else
 			throw new FileNotFoundException();
-		JsonObject jo=ja.get(0).getAsJsonObject();
-		murl=queryRealUrl(jo.get("id").getAsString());
-		int i=0;
-		while(!Utils.isExistent(murl)) {
-			jo=ja.get(++i).getAsJsonObject();
-			murl=queryRealUrl(jo.get("id").getAsString());
+		JsonObject jo = ja.get(0).getAsJsonObject();
+		murl = queryRealUrl(jo.get("id").getAsString());
+		int i = 0;
+		while (!Utils.isExistent(murl)) {
+			jo = ja.get(++i).getAsJsonObject();
+			murl = queryRealUrl(jo.get("id").getAsString());
 		}
-			return new MusicInfo(
-				jo.get("name").getAsString(),
+		return new MusicInfo(jo.get("name").getAsString(),
 				jo.get("artists").getAsJsonArray().get(0).getAsJsonObject().get("name").getAsString(),
-				jo.get("album").getAsJsonObject().get("picUrl").getAsString(),
-				murl,
-				"https://y.music.163.com/m/song?id=" + jo.get("id").getAsString(),
-				"网易云音乐",
-				"",
-				 100495085
-			);
+				jo.get("album").getAsJsonObject().get("picUrl").getAsString(), murl,
+				"https://y.music.163.com/m/song?id=" + jo.get("id").getAsString(), "网易云音乐", "", 100495085);
 	}
 
 }

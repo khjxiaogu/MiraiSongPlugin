@@ -1,9 +1,10 @@
 ffmpeg_path: "ffmpeg.exe"
 silkenc_path: "silk_v3_encoder.exe"
 adddefault: true
+amrqualityshift: false
 extracommands: 
-  "#语音": 
+  "#分享": 
     source: all
-    card: AMR
+    card: Share
   
     
