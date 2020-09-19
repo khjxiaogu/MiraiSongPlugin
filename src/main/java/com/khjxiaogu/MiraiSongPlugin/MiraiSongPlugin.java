@@ -177,6 +177,7 @@ public class MiraiSongPlugin extends JavaPlugin{
 		if(addDefault==null||addDefault.equals("true")) {
 			commands.put("#音乐",makeSearchesTemplate("LightApp"));
 			commands.put("#外链",makeSearchesTemplate("Message"));
+			commands.put("#语音",makeSearchesTemplate("AMR"));
 			commands.put("#QQ", makeTemplate("QQ音乐", "XML"));//标准样板
 			commands.put("#网易", makeTemplate("网易", "LightApp"));
 			commands.put("#酷狗", makeTemplate("酷狗", "LightApp"));
