@@ -11,12 +11,21 @@
 - 支持各大国内音乐平台  
 - 在非语音模式下，网络和性能占用极低  
 - 支持通过配置文件添加自定义的指令和覆盖现有指令 [传送门](#自定义指令)  
-- 支持高度自定义，采用MVC模式，添加音乐源和外观成本极低 [javadoc](https://khjxiaogu.github.io/MiraiSongPlugin/)
+- 支持高度自定义，采用MVC模式，添加音乐源和外观成本极低 [javadoc](https://khjxiaogu.github.io/MiraiSongPlugin/)  
+# 基本使用方法
+0. 从Release下载
+1. 放置于plugins文件夹
+2. 安装ffmpeg:<br>Windows:下载[ffmpeg](https://github.com/khjxiaogu/MiraiSongPlugin/tree/master/ffmpeg)的两个文件，放置于mirai同一目录<br>Linux: 配置data/MiraiSongPlugin/config.yml的ffmpeg路径为ffmpeg路径
+3. 运行mirai，登录机器人即可
 # 默认指令列表  
  
 “#音乐 关键词”
 -----
 自动搜索所有源以找出来找最佳音频来源    
+
+“#语音 关键词”  
+-----
+自动搜索所有源，以语音信息的形式发出
 
 “#外链 关键词”  
 -----
