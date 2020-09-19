@@ -15,8 +15,9 @@
 # 基本使用方法
 0. 从Release下载
 1. 放置于plugins文件夹
-2. 安装ffmpeg:<br>Windows:下载[ffmpeg](https://github.com/khjxiaogu/MiraiSongPlugin/tree/master/ffmpeg)的两个文件，放置于mirai同一目录<br>Linux: 配置data/MiraiSongPlugin/config.yml的ffmpeg路径为ffmpeg路径
-3. 运行mirai，登录机器人即可
+2. 安装ffmpeg(如果不需要用语音功能可以跳过这步):<br>Windows:下载[ffmpeg](https://github.com/khjxiaogu/MiraiSongPlugin/tree/master/ffmpeg)的两个文件，放置于mirai同一目录<br>Linux: 配置data/MiraiSongPlugin/config.yml的ffmpeg路径为ffmpeg路径
+3. 运行mirai，登录机器人
+4. 在机器人所在群聊发送“#音乐 test”，机器人返回分享标签即为安装成功。
 # 默认指令列表  
  
 “#音乐 关键词”
@@ -61,6 +62,7 @@
 |-----|-----|
 |`silkenc_path`|silk编码器文件位置[windows二进制](https://github.com/khjxiaogu/MiraiSongPlugin/blob/master/silk_v3_encoder.exe)|
 |`ffmpeg_path`|ffmpeg编码器文件位置[ffmpeg github](https://github.com/FFmpeg/FFmpeg)|
+|`amrqualityshift`|如果语音文件过大时进行的处理，缺省默认为false。<br>设置值：true/不断降低码率直到刚好能够发送，比较消耗性能 false/直接裁剪音频文件大小为1M|
 |`adddefault`|是否添加默认指令，缺省默认为true。<br>设置值：true/添加readme所述的指令列表 false/不添加任何指令|
 |`extracommands`|通过配置添加新指令的列表，可以完全自定义指令。详见[后文](#自定义指令)|
 # 自定义指令
