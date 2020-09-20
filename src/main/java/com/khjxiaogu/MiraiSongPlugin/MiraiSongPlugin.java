@@ -30,6 +30,7 @@ import com.khjxiaogu.MiraiSongPlugin.musicsource.QQMusicSource;
 
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription;
+import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
 import net.mamoe.mirai.console.plugin.jvm.SimpleJvmPluginDescription;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.Events;
@@ -54,7 +55,7 @@ import net.mamoe.yamlkt.YamlPrimitive;
  */
 public class MiraiSongPlugin extends JavaPlugin {
 	public MiraiSongPlugin() {
-		super(new SimpleJvmPluginDescription(PluginData.name, PluginData.ver, PluginData.auth, PluginData.info));
+		super(new JvmPluginDescriptionBuilder(PluginData.id,PluginData.ver).name(PluginData.name).author(PluginData.auth).info(PluginData.info).build());
 	}
 
 	// 请求音乐的线程池。

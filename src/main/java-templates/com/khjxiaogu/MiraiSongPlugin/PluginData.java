@@ -9,12 +9,17 @@ package com.khjxiaogu.MiraiSongPlugin;
  *         time: 2020年9月12日
  */
 public class PluginData {
-
+	/**
+	 * The Id.<br>
+	 * 插件id.
+	 */
+	public static String id = "@project.groupId@.mirai.@project.artifactId@";
+	
 	/**
 	 * The name.<br>
 	 * 插件名称.
 	 */
-	public static String name = "@project.artifactId@";
+	public static String name = "@mirai.plugin.name@";
 
 	/**
 	 * The ver.<br>
@@ -26,7 +31,7 @@ public class PluginData {
 	 * The auth.<br>
 	 * 插件作者.
 	 */
-	public static String auth = "khjxiaogu";
+	public static String auth = "@mirai.plugin.author@";
 
 	/**
 	 * The info.<br>

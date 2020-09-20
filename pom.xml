@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.khjxiaogu</groupId>
 	<artifactId>MiraiSongPlugin</artifactId>
-	<version>0.1.11</version>
+	<version>0.1.12</version>
 	<name>MiraiSongPlugin</name>
 	<description>使用“#音乐 关键词”、“#QQ 关键词”、“#网易 关键词”等方式进行点歌的插件。</description>
 	<build>
@@ -65,6 +65,8 @@
 	</build>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<mirai.plugin.name>点歌插件</mirai.plugin.name>
+		<mirai.plugin.author>khjxiaogu</mirai.plugin.author>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
