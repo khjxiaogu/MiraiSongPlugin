@@ -3,7 +3,7 @@
 如果没有你常用的音乐平台或者你喜欢的音乐外观，欢迎发issue或者pr。    
 如果有什么新的功能建议或者bug，也可以发issue，我会尽快查看更新。  
 0.5.2已经不再受到支持。  
-目前仅支持1.0+的API，如需使用旧版，可以从[0.1.5](https://github.com/khjxiaogu/MiraiSongPlugin/releases/tag/v0.1.5)版本前的release下载，不过旧版本没有自定义指令功能和设置语音功能。
+目前仅支持1.0+的API，如需使用旧版，可以从[0.1.5](https://github.com/khjxiaogu/MiraiSongPlugin/releases/tag/v0.1.5)版本前的release下载，不过旧版本没有自定义指令功能和设置语音功能。  
 ![GitHub All Releases](https://img.shields.io/github/downloads/khjxiaogu/MiraiSongPlugin/total?label=%E4%B8%8B%E8%BD%BD%E9%87%8F&style=social)
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/khjxiaogu/MiraiSongPlugin?label=%E5%BD%93%E5%89%8D%E7%89%88%E6%9C%AC)
 ![GitHub stars](https://img.shields.io/github/stars/khjxiaogu/MiraiSongPlugin?style=social)
