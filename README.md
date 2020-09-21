@@ -84,9 +84,12 @@ extracommands:
 如果不需要原版的指令，可以设置配置项`adddefault`为false。  
 原版的指令设置，仅供参考。__#点歌是特殊程序实现的，无法通过配置实现！__  
 ```
-  #音乐": 
+  "#音乐": 
     source: all
     card: LightApp
+  "#语音": #指令名称
+    source: all #搜索来源
+    card: AMR #分享外观
   "#外链": 
     source: all
     card: Message
