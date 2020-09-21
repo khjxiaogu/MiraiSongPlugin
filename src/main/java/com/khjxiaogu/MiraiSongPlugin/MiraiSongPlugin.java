@@ -144,16 +144,17 @@ public class MiraiSongPlugin extends PluginBase {
 					try {
 						mi = mc.get(sn);
 					} catch (Throwable t) {
-						Utils.getRealSender(event).sendMessage("无法找到歌曲。");
+						
 						continue;
 					}
 					try {
 						Utils.getRealSender(event).sendMessage(cb.process(mi, Utils.getRealSender(event)));
-						break;
 					} catch (Throwable t) {
 						Utils.getRealSender(event).sendMessage("无法生成分享。");
 					}
+					break;
 				}
+				Utils.getRealSender(event).sendMessage("无法找到歌曲。");
 			});
 		};
 	}
