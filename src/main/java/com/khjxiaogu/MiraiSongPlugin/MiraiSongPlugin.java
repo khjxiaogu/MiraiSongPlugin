@@ -57,7 +57,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 	public MiraiSongPlugin() {
 		super(new JvmPluginDescriptionBuilder(PluginData.id,PluginData.ver).name(PluginData.name).author(PluginData.auth).info(PluginData.info).build());
 	}
-
+	private final String spliter=" ";
 	// 请求音乐的线程池。
 	private Executor exec = Executors.newFixedThreadPool(8);
 
@@ -108,7 +108,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 		return (event, args) -> {
 			String sn;
 			try {
-				sn = URLEncoder.encode(String.join(" ", Arrays.copyOfRange(args, 1, args.length)), "UTF-8");
+				sn = URLEncoder.encode(String.join(spliter, Arrays.copyOfRange(args, 1, args.length)), "UTF-8");
 			} catch (UnsupportedEncodingException ignored) {
 				return;
 			}
@@ -143,7 +143,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 		return (event, args) -> {
 			String sn;
 			try {
-				sn = URLEncoder.encode(String.join(" ", Arrays.copyOfRange(args, 1, args.length)), "UTF-8");
+				sn = URLEncoder.encode(String.join(spliter, Arrays.copyOfRange(args, 1, args.length)), "UTF-8");
 			} catch (UnsupportedEncodingException ignored) {
 				return;
 			}
@@ -195,7 +195,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 			commands.put("#点歌", (event, args) -> {
 				String sn;
 				try {
-					sn = URLEncoder.encode(String.join(" ", Arrays.copyOfRange(args, 3, args.length)), "UTF-8");
+					sn = URLEncoder.encode(String.join(spliter, Arrays.copyOfRange(args, 3, args.length)), "UTF-8");
 				} catch (UnsupportedEncodingException ignored) {
 					return;
 				}
@@ -245,21 +245,21 @@ public class MiraiSongPlugin extends JavaPlugin {
 		Events.registerEvents(this, new SimpleListenerHost(this.getCoroutineContext()) {
 			@EventHandler
 			public void onGroup(GroupMessageEvent event) {
-				String[] args = Utils.getPlainText(event.getMessage()).split(" ");
+				String[] args = Utils.getPlainText(event.getMessage()).split(spliter);
 				BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
 				if (exec != null)
 					exec.accept(event, args);
 			}
 			@EventHandler
 			public void onFriend(FriendMessageEvent event) {
-				String[] args = Utils.getPlainText(event.getMessage()).split(" ");
+				String[] args = Utils.getPlainText(event.getMessage()).split(spliter);
 				BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
 				if (exec != null)
 					exec.accept(event, args);
 			}
 			@EventHandler
 			public void onTemp(TempMessageEvent event) {
-				String[] args = Utils.getPlainText(event.getMessage()).split(" ");
+				String[] args = Utils.getPlainText(event.getMessage()).split(spliter);
 				BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
 				if (exec != null)
 					exec.accept(event, args);
