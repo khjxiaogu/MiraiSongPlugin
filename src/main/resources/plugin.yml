@@ -1,0 +1,5 @@
+name: ${project.artifactId}
+author: "khjxiaogu"
+version: ${project.version}
+main: ${project.groupId}.${project.artifactId}.${project.artifactId}
+info: "${project.description}"

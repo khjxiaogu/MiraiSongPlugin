@@ -91,7 +91,7 @@
 		<dependency>
 			<groupId>net.mamoe</groupId>
 			<artifactId>mirai-console</artifactId>
-			<version>1.0-M4</version>
+			<version>0.5.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

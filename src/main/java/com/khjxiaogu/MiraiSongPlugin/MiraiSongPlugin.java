@@ -28,10 +28,9 @@ import com.khjxiaogu.MiraiSongPlugin.musicsource.KugouMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.QQMusicSource;
 
-import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
-import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription;
-import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
-import net.mamoe.mirai.console.plugin.jvm.SimpleJvmPluginDescription;
+import net.mamoe.mirai.console.plugins.Config;
+import net.mamoe.mirai.console.plugins.ConfigSection;
+import net.mamoe.mirai.console.plugins.PluginBase;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.Events;
 import net.mamoe.mirai.event.SimpleListenerHost;
@@ -39,11 +38,6 @@ import net.mamoe.mirai.message.FriendMessageEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.MessageEvent;
 import net.mamoe.mirai.message.TempMessageEvent;
-import net.mamoe.yamlkt.Yaml;
-import net.mamoe.yamlkt.YamlElement;
-import net.mamoe.yamlkt.YamlLiteral;
-import net.mamoe.yamlkt.YamlMap;
-import net.mamoe.yamlkt.YamlPrimitive;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -53,10 +47,7 @@ import net.mamoe.yamlkt.YamlPrimitive;
  *         file: MiraiSongPlugin.java
  *         time: 2020年8月26日
  */
-public class MiraiSongPlugin extends JavaPlugin {
-	public MiraiSongPlugin() {
-		super(new JvmPluginDescriptionBuilder(PluginData.id,PluginData.ver).name(PluginData.name).author(PluginData.auth).info(PluginData.info).build());
-	}
+public class MiraiSongPlugin extends PluginBase {
 	private final String spliter=" ";
 	// 请求音乐的线程池。
 	private Executor exec = Executors.newFixedThreadPool(8);
@@ -170,21 +161,20 @@ public class MiraiSongPlugin extends JavaPlugin {
 	@SuppressWarnings("resource")
 	@Override
 	public void onEnable() {
-		YamlMap cfg;
+		Config cfg;
 		if (!new File(this.getDataFolder(), "config.yml").exists()) {
 			try {
 				new FileOutputStream(new File(this.getDataFolder(), "config.yml"))
-						.write(Utils.readAll(this.getResourceAsStream("config.yml")));
+						.write(Utils.readAll(this.getResources("config.yml")));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		cfg = Yaml.getDefault().decodeYamlMapFromString(
-				new String(Utils.readAll(new File(this.getDataFolder(), "config.yml")), StandardCharsets.UTF_8));
-		YamlMap excs = (YamlMap) cfg.get(new YamlLiteral("extracommands"));
-		String addDefault = cfg.getStringOrNull("adddefault");
-		if (addDefault == null || addDefault.equals("true")) {
+		
+		cfg = super.loadConfig("config.yml");
+		ConfigSection excs= cfg.getConfigSection("extracommands");
+		if (!cfg.contains("adddefault")||cfg.getBoolean("adddefault")) {
 			commands.put("#音乐", makeSearchesTemplate("LightApp"));
 			commands.put("#外链", makeSearchesTemplate("Message"));
 			commands.put("#语音", makeSearchesTemplate("AMR"));
@@ -232,16 +222,14 @@ public class MiraiSongPlugin extends JavaPlugin {
 			});
 		}
 		if (excs != null)
-			for (YamlElement cmd : excs.getKeys()) {
-				commands.put(cmd.toString(), makeTemplate(((YamlMap) excs.get(cmd)).getString("source"),
-						((YamlMap) excs.get(cmd)).getString("card")));
+			for (String cmd : excs.keySet()) {
+				commands.put(cmd.toString(), makeTemplate(excs.getConfigSection(cmd).getString("source"),
+						excs.getConfigSection(cmd).getString("card")));
 			}
 		AmrVoiceProvider.ffmpeg = SilkVoiceProvider.ffmpeg = new File(cfg.getString("ffmpeg_path"));
-		String amras=cfg.getStringOrNull("amrqualityshift");
-		String amrwb=cfg.getStringOrNull("amrwb");
-		AmrVoiceProvider.autoSize = amras!=null&&amras.equals("true");
-		AmrVoiceProvider.wideBrand = amrwb==null||amrwb.equals("true");
-		SilkVoiceProvider.ffmpeg = new File(cfg.getString("silkenc_path"));
+		AmrVoiceProvider.autoSize = cfg.contains("amrqualityshift")&&cfg.getBoolean("amrqualityshift");
+		AmrVoiceProvider.wideBrand = (!cfg.contains("amrwb"))||cfg.getBoolean("amrwb");
+		SilkVoiceProvider.silk = new File(cfg.getString("silkenc_path"));
 		Events.registerEvents(this, new SimpleListenerHost(this.getCoroutineContext()) {
 			@EventHandler
 			public void onGroup(GroupMessageEvent event) {
