@@ -241,7 +241,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 		String amrwb=cfg.getStringOrNull("amrwb");
 		AmrVoiceProvider.autoSize = amras!=null&&amras.equals("true");
 		AmrVoiceProvider.wideBrand = amrwb==null||amrwb.equals("true");
-		SilkVoiceProvider.ffmpeg = new File(cfg.getString("silkenc_path"));
+		SilkVoiceProvider.silk = new File(cfg.getString("silkenc_path"));
 		Events.registerEvents(this, new SimpleListenerHost(this.getCoroutineContext()) {
 			@EventHandler
 			public void onGroup(GroupMessageEvent event) {
