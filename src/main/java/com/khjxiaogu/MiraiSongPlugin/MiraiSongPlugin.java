@@ -173,7 +173,7 @@ public class MiraiSongPlugin extends PluginBase {
 		}
 		
 		cfg = super.loadConfig("config.yml");
-		ConfigSection excs= cfg.getConfigSection("extracommands");
+		
 		if (!cfg.contains("adddefault")||cfg.getBoolean("adddefault")) {
 			commands.put("#音乐", makeSearchesTemplate("LightApp"));
 			commands.put("#外链", makeSearchesTemplate("Message"));
@@ -221,11 +221,13 @@ public class MiraiSongPlugin extends PluginBase {
 				});
 			});
 		}
-		if (excs != null)
+		if (cfg.contains("extracommands")) {
+			ConfigSection excs= cfg.getConfigSection("extracommands");
 			for (String cmd : excs.keySet()) {
 				commands.put(cmd.toString(), makeTemplate(excs.getConfigSection(cmd).getString("source"),
 						excs.getConfigSection(cmd).getString("card")));
 			}
+		}
 		AmrVoiceProvider.ffmpeg = SilkVoiceProvider.ffmpeg = new File(cfg.getString("ffmpeg_path"));
 		AmrVoiceProvider.autoSize = cfg.contains("amrqualityshift")&&cfg.getBoolean("amrqualityshift");
 		AmrVoiceProvider.wideBrand = (!cfg.contains("amrwb"))||cfg.getBoolean("amrwb");
