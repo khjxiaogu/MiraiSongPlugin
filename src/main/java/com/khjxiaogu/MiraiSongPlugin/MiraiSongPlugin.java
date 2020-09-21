@@ -153,7 +153,6 @@ public class MiraiSongPlugin extends JavaPlugin {
 					try {
 						mi = mc.get(sn);
 					} catch (Throwable t) {
-						t.printStackTrace();
 						continue;
 					}
 					try {
@@ -161,7 +160,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 					} catch (Throwable t) {
 						Utils.getRealSender(event).sendMessage("无法生成分享。");
 					}
-					break;
+					return;
 				}
 				Utils.getRealSender(event).sendMessage("无法找到歌曲。");
 			});
