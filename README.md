@@ -53,7 +53,7 @@
 高度自定义的点歌方法  
 |参数|值范围|用途|
 |------|------|------|
-|来源|QQ音乐<br>酷狗<br>千千<br>网易|设定搜索歌曲的来源|
+|来源|QQ音乐<br>酷狗<br>千千<br>网易<br>网易HQ|设定搜索歌曲的来源|
 |外观|LightApp:小程序分享<br>XML:卡片分享<br>Share:普通分享(不能播放)<br>Message:以纯信息形式分享，可以很方便取得音乐的各种链接。<br>AMR:AMR语音，需要配置好`ffmpeg_path`<br>Silk:SILK语音，需要同时配置好`silkenc_path`和`ffmpeg_path`，由于tx限流，质量可能很差（不推荐使用）|设定分享出来的音乐的外观|
 
 # 配置项
@@ -78,7 +78,7 @@ extracommands:
 ```
 |参数|值范围|用途|
 |------|------|------|
-|source|QQ音乐<br>酷狗<br>千千<br>网易<br>all|设定搜索歌曲的来源<br>注意：all为搜索全部平台。|
+|source|QQ音乐<br>网易<br>网易HQ<br>酷狗<br>千千<br>all|设定搜索歌曲的来源<br>注意：all为搜索全部平台。|
 |card|LightApp:小程序分享<br>XML:卡片分享<br>Share:普通分享(不能播放)<br>Message:以纯信息形式分享，可以很方便取得音乐的各种链接。<br>AMR:AMR语音，需要配置好`ffmpeg_path`，由于tx限流，质量可能很差<br>Silk:SILK语音，需要同时配置好`silkenc_path`和`ffmpeg_path`，由于tx限流，质量可能很差（不推荐使用）|设定分享出来的音乐的外观|  
 
 如果不需要原版的指令，可以设置配置项`adddefault`为false。  
