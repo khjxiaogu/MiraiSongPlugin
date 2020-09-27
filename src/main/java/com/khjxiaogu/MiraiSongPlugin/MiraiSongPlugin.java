@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -25,6 +24,7 @@ import com.khjxiaogu.MiraiSongPlugin.cardprovider.SilkVoiceProvider;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.XMLCardProvider;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.BaiduMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.KugouMusicSource;
+import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseHQMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.QQMusicSource;
 
@@ -65,6 +65,7 @@ public class MiraiSongPlugin extends PluginBase {
 		sources.put("QQ音乐", new QQMusicSource());
 		// sources.put("QQ音乐HQ",new QQMusicHQSource());//这个音乐源已被tx禁用。
 		sources.put("网易", new NetEaseMusicSource());
+		sources.put("网易HQ", new NetEaseHQMusicSource());
 		sources.put("酷狗", new KugouMusicSource());
 		sources.put("千千", new BaiduMusicSource());
 		// 注册外观
