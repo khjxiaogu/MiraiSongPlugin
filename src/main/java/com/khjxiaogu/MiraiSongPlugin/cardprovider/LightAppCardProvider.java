@@ -18,13 +18,6 @@ public class LightAppCardProvider implements MusicCardProvider {
 	public MessageChain process(MusicInfo mi, Contact ct) {
 		JsonObject appmsg = new JsonObject();
 		appmsg.addProperty("app", "com.tencent.structmsg");
-		JsonObject cfg = new JsonObject();
-		cfg.addProperty("autosize", true);
-		cfg.addProperty("ctime", Utils.getTime() / 1000);
-		cfg.addProperty("token", "a2c42c48922ed97efffe962a4072a6de");
-		cfg.addProperty("type", "normal");
-		cfg.addProperty("forward", true);
-		appmsg.add("config", cfg);
 		appmsg.addProperty("view", "music");
 		appmsg.addProperty("ver", "0.0.0.1");
 		appmsg.addProperty("desc", "音乐");
