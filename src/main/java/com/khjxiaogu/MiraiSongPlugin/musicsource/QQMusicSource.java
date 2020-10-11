@@ -92,7 +92,7 @@ public class QQMusicSource implements MusicSource {
 				"http://y.gtimg.cn/music/photo_new/T002R300x300M000" + song.get("albummid").getAsString() + ".jpg",
 				musicURL, "https://i.y.qq.com/v8/playsong.html?_wv=1&songid=" + song.get("songid").getAsString()
 						+ "&source=qqshare&ADTAG=qqshare",
-				"QQ音乐", "https://url.cn/PwqZ4Jpi", 1101079856);
+				"QQ音乐", "https://url.cn/PwqZ4Jpi", 100497308);
 	}
 
 }
