@@ -15,6 +15,7 @@ public class NetEaseHQMusicSource extends NetEaseMusicSource {
 
 	public NetEaseHQMusicSource() {
 	}
+	@Override
 	public String queryRealUrl(String id) throws Exception {
 		JsonObject params = new JsonObject();
 		params.add("ids", new JsonPrimitive("[" + id + "]"));

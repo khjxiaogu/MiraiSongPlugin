@@ -29,12 +29,8 @@ import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseHQMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.QQMusicSource;
 
-import net.mamoe.mirai.console.extensions.BotConfigurationAlterer;
-import net.mamoe.mirai.console.internal.extension.GlobalComponentStorage;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
-import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
-import net.mamoe.mirai.console.plugin.jvm.SimpleJvmPluginDescription;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.Events;
 import net.mamoe.mirai.event.SimpleListenerHost;
@@ -46,7 +42,6 @@ import net.mamoe.yamlkt.Yaml;
 import net.mamoe.yamlkt.YamlElement;
 import net.mamoe.yamlkt.YamlLiteral;
 import net.mamoe.yamlkt.YamlMap;
-import net.mamoe.yamlkt.YamlPrimitive;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -160,7 +155,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 						continue;
 					}
 					try {
-						if(mi.source=="QQ音乐"&&cb instanceof LightAppCardProvider)
+						if(mi.source.equals("QQ音乐")&&cb instanceof LightAppCardProvider)
 							Utils.getRealSender(event).sendMessage(cards.get("XML").process(mi, Utils.getRealSender(event)));
 						else
 							Utils.getRealSender(event).sendMessage(cb.process(mi, Utils.getRealSender(event)));
