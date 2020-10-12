@@ -29,6 +29,8 @@ import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseHQMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.QQMusicSource;
 
+import net.mamoe.mirai.console.extensions.BotConfigurationAlterer;
+import net.mamoe.mirai.console.internal.extension.GlobalComponentStorage;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
@@ -271,7 +273,6 @@ public class MiraiSongPlugin extends JavaPlugin {
 					exec.accept(event, args);
 			}
 		});
-
 		getLogger().info("插件加载完毕!");
 	}
 
