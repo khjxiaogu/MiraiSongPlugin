@@ -1,7 +1,6 @@
 package com.khjxiaogu.MiraiSongPlugin.musicsource;
 
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -9,10 +8,8 @@ import java.nio.charset.StandardCharsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
 import com.khjxiaogu.MiraiSongPlugin.MusicInfo;
 import com.khjxiaogu.MiraiSongPlugin.MusicSource;
-import com.khjxiaogu.MiraiSongPlugin.NetEaseCrypto;
 import com.khjxiaogu.MiraiSongPlugin.Utils;
 
 public class NetEaseMusicSource implements MusicSource {

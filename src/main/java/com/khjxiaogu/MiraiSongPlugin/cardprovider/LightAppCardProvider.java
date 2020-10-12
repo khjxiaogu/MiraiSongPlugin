@@ -3,8 +3,6 @@ package com.khjxiaogu.MiraiSongPlugin.cardprovider;
 import com.google.gson.JsonObject;
 import com.khjxiaogu.MiraiSongPlugin.MusicCardProvider;
 import com.khjxiaogu.MiraiSongPlugin.MusicInfo;
-import com.khjxiaogu.MiraiSongPlugin.Utils;
-
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.message.data.LightApp;
 import net.mamoe.mirai.message.data.MessageChain;
