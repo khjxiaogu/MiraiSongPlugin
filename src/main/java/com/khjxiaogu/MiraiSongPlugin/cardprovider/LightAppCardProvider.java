@@ -15,17 +15,10 @@ public class LightAppCardProvider implements MusicCardProvider {
 	}
 
 	@Override
-	public MessageChain process(MusicInfo mi, Contact ct) {
+	public MessageChain process(MusicInfo mi,Contact ct) {
 		JsonObject appmsg = new JsonObject();
 		appmsg.addProperty("app", "com.tencent.structmsg");
-		JsonObject cfg = new JsonObject();
-		cfg.addProperty("autosize", true);
-		cfg.addProperty("ctime", Utils.getTime() / 1000);
-		cfg.addProperty("token", "");
-		cfg.addProperty("type", "normal");
-		cfg.addProperty("forward", true);
-		//"extra":{"app_type":1,"appid":100497308,"msg_seq":6879666190418052903,"uin":1905387052}
-		appmsg.add("config", cfg);
+
 		appmsg.addProperty("view", "music");
 		appmsg.addProperty("ver", "0.0.0.1");
 		appmsg.addProperty("desc", "音乐");
