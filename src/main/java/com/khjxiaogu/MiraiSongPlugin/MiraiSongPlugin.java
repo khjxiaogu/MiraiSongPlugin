@@ -149,7 +149,10 @@ public class MiraiSongPlugin extends PluginBase {
 						continue;
 					}
 					try {
-						Utils.getRealSender(event).sendMessage(cb.process(mi, Utils.getRealSender(event)));
+						if(mi.source.equals("QQ音乐")&&cb instanceof LightAppCardProvider)
+							Utils.getRealSender(event).sendMessage(cards.get("XML").process(mi, Utils.getRealSender(event)));
+						else
+							Utils.getRealSender(event).sendMessage(cb.process(mi, Utils.getRealSender(event)));
 					} catch (Throwable t) {
 						Utils.getRealSender(event).sendMessage("无法生成分享。");
 					}
