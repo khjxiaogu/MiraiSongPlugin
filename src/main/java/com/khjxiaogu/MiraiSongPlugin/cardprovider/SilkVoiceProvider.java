@@ -42,7 +42,8 @@ public class SilkVoiceProvider implements MusicCardProvider {
 		try {
 			f.getParentFile().mkdirs();
 			OutputStream os = new FileOutputStream(f);
-			huc2.getInputStream().transferTo(os);
+			os.write(Utils.readAll(huc2.getInputStream()));
+			
 			os.close();
 			// exeCmd(new File("ffmpeg.exe").getAbsolutePath() + " -i \"" +
 			// f.getAbsolutePath()
