@@ -6,6 +6,9 @@
 ![GitHub All Releases](https://img.shields.io/github/downloads/khjxiaogu/MiraiSongPlugin/total?label=%E4%B8%8B%E8%BD%BD%E9%87%8F&style=social)
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/khjxiaogu/MiraiSongPlugin?label=%E5%BD%93%E5%89%8D%E7%89%88%E6%9C%AC)
 ![GitHub stars](https://img.shields.io/github/stars/khjxiaogu/MiraiSongPlugin?style=social)
+# 注意
+由于tx改了小程序机制，疑似音乐卡片采用了某种反篡改验证机制，导致所有的不正确小程序卡片无法发出，暂时无法修复。  
+欢迎各位大佬前来探讨机制或者Pr。  
 # 特色
 - 支持各大国内音乐平台  
 - 在非语音模式下，网络和性能占用极低  
