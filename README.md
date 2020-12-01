@@ -7,7 +7,7 @@
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/khjxiaogu/MiraiSongPlugin?label=%E5%BD%93%E5%89%8D%E7%89%88%E6%9C%AC)
 ![GitHub stars](https://img.shields.io/github/stars/khjxiaogu/MiraiSongPlugin?style=social)
 # 注意
-- 由于tx改了小程序机制，疑似音乐卡片采用了某种反篡改验证机制，导致所有的不正确小程序卡片无法发出，暂时无法修复。欢迎各位大佬前来issue探讨机制或者Pr。  
+- 由于tx改了小程序机制，疑似音乐卡片采用了某种反篡改验证机制，导致所有的不正确小程序（影响LightApp外观）无法发出，暂时无法修复。欢迎各位大佬前来issue探讨机制或者Pr。  
 - 由于tx有某种风控机制，新注册的账号发送XML卡片可能出现发不出去的情况，请用电脑QQ之类的登录几天再发，具体时间取决于TX机制，与程序无关，望周知。
 - 本插件均用新旧版本的Mirai测试过，如果不能运行请先确认你mirai为最新版本。
 ### 测试可用的mirai-console版本
