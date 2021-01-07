@@ -34,10 +34,11 @@ import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.Events;
 import net.mamoe.mirai.event.SimpleListenerHost;
-import net.mamoe.mirai.message.FriendMessageEvent;
-import net.mamoe.mirai.message.GroupMessageEvent;
-import net.mamoe.mirai.message.MessageEvent;
-import net.mamoe.mirai.message.TempMessageEvent;
+import net.mamoe.mirai.event.events.FriendMessageEvent;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
+import net.mamoe.mirai.event.events.MessageEvent;
+import net.mamoe.mirai.event.events.TempMessageEvent;
+import net.mamoe.mirai.utils.EventListenerLikeJava;
 import net.mamoe.yamlkt.Yaml;
 import net.mamoe.yamlkt.YamlElement;
 import net.mamoe.yamlkt.YamlLiteral;
@@ -76,7 +77,8 @@ public class MiraiSongPlugin extends JavaPlugin {
 		sources.put("酷狗", new KugouMusicSource());
 		sources.put("千千", new BaiduMusicSource());
 		// 注册外观
-		cards.put("LightApp", new LightAppCardProvider());
+		//cards.put("LightApp", new LightAppCardProvider());
+		cards.put("LightApp", new XMLCardProvider());
 		cards.put("LightAppX", new LightAppXCardProvider());
 		cards.put("XML", new XMLCardProvider());
 		cards.put("Silk", new SilkVoiceProvider());
@@ -155,9 +157,6 @@ public class MiraiSongPlugin extends JavaPlugin {
 						continue;
 					}
 					try {
-						if(mi.source.equals("QQ音乐")&&cb instanceof LightAppCardProvider)
-							Utils.getRealSender(event).sendMessage(cards.get("XML").process(mi, Utils.getRealSender(event)));
-						else
 							Utils.getRealSender(event).sendMessage(cb.process(mi, Utils.getRealSender(event)));
 					} catch (Throwable t) {
 						Utils.getRealSender(event).sendMessage("无法生成分享。");
@@ -245,6 +244,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 		AmrVoiceProvider.autoSize = amras!=null&&amras.equals("true");
 		AmrVoiceProvider.wideBrand = amrwb==null||amrwb.equals("true");
 		SilkVoiceProvider.silk = new File(cfg.getString("silkenc_path"));
+		getLogger().info("当前配置项：宽域AMR:"+AmrVoiceProvider.wideBrand+" AMR自动大小:"+AmrVoiceProvider.autoSize);
 		Events.registerEvents(this, new SimpleListenerHost(this.getCoroutineContext()) {
 			@EventHandler
 			public void onGroup(GroupMessageEvent event) {

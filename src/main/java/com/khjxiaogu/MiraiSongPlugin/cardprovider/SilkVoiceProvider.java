@@ -16,6 +16,7 @@ import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.PlainText;
+import net.mamoe.mirai.utils.ExternalResource;
 
 public class SilkVoiceProvider implements MusicCardProvider {
 	public static File silk = new File("silk_v3_encoder.exe");
@@ -54,7 +55,7 @@ public class SilkVoiceProvider implements MusicCardProvider {
 					+ "\" -Fs_API 24000 -tencent");
 			try (FileInputStream fis = new FileInputStream(f2)) {
 				if (ct instanceof Group)
-					return ((Group) ct).uploadVoice(fis);
+					return ((Group) ct).uploadVoice(ExternalResource.create(fis));
 			}
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
