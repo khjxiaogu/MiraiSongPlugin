@@ -14,7 +14,7 @@ public class ShareCardProvider implements MusicCardProvider {
 
 	@Override
 	public Message process(MusicInfo mi, Contact ct) {
-		return RichMessage.Templates.share(mi.jurl.replaceAll("\\&", "&amp;"), mi.title, mi.desc,
+		return RichMessage.share(mi.jurl.replaceAll("\\&", "&amp;"), mi.title, mi.desc,
 				mi.purl.replaceAll("\\&", "&amp;"));
 	}
 

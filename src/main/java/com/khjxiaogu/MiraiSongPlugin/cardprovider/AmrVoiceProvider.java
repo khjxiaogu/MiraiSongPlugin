@@ -16,6 +16,7 @@ import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.PlainText;
+import net.mamoe.mirai.utils.ExternalResource;
 import net.mamoe.mirai.utils.OverFileSizeMaxException;
 
 public class AmrVoiceProvider implements MusicCardProvider {
@@ -56,7 +57,7 @@ public class AmrVoiceProvider implements MusicCardProvider {
 					try {
 						if (ct instanceof Group)
 							try (FileInputStream fis = new FileInputStream(f2)) {
-								return ((Group) ct).uploadVoice(fis);
+								return ((Group) ct).uploadVoice(ExternalResource.create(fis));
 							}
 					} catch (OverFileSizeMaxException ofse) {
 						Utils.exeCmd('\"' + ffmpeg.getAbsolutePath() + "\" -i \"" + f.getAbsolutePath()
@@ -69,7 +70,7 @@ public class AmrVoiceProvider implements MusicCardProvider {
 				Utils.exeCmd('\"'+ffmpeg.getAbsolutePath() + "\" -i \"" + f.getAbsolutePath()
 				+ "\" -ab 12.2k -ar 8000 -ac 1 -fs 1000000 -y " + f2.getAbsolutePath());
 				try (FileInputStream fis = new FileInputStream(f2)) {
-					return ((Group) ct).uploadVoice(fis);
+					return ((Group) ct).uploadVoice(ExternalResource.create(fis));
 				}
 			}
 

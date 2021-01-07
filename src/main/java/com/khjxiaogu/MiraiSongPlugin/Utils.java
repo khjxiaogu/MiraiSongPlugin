@@ -10,9 +10,10 @@ import java.net.URL;
 import java.util.Date;
 
 import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.message.GroupMessageEvent;
-import net.mamoe.mirai.message.MessageEvent;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
+import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.MessageContent;
 import net.mamoe.mirai.message.data.PlainText;
 
 // TODO: Auto-generated Javadoc
@@ -112,10 +113,10 @@ public final class Utils {
 	 *         第一条文本，去除首尾空格
 	 */
 	public static String getPlainText(MessageChain msg) {
-		PlainText pt = msg.first(PlainText.Key);
+		MessageContent pt = msg.get(PlainText.Key);
 		if (pt == null)
 			return "";
-		return pt.getContent().trim();
+		return pt.contentToString().trim();
 	}
 
 	/**
@@ -174,5 +175,16 @@ public final class Utils {
 		huc.setRequestMethod("HEAD");
 		huc.connect();
 		return huc.getResponseCode() == 200;
+	}
+	public static InputStream getFromHttp(String url) throws IOException {
+		try {
+			HttpURLConnection huc2 = (HttpURLConnection) new URL(url).openConnection();
+
+			huc2.setRequestMethod("GET");
+			huc2.connect();
+			return huc2.getInputStream();
+		} catch (IOException e) {
+			throw e;
+		}
 	}
 }
