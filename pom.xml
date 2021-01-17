@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.khjxiaogu</groupId>
 	<artifactId>MiraiSongPlugin</artifactId>
-	<version>0.2.0</version>
+	<version>2.1</version>
 	<name>MiraiSongPlugin</name>
 	<description>使用“#音乐 关键词”、“#QQ 关键词”、“#网易 关键词”等方式进行点歌的插件。</description>
 	<build>
@@ -94,20 +94,25 @@
 			<id>globalmvn</id>
 			<url>https://mvnrepository.com/artifact/</url>
 		</repository>
+		<repository>
+			<id>kotlin</id>
+			<url>https://kotlin.bintray.com/kotlinx/</url>
+		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>net.mamoe</groupId>
 			<artifactId>mirai-console</artifactId>
-			<version>2.0-M2-1-dev-1</version>
+			<version>2.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.mamoe</groupId>
-			<artifactId>mirai-core-all</artifactId>
-			<version>2.0-RC-dev-1</version>
+			<artifactId>mirai-core</artifactId>
+			<version>2.0.0</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
