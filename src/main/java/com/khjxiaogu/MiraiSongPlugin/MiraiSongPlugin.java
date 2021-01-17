@@ -33,10 +33,12 @@ import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.Events;
+import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.event.events.FriendMessageEvent;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.MessageEvent;
+import net.mamoe.mirai.event.events.StrangerMessageEvent;
 import net.mamoe.mirai.event.events.TempMessageEvent;
 import net.mamoe.mirai.utils.EventListenerLikeJava;
 import net.mamoe.yamlkt.Yaml;
@@ -245,7 +247,8 @@ public class MiraiSongPlugin extends JavaPlugin {
 		AmrVoiceProvider.wideBrand = amrwb==null||amrwb.equals("true");
 		SilkVoiceProvider.silk = new File(cfg.getString("silkenc_path"));
 		getLogger().info("当前配置项：宽域AMR:"+AmrVoiceProvider.wideBrand+" AMR自动大小:"+AmrVoiceProvider.autoSize);
-		Events.registerEvents(this, new SimpleListenerHost(this.getCoroutineContext()) {
+		
+		GlobalEventChannel.INSTANCE.registerListenerHost(new SimpleListenerHost(this.getCoroutineContext()) {
 			@EventHandler
 			public void onGroup(GroupMessageEvent event) {
 				String[] args = Utils.getPlainText(event.getMessage()).split(spliter);
@@ -261,7 +264,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 					exec.accept(event, args);
 			}
 			@EventHandler
-			public void onTemp(TempMessageEvent event) {
+			public void onTemp(StrangerMessageEvent event) {
 				String[] args = Utils.getPlainText(event.getMessage()).split(spliter);
 				BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
 				if (exec != null)

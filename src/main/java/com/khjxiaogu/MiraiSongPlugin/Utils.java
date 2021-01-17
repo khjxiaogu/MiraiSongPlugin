@@ -5,9 +5,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
+import java.util.Objects;
 
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
@@ -161,12 +163,23 @@ public final class Utils {
 	public static void exeCmd(String commandStr) {
 		try {
 			Process p = Runtime.getRuntime().exec(commandStr);
+			transferTo(p.getInputStream(),System.out);
 			p.waitFor();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
+	public static long transferTo(InputStream in,OutputStream out) throws IOException {
+        Objects.requireNonNull(out, "out");
+        long transferred = 0;
+        byte[] buffer = new byte[2048];
+        int read;
+        while ((read = in.read(buffer, 0, 2048)) >= 0) {
+            out.write(buffer, 0, read);
+            transferred += read;
+        }
+        return transferred;
+    }
 	public static boolean isExistent(String urlstr) throws IOException {
 		URL url = new URL(urlstr);
 		HttpURLConnection huc = (HttpURLConnection) url.openConnection();
