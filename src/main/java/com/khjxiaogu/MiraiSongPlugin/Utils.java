@@ -27,7 +27,7 @@ import net.mamoe.mirai.message.data.PlainText;
  *         time: 2020年8月26日
  */
 public final class Utils {
-
+	static boolean verbose=true;
 	/**
 	 * Read all content from input stream.<br>
 	 * 从数据流读取全部数据
@@ -160,13 +160,16 @@ public final class Utils {
 	 * @param commandStr the command string<br>
 	 *                   命令字符串
 	 */
-	public static void exeCmd(String commandStr) {
+	public static void exeCmd(String... commandStr) {
 		try {
-			Process p = Runtime.getRuntime().exec(commandStr);
-			transferTo(p.getInputStream(),System.out);
-			p.waitFor();
+			ProcessBuilder pb=new ProcessBuilder(commandStr);
+			//Process p = Runtime.getRuntime().exec(commandStr);
+			if(verbose)
+				pb.inheritIO();
+			pb.start().waitFor();
+			
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 	public static long transferTo(InputStream in,OutputStream out) throws IOException {
