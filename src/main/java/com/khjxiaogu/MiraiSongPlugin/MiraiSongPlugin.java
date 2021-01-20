@@ -241,10 +241,18 @@ public class MiraiSongPlugin extends JavaPlugin {
 						((YamlMap) excs.get(cmd)).getString("card")));
 			}
 		AmrVoiceProvider.ffmpeg = SilkVoiceProvider.ffmpeg = new File(cfg.getString("ffmpeg_path"));
+		try {
+			Utils.exeCmd(AmrVoiceProvider.ffmpeg.getAbsolutePath(),"-version");
+		}catch(RuntimeException ex) {
+			ex.printStackTrace();
+			getLogger().warning("ffmpeg启动失败，语音功能失效！");
+		}
 		String amras=cfg.getStringOrNull("amrqualityshift");
 		String amrwb=cfg.getStringOrNull("amrwb");
+		String vb=cfg.getStringOrNull("verbose");
 		AmrVoiceProvider.autoSize = amras!=null&&amras.equals("true");
 		AmrVoiceProvider.wideBrand = amrwb==null||amrwb.equals("true");
+		Utils.verbose=vb==null||vb.equals("true");
 		SilkVoiceProvider.silk = new File(cfg.getString("silkenc_path"));
 		getLogger().info("当前配置项：宽域AMR:"+AmrVoiceProvider.wideBrand+" AMR自动大小:"+AmrVoiceProvider.autoSize);
 		
