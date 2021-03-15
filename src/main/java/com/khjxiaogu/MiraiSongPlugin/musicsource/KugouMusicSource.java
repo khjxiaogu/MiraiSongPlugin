@@ -23,19 +23,24 @@ public class KugouMusicSource implements MusicSource {
 		huc.setRequestMethod("GET");
 		huc.setRequestProperty("Host", "msearchcdn.kugou.com");
 		huc.connect();
-		String song = JsonParser
+		JsonObject je = JsonParser
 				.parseString(new String(Utils.readAll(huc.getInputStream()), "UTF-8").replaceAll("<!--[_A-Z]+-->", ""))
-				.getAsJsonObject().get("data").getAsJsonObject().get("info").getAsJsonArray().get(0).getAsJsonObject()
+				.getAsJsonObject();
+		String song=je.get("data").getAsJsonObject().get("info").getAsJsonArray().get(0).getAsJsonObject()
 				.get("hash").getAsString();
+		String album_id=je.get("data").getAsJsonObject().get("info").getAsJsonArray().get(0).getAsJsonObject()
+				.get("album_id").getAsString();
+		System.out.println(je);
 		HttpURLConnection ihuc = (HttpURLConnection) new URL(
-				"https://www.kugou.com/yy/index.php?r=play/getdata&hash=" + song).openConnection();
+				"https://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash=" + song+"&album_id="+album_id+"&platid=437735266&_="+Utils.getTime()).openConnection();
 		ihuc.setRequestMethod("GET");
 		ihuc.setRequestProperty("Host", "www.kugou.com");
 		ihuc.setRequestProperty("Cookie", COOKIE);
 		ihuc.connect();
 		JsonObject info = JsonParser.parseString(new String(Utils.readAll(ihuc.getInputStream()), "UTF-8"))
 				.getAsJsonObject().get("data").getAsJsonObject();
-		return new MusicInfo(info.get("song_name").getAsString(), info.get("author_name").getAsString(),
+		System.out.println(info);
+		return new MusicInfo(info.get("audio_name").getAsString(), info.get("author_name").getAsString(),
 				info.get("img").getAsString(), info.get("play_url").getAsString(),
 				"https://www.kugou.com/song/#hash=" + song + "&album_id=" + info.get("album_id").getAsString(), "酷狗");
 	}

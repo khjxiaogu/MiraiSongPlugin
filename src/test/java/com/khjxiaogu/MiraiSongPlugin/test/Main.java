@@ -27,7 +27,7 @@ public class Main {
 	}
 
 	public static void main(String[] args) throws Exception {
-		MusicInfo mi = sources.get(args[0]).get(URLEncoder.encode(args[1]));
+		MusicInfo mi = sources.get("酷狗").get(URLEncoder.encode("Rain on me"));
 		StringBuilder tsb = new StringBuilder().append("歌名：").append(mi.title).append("\n作者：").append(mi.desc)
 				.append("\n封面：" + mi.purl).append("\n外链：" + mi.murl).append("\n链接：" + mi.jurl)
 				.append("\n来自：" + mi.source);
