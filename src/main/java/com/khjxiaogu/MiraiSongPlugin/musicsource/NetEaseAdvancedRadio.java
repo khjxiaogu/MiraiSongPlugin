@@ -10,7 +10,7 @@ public class NetEaseAdvancedRadio extends NetEaseRadioSource {
 
 	@Override
 	public MusicInfo get(String keyword) throws Exception {
-		String rkw=URLDecoder.decode(keyword);
+		String rkw=URLDecoder.decode(keyword,"UTF-8");
 		int pos=rkw.indexOf('|');
 		if(pos!=-1) {
 			String radio=rkw.substring(0,pos);
