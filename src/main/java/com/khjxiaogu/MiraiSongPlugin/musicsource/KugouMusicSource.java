@@ -32,7 +32,7 @@ public class KugouMusicSource implements MusicSource {
 				.get("album_id").getAsString();
 		System.out.println(je);
 		HttpURLConnection ihuc = (HttpURLConnection) new URL(
-				"https://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash=" + song+"&album_id="+album_id+"&platid=437735266&_="+Utils.getTime()).openConnection();
+				"https://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash=" + song+"&album_id="+album_id+"&_="+Utils.getTime()).openConnection();
 		ihuc.setRequestMethod("GET");
 		ihuc.setRequestProperty("Host", "www.kugou.com");
 		ihuc.setRequestProperty("Cookie", COOKIE);
