@@ -16,7 +16,7 @@ public class NetEaseAdvancedRadio extends NetEaseRadioSource {
 			String radio=rkw.substring(0,pos);
 			String song=rkw.substring(pos+1);
 			if(song.length()>0&&radio.length()>0)
-			return super.get(URLEncoder.encode(radio),song);
+			return super.get(URLEncoder.encode(radio,"UTF-8"),song);
 		}
 		return super.get(keyword);
 	}
