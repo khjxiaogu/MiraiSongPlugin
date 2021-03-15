@@ -25,7 +25,7 @@ public class AmrVoiceProvider implements MusicCardProvider {
 	public static boolean wideBrand = false;
 	private final static String[] brs = new String[] { "23.05k", "19.85k", "18.25k", "15.85k", "14.25k", "12.65k",
 			"8.85k", "6.6k" };
-
+	public static String customCommand;
 	public AmrVoiceProvider() {
 	}
 
@@ -49,6 +49,12 @@ public class AmrVoiceProvider implements MusicCardProvider {
 			OutputStream os = new FileOutputStream(f);
 			os.write(Utils.readAll(huc2.getInputStream()));
 			os.close();
+			if(customCommand!=null) {
+				Utils.exeCmd(customCommand.replace("%input%",f.getAbsolutePath()).replace("%output%",f2.getAbsolutePath()));
+				try (FileInputStream fis = new FileInputStream(f2)) {
+					return ((Group) ct).uploadVoice(ExternalResource.create(fis));
+				}
+			}else
 			if(wideBrand) {
 				if(autoSize)
 				Utils.exeCmd(ffmpeg.getAbsolutePath() ,"-i",f.getAbsolutePath()

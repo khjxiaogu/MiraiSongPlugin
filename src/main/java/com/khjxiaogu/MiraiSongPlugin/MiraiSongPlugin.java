@@ -241,21 +241,25 @@ public class MiraiSongPlugin extends JavaPlugin {
 						((YamlMap) excs.get(cmd)).getString("card")));
 			}
 		AmrVoiceProvider.ffmpeg = SilkVoiceProvider.ffmpeg = new File(cfg.getString("ffmpeg_path"));
-		try {
-			Utils.exeCmd(AmrVoiceProvider.ffmpeg.getAbsolutePath(),"-version");
-		}catch(RuntimeException ex) {
-			ex.printStackTrace();
-			getLogger().warning("ffmpeg启动失败，语音功能失效！");
-		}
 		String amras=cfg.getStringOrNull("amrqualityshift");
 		String amrwb=cfg.getStringOrNull("amrwb");
+		String usecc=cfg.getStringOrNull("use_custom_ffmpeg_command");
 		String vb=cfg.getStringOrNull("verbose");
 		AmrVoiceProvider.autoSize = amras!=null&&amras.equals("true");
 		AmrVoiceProvider.wideBrand = amrwb==null||amrwb.equals("true");
+		AmrVoiceProvider.customCommand=(usecc!=null&&usecc.equals("true"))?cfg.getStringOrNull("custom_ffmpeg_command"):null;
 		Utils.verbose=vb==null||vb.equals("true");
 		SilkVoiceProvider.silk = new File(cfg.getString("silkenc_path"));
-		getLogger().info("当前配置项：宽域AMR:"+AmrVoiceProvider.wideBrand+" AMR自动大小:"+AmrVoiceProvider.autoSize);
-		
+		if(AmrVoiceProvider.customCommand==null) {
+			try {
+				Utils.exeCmd(AmrVoiceProvider.ffmpeg.getAbsolutePath(),"-version");
+			}catch(RuntimeException ex) {
+				ex.printStackTrace();
+				getLogger().warning("ffmpeg启动失败，语音功能失效！");
+			}
+			getLogger().info("当前配置项：宽域AMR:"+AmrVoiceProvider.wideBrand+" AMR自动大小:"+AmrVoiceProvider.autoSize);
+		}else
+			getLogger().info("当前配置项：自定义指令:"+AmrVoiceProvider.customCommand);
 		GlobalEventChannel.INSTANCE.registerListenerHost(new SimpleListenerHost(this.getCoroutineContext()) {
 			@EventHandler
 			public void onGroup(GroupMessageEvent event) {

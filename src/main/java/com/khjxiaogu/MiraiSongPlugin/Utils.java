@@ -172,6 +172,25 @@ public final class Utils {
 			throw new RuntimeException(e);
 		}
 	}
+	/**
+	 * Execute command,wait until finished.<br>
+	 * 执行操作平台命令，等待完成。
+	 * 
+	 * @param commandStr the command string<br>
+	 *                   命令字符串
+	 */
+	public static void exeCmd(String commandStr) {
+		try {
+			if(verbose)
+				System.out.println("executing "+commandStr);
+			Process p = Runtime.getRuntime().exec(commandStr);
+			transferTo(p.getInputStream(),System.out);
+			p.waitFor();
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 	public static long transferTo(InputStream in,OutputStream out) throws IOException {
         Objects.requireNonNull(out, "out");
         long transferred = 0;
