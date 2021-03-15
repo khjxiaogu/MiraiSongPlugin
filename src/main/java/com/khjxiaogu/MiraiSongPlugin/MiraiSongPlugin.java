@@ -2,6 +2,7 @@ package com.khjxiaogu.MiraiSongPlugin;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -16,6 +17,9 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.AmrVoiceProvider;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.LightAppCardProvider;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.LightAppXCardProvider;
@@ -25,8 +29,11 @@ import com.khjxiaogu.MiraiSongPlugin.cardprovider.SilkVoiceProvider;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.XMLCardProvider;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.BaiduMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.KugouMusicSource;
+import com.khjxiaogu.MiraiSongPlugin.musicsource.LocalFileSource;
+import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseAdvancedRadio;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseHQMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseMusicSource;
+import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseRadioSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.QQMusicSource;
 
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
@@ -75,9 +82,12 @@ public class MiraiSongPlugin extends JavaPlugin {
 		sources.put("QQ音乐", new QQMusicSource());
 		// sources.put("QQ音乐HQ",new QQMusicHQSource());//这个音乐源已被tx禁用。
 		sources.put("网易", new NetEaseMusicSource());
+		sources.put("网易电台节目", new NetEaseAdvancedRadio());
+		sources.put("网易电台", new NetEaseRadioSource());
 		sources.put("网易HQ", new NetEaseHQMusicSource());
 		sources.put("酷狗", new KugouMusicSource());
 		sources.put("千千", new BaiduMusicSource());
+		sources.put("本地", new LocalFileSource());
 		// 注册外观
 		//cards.put("LightApp", new LightAppCardProvider());
 		cards.put("LightApp", new XMLCardProvider());
@@ -152,6 +162,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 			}
 			exec.execute(() -> {
 				for (MusicSource mc : sources.values()) {
+					if(!mc.isVisible())continue;
 					MusicInfo mi;
 					try {
 						mi = mc.get(sn);
@@ -186,6 +197,28 @@ public class MiraiSongPlugin extends JavaPlugin {
 		}
 		cfg = Yaml.getDefault().decodeYamlMapFromString(
 				new String(Utils.readAll(new File(this.getDataFolder(), "config.yml")), StandardCharsets.UTF_8));
+		File local=new File("SongPluginLocal.json");
+		if(!local.exists()) {
+			try {
+				local.createNewFile();
+				JsonArray datas=new JsonArray();
+				JsonObject obj=new JsonObject();
+				obj.addProperty("title","标题");
+				obj.addProperty("desc","副标题");
+				obj.addProperty("previewUrl","专辑图片url");
+				obj.addProperty("musicUrl","音乐播放url");
+				obj.addProperty("jumpUrl","点击跳转url");
+				obj.addProperty("source","本地");
+				datas.add(obj);
+				FileWriter fw=new FileWriter(local);
+				fw.write(datas.toString());
+				fw.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
 		YamlMap excs = (YamlMap) cfg.get(new YamlLiteral("extracommands"));
 		String addDefault = cfg.getStringOrNull("adddefault");
 		if (addDefault == null || addDefault.equals("true")) {
@@ -194,6 +227,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 			commands.put("#语音", makeSearchesTemplate("AMR"));
 			commands.put("#QQ", makeTemplate("QQ音乐", "XML"));// 标准样板
 			commands.put("#网易", makeTemplate("网易", "LightApp"));
+			commands.put("#网易电台", makeTemplate("网易电台节目", "LightApp"));
 			commands.put("#酷狗", makeTemplate("酷狗", "LightApp"));
 			commands.put("#千千", makeTemplate("千千", "LightApp"));
 			commands.put("#点歌", (event, args) -> {
@@ -244,7 +278,9 @@ public class MiraiSongPlugin extends JavaPlugin {
 		String amras=cfg.getStringOrNull("amrqualityshift");
 		String amrwb=cfg.getStringOrNull("amrwb");
 		String usecc=cfg.getStringOrNull("use_custom_ffmpeg_command");
+		String ulocal=cfg.getStringOrNull("enable_local");
 		String vb=cfg.getStringOrNull("verbose");
+		LocalFileSource.autoLocal=ulocal!=null&&ulocal.equals("true");
 		AmrVoiceProvider.autoSize = amras!=null&&amras.equals("true");
 		AmrVoiceProvider.wideBrand = amrwb==null||amrwb.equals("true");
 		AmrVoiceProvider.customCommand=(usecc!=null&&usecc.equals("true"))?cfg.getStringOrNull("custom_ffmpeg_command"):null;

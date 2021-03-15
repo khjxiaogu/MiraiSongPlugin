@@ -30,7 +30,7 @@ public class BaiduMusicSource implements MusicSource {
 			huc.setRequestMethod("GET");
 			huc.connect();
 			jo = JsonParser.parseString(new String(Utils.readAll(huc.getInputStream()), "UTF-8")).getAsJsonObject();
-		} while (jo.get("error_code").getAsInt() != 22000 || requested++ > 20);// 傻逼百度有时候会请求失败，不断请求直到成功。
+		} while (jo.get("error_code").getAsInt() != 22000 && requested++ < 20);// 傻逼百度有时候会请求失败，不断请求直到成功。
 		String sid = jo.getAsJsonObject().getAsJsonObject().get("song").getAsJsonArray().get(0).getAsJsonObject()
 				.get("songid").getAsString();
 		huc.disconnect();

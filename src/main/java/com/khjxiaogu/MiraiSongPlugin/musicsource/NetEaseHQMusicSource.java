@@ -62,4 +62,8 @@ public class NetEaseHQMusicSource extends NetEaseMusicSource {
 		}
 		return null;
 	}
+	@Override
+	public boolean isVisible() {
+		return false;
+	}
 }
