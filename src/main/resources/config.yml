@@ -1,5 +1,7 @@
 ffmpeg_path: "ffmpeg.exe"
 silkenc_path: "silk_v3_encoder.exe"
+use_custom_ffmpeg_command: false
+custom_ffmpeg_command: "ffmpeg -i %input% -ab 23.85k -ar 16000 -ac 1 -acodec libamr_wb -y %output%"
 adddefault: true
 amrqualityshift: false
 amrwb: true
