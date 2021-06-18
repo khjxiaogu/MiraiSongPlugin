@@ -30,7 +30,7 @@ public class Main {
 	}
 
 	public static void main(String[] args) throws Exception {
-		MusicInfo mi = sources.get("网易电台").get(URLEncoder.encode("屑"));
+		MusicInfo mi = sources.get("网易电台").get(URLEncoder.encode("先辈"));
 		StringBuilder tsb = new StringBuilder().append("歌名：").append(mi.title).append("\n作者：").append(mi.desc)
 				.append("\n封面：" + mi.purl).append("\n外链：" + mi.murl).append("\n链接：" + mi.jurl)
 				.append("\n来自：" + mi.source);

@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.khjxiaogu</groupId>
 	<artifactId>MiraiSongPlugin</artifactId>
-	<version>0.2.5</version>
+	<version>0.2.6</version>
 	<name>MiraiSongPlugin</name>
 	<description>使用“#音乐 关键词”、“#QQ 关键词”、“#网易 关键词”等方式进行点歌的插件。</description>
 	<build>
@@ -111,11 +111,6 @@
 			<artifactId>mirai-core</artifactId>
 			<version>2.0.0</version>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-		    <groupId>net.ricecode</groupId>
-			<artifactId>string-similarity</artifactId>
-			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
