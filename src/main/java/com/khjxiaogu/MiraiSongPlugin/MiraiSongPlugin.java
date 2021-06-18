@@ -27,6 +27,7 @@ import com.khjxiaogu.MiraiSongPlugin.cardprovider.PlainMusicInfoProvider;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.ShareCardProvider;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.SilkVoiceProvider;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.XMLCardProvider;
+import com.khjxiaogu.MiraiSongPlugin.musicSources.BiliBiliMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.BaiduMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.KugouMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.LocalFileSource;
@@ -87,6 +88,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 		sources.put("网易HQ", new NetEaseHQMusicSource());
 		sources.put("酷狗", new KugouMusicSource());
 		sources.put("千千", new BaiduMusicSource());
+		sources.put("Bilibili",new BaiduMusicSource());
 		sources.put("本地", new LocalFileSource());
 		// 注册外观
 		//cards.put("LightApp", new LightAppCardProvider());

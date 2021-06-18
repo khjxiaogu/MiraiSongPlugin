@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
 import com.khjxiaogu.MiraiSongPlugin.MusicCardProvider;
 import com.khjxiaogu.MiraiSongPlugin.MusicInfo;
@@ -34,7 +35,9 @@ public class AmrVoiceProvider implements MusicCardProvider {
 		HttpURLConnection huc2 = null;
 		try {
 			huc2 = (HttpURLConnection) new URL(mi.murl).openConnection();
-
+			if(mi.properties!=null)
+				for(Map.Entry<String,String> me:mi.properties.entrySet())
+					huc2.addRequestProperty(me.getKey(),me.getValue());
 			huc2.setRequestMethod("GET");
 			huc2.connect();
 		} catch (IOException e) {

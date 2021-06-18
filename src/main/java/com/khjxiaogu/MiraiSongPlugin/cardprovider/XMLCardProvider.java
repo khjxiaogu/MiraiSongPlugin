@@ -6,6 +6,7 @@ import com.khjxiaogu.MiraiSongPlugin.MusicInfo;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.ServiceMessage;
 import net.mamoe.mirai.message.data.SimpleServiceMessage;
 
 public class XMLCardProvider implements MusicCardProvider {
