@@ -33,7 +33,7 @@ public class SilkVoiceProvider implements MusicCardProvider {
 			huc2 = (HttpURLConnection) new URL(mi.murl).openConnection();
 			if(mi.properties!=null)
 				for(Map.Entry<String,String> me:mi.properties.entrySet())
-					uc.addRequestProperty(me.getKey(),me.getValue());
+					huc2.addRequestProperty(me.getKey(),me.getValue());
 			huc2.setRequestMethod("GET");
 			huc2.connect();
 		} catch (IOException e) {
