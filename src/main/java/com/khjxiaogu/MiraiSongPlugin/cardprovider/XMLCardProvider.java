@@ -25,7 +25,8 @@ public class XMLCardProvider implements MusicCardProvider {
 				.append("<title>").append(escapeXmlContent(mi.title))
 				.append("</title>\r\n<summary>")
 				.append(escapeXmlContent(mi.desc))
-				.append("</summary>\r\n</item>\r\n<source name=\"").append(escapeXmlTag(mi.source))
+				.append("</summary>\r\n</item>\r\n<source name=\"")
+				.append(escapeXmlTag(mi.source))
 				.append("\" icon=\"").append(escapeXmlTag(mi.icon))
 				.append("\" url=\"\" action=\"\" a_actionData=\"\" i_actionData=\"\" appid=\"").append(mi.appid)
 				.append("\"/>\r\n</msg>");
