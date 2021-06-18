@@ -15,6 +15,7 @@ public class NetEaseHQMusicSource extends NetEaseMusicSource {
 
 	public NetEaseHQMusicSource() {
 	}
+
 	@Override
 	public String queryRealUrl(String id) throws Exception {
 		JsonObject params = new JsonObject();
@@ -62,6 +63,7 @@ public class NetEaseHQMusicSource extends NetEaseMusicSource {
 		}
 		return null;
 	}
+
 	@Override
 	public boolean isVisible() {
 		return false;

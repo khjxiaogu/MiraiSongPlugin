@@ -22,15 +22,17 @@ public class NetEaseRadioSource implements MusicSource {
 
 	public NetEaseRadioSource() {
 	}
+
 	public String queryRealUrl(String id) throws Exception {
-		return "http://music.163.com/song/media/outer/url?id="+id+".mp3";
+		return "http://music.163.com/song/media/outer/url?id=" + id + ".mp3";
 	}
-	protected JsonObject getRadioSong(String id,String keyword) throws IOException {
+
+	protected JsonObject getRadioSong(String id, String keyword) throws IOException {
 		JsonObject params = new JsonObject();
 		params.add("radioId", new JsonPrimitive(id));
 		params.add("limit", new JsonPrimitive(100));
 		params.add("offset", new JsonPrimitive(0));
-		params.addProperty("asc",true);
+		params.addProperty("asc", true);
 		String[] encrypt = NetEaseCrypto.weapiEncrypt(params.toString());
 		StringBuilder sb = new StringBuilder("params=");
 		sb.append(encrypt[0]);
@@ -65,31 +67,33 @@ public class NetEaseRadioSource implements MusicSource {
 			JsonObject main = JsonParser.parseString(new String(bs, "UTF-8")).getAsJsonObject();
 			if (main.get("code").getAsInt() == 200) {
 				JsonArray data = main.get("programs").getAsJsonArray();
-				if(data.size()<=1||keyword==null) {
+				if (data.size() <= 1 || keyword == null) {
 					return data.get(0).getAsJsonObject().get("mainSong").getAsJsonObject();
 				}
-				int curmax=Integer.MAX_VALUE;
-				JsonObject result=null;
-				for(JsonElement je:data) {
-					JsonObject song=je.getAsJsonObject();
-					int sim=Utils.compare(keyword,song.get("name").getAsString());
-					if(sim<curmax) {
-						curmax=sim;
-						result=song;
+				int curmax = Integer.MAX_VALUE;
+				JsonObject result = null;
+				for (JsonElement je : data) {
+					JsonObject song = je.getAsJsonObject();
+					int sim = Utils.compare(keyword, song.get("name").getAsString());
+					if (sim < curmax) {
+						curmax = sim;
+						result = song;
 					}
 				}
 				return result.get("mainSong").getAsJsonObject();
-				
+
 			}
 		}
 		return null;
 	}
+
 	@Override
 	public MusicInfo get(String keyword) throws Exception {
-		return get(keyword,null);
+		return get(keyword, null);
 	}
-	public MusicInfo get(String keyword,String songname) throws Exception {
-		
+
+	public MusicInfo get(String keyword, String songname) throws Exception {
+
 		URL url = new URL("http://music.163.com/api/search/pc");
 		HttpURLConnection huc = (HttpURLConnection) url.openConnection();
 		huc.setDoInput(true);
@@ -99,34 +103,30 @@ public class NetEaseRadioSource implements MusicSource {
 		huc.setRequestProperty("Cookie", "appver=1.5.0.75771;");
 		huc.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
 		huc.connect();
-			
+
 		huc.getOutputStream().write(("type=1009&offset=0&limit=1&s=" + keyword).getBytes(StandardCharsets.UTF_8));
 		JsonArray ja;
 		String murl;
 		if (huc.getResponseCode() == 200) {
-			String s=new String(Utils.readAll(huc.getInputStream()), StandardCharsets.UTF_8);
-			ja = JsonParser.parseString(s)
-					.getAsJsonObject().get("result").getAsJsonObject().get("djRadios").getAsJsonArray();
-		}else
+			String s = new String(Utils.readAll(huc.getInputStream()), StandardCharsets.UTF_8);
+			ja = JsonParser.parseString(s).getAsJsonObject().get("result").getAsJsonObject().get("djRadios")
+					.getAsJsonArray();
+		} else
 			throw new FileNotFoundException();
-		
-		JsonObject detail=ja.get(0).getAsJsonObject();
-		
-		JsonObject jo=getRadioSong(detail.get("id").getAsString(),songname);
-		murl=queryRealUrl(jo.get("id").getAsString());
-		int i=0;
-		JsonObject dj=detail.get("dj").getAsJsonObject();
-			return new MusicInfo(
-				jo.get("name").getAsString(),
-				dj.get("nickname").getAsString(),
-				detail.get("picUrl").getAsString(),
-				murl,
-				"http://music.163.com/program/" + detail.get("lastProgramId").getAsString()+"/" + dj.get("userId").getAsString()+"/?userid="+dj.get("userId").getAsString(),
-				"网易云电台",
-				"",
-				 100495085
-			);
+
+		JsonObject detail = ja.get(0).getAsJsonObject();
+
+		JsonObject jo = getRadioSong(detail.get("id").getAsString(), songname);
+		murl = queryRealUrl(jo.get("id").getAsString());
+		int i = 0;
+		JsonObject dj = detail.get("dj").getAsJsonObject();
+		return new MusicInfo(jo.get("name").getAsString(), dj.get("nickname").getAsString(),
+				detail.get("picUrl").getAsString(), murl,
+				"http://music.163.com/program/" + detail.get("lastProgramId").getAsString() + "/"
+						+ dj.get("userId").getAsString() + "/?userid=" + dj.get("userId").getAsString(),
+				"网易云电台", "", 100495085);
 	}
+
 	@Override
 	public boolean isVisible() {
 		return false;

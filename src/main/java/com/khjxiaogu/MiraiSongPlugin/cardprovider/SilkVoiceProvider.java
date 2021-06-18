@@ -31,9 +31,9 @@ public class SilkVoiceProvider implements MusicCardProvider {
 		HttpURLConnection huc2 = null;
 		try {
 			huc2 = (HttpURLConnection) new URL(mi.murl).openConnection();
-			if(mi.properties!=null)
-				for(Map.Entry<String,String> me:mi.properties.entrySet())
-					huc2.addRequestProperty(me.getKey(),me.getValue());
+			if (mi.properties != null)
+				for (Map.Entry<String, String> me : mi.properties.entrySet())
+					huc2.addRequestProperty(me.getKey(), me.getValue());
 			huc2.setRequestMethod("GET");
 			huc2.connect();
 		} catch (IOException e) {
@@ -47,14 +47,15 @@ public class SilkVoiceProvider implements MusicCardProvider {
 			f.getParentFile().mkdirs();
 			OutputStream os = new FileOutputStream(f);
 			os.write(Utils.readAll(huc2.getInputStream()));
-			
+
 			os.close();
 			// exeCmd(new File("ffmpeg.exe").getAbsolutePath() + " -i \"" +
 			// f.getAbsolutePath()
 			// + "\" -ab 12.2k -ar 8000 -ac 1 -y " + f2.getAbsolutePath());
-			Utils.exeCmd(ffmpeg.getAbsolutePath() ,"-i",f.getAbsolutePath()
-					,"-f","s16le","-ar","24000","-ac","1","-acodec","pcm_s16le","-y",ft.getAbsolutePath());
-			Utils.exeCmd(silk.getAbsolutePath(),ft.getAbsolutePath(),f2.getAbsolutePath(),"-Fs_API","24000","-tencent");
+			Utils.exeCmd(ffmpeg.getAbsolutePath(), "-i", f.getAbsolutePath(), "-f", "s16le", "-ar", "24000", "-ac", "1",
+					"-acodec", "pcm_s16le", "-y", ft.getAbsolutePath());
+			Utils.exeCmd(silk.getAbsolutePath(), ft.getAbsolutePath(), f2.getAbsolutePath(), "-Fs_API", "24000",
+					"-tencent");
 			try (FileInputStream fis = new FileInputStream(f2)) {
 				if (ct instanceof Group)
 					return ((Group) ct).uploadVoice(ExternalResource.create(fis));

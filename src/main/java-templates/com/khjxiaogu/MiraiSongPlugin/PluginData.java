@@ -14,7 +14,7 @@ public class PluginData {
 	 * 插件id.
 	 */
 	public static String id = "@project.groupId@.mirai.@project.artifactId@";
-	
+
 	/**
 	 * The name.<br>
 	 * 插件名称.

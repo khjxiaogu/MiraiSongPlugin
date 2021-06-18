@@ -27,7 +27,8 @@ import net.mamoe.mirai.message.data.PlainText;
  *         time: 2020年8月26日
  */
 public final class Utils {
-	static boolean verbose=true;
+	static boolean verbose = true;
+
 	/**
 	 * Read all content from input stream.<br>
 	 * 从数据流读取全部数据
@@ -162,16 +163,17 @@ public final class Utils {
 	 */
 	public static void exeCmd(String... commandStr) {
 		try {
-			ProcessBuilder pb=new ProcessBuilder(commandStr);
-			//Process p = Runtime.getRuntime().exec(commandStr);
-			if(verbose)
+			ProcessBuilder pb = new ProcessBuilder(commandStr);
+			// Process p = Runtime.getRuntime().exec(commandStr);
+			if (verbose)
 				pb.inheritIO();
 			pb.start().waitFor();
-			
+
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
+
 	/**
 	 * Execute command,wait until finished.<br>
 	 * 执行操作平台命令，等待完成。
@@ -181,36 +183,43 @@ public final class Utils {
 	 */
 	public static void exeCmd(String commandStr) {
 		try {
-			if(verbose)
-				System.out.println("executing "+commandStr);
+			if (verbose)
+				System.out.println("executing " + commandStr);
 			Process p = Runtime.getRuntime().exec(commandStr);
-			transferTo(p.getInputStream(),System.out);
+			transferTo(p.getInputStream(), System.out);
 			p.waitFor();
-			
+
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
-	public static long transferTo(InputStream in,OutputStream out) throws IOException {
-        Objects.requireNonNull(out, "out");
-        long transferred = 0;
-        byte[] buffer = new byte[2048];
-        int read;
-        while ((read = in.read(buffer, 0, 2048)) >= 0) {
-            out.write(buffer, 0, read);
-            transferred += read;
-        }
-        return transferred;
-    }
-	public static boolean isExistent(String urlstr) throws IOException {
-		URL url = new URL(urlstr);
-		HttpURLConnection huc = (HttpURLConnection) url.openConnection();
-		huc.setRequestProperty("User-Agent",
-				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36");
-		huc.setRequestMethod("HEAD");
-		huc.connect();
-		return huc.getResponseCode() == 200;
+
+	public static long transferTo(InputStream in, OutputStream out) throws IOException {
+		Objects.requireNonNull(out, "out");
+		long transferred = 0;
+		byte[] buffer = new byte[2048];
+		int read;
+		while ((read = in.read(buffer, 0, 2048)) >= 0) {
+			out.write(buffer, 0, read);
+			transferred += read;
+		}
+		return transferred;
 	}
+
+	public static boolean isExistent(String urlstr) throws IOException {
+		try {
+			URL url = new URL(urlstr);
+			HttpURLConnection huc = (HttpURLConnection) url.openConnection();
+			huc.setRequestProperty("User-Agent",
+					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36");
+			huc.setRequestMethod("HEAD");
+			huc.connect();
+			return huc.getResponseCode() == 200;
+		} catch (Exception ex) {
+			return false;
+		}
+	}
+
 	public static InputStream getFromHttp(String url) throws IOException {
 		try {
 			HttpURLConnection huc2 = (HttpURLConnection) new URL(url).openConnection();
@@ -222,43 +231,45 @@ public final class Utils {
 			throw e;
 		}
 	}
+
 	public static int compare(String str, String target) {
-        int d[][];
-        int n = str.length();
-        int m = target.length();
-        int i;
-        int j;
-        char ch1;
-        char ch2;
-        int temp;
-        if (n == 0) {
-            return m;
-        }
-        if (m == 0) {
-            return n;
-        }
-        d = new int[n + 1][m + 1];
-        for (i = 0; i <= n; i++) {
-            d[i][0] = i;
-        }
-        for (j = 0; j <= m; j++) {
-            d[0][j] = j;
-        }
-        for (i = 1; i <= n; i++) {
-            ch1 = str.charAt(i - 1);
-            for (j = 1; j <= m; j++) {
-                ch2 = target.charAt(j - 1);
-                if (ch1 == ch2 || ch1 == ch2 + 32 || ch1 + 32 == ch2) {
-                    temp = 0;
-                } else {
-                    temp = 1;
-                }
-                d[i][j] = min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + temp);
-            }
-        }
-        return d[n][m];
-    }
-    private static int min(int one, int two, int three) {
-        return (one = one < two ? one : two) < three ? one : three;
-    }
+		int d[][];
+		int n = str.length();
+		int m = target.length();
+		int i;
+		int j;
+		char ch1;
+		char ch2;
+		int temp;
+		if (n == 0) {
+			return m;
+		}
+		if (m == 0) {
+			return n;
+		}
+		d = new int[n + 1][m + 1];
+		for (i = 0; i <= n; i++) {
+			d[i][0] = i;
+		}
+		for (j = 0; j <= m; j++) {
+			d[0][j] = j;
+		}
+		for (i = 1; i <= n; i++) {
+			ch1 = str.charAt(i - 1);
+			for (j = 1; j <= m; j++) {
+				ch2 = target.charAt(j - 1);
+				if (ch1 == ch2 || ch1 == ch2 + 32 || ch1 + 32 == ch2) {
+					temp = 0;
+				} else {
+					temp = 1;
+				}
+				d[i][j] = min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + temp);
+			}
+		}
+		return d[n][m];
+	}
+
+	private static int min(int one, int two, int three) {
+		return (one = one < two ? one : two) < three ? one : three;
+	}
 }

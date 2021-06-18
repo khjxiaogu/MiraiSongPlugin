@@ -63,6 +63,7 @@ public class QQMusicHQSource extends QQMusicSource {
 			return null;
 		}
 	}
+
 	@Override
 	public boolean isVisible() {
 		return false;

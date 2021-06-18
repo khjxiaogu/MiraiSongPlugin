@@ -20,20 +20,20 @@ public class LightAppCardProvider implements MusicCardProvider {
 		appmsg.addProperty("ver", "0.0.0.1");
 		appmsg.addProperty("desc", "音乐");
 		appmsg.addProperty("prompt", mi.title);
-		//      "autosize":true,
-	    //  "ctime":1601797108,
-	    //  "forward":true,
-	    //  "type":"normal"
-	    JsonObject config=new JsonObject();
-	    config.addProperty("autosize", true);
-	    config.addProperty("forward",true);
-	    config.addProperty("token","");
-	    config.addProperty("type","normal");
-		JsonObject extra= new JsonObject();
-		extra.addProperty("app_type",1);
-		extra.addProperty("appid",mi.appid);
-		extra.addProperty("uin",ct.getId());
-		appmsg.add("extra",extra);
+		// "autosize":true,
+		// "ctime":1601797108,
+		// "forward":true,
+		// "type":"normal"
+		JsonObject config = new JsonObject();
+		config.addProperty("autosize", true);
+		config.addProperty("forward", true);
+		config.addProperty("token", "");
+		config.addProperty("type", "normal");
+		JsonObject extra = new JsonObject();
+		extra.addProperty("app_type", 1);
+		extra.addProperty("appid", mi.appid);
+		extra.addProperty("uin", ct.getId());
+		appmsg.add("extra", extra);
 		JsonObject meta = new JsonObject();
 		appmsg.add("meta", meta);
 		JsonObject music = new JsonObject();
@@ -51,7 +51,8 @@ public class LightAppCardProvider implements MusicCardProvider {
 		music.addProperty("source_url", "");
 		music.addProperty("tag", mi.source);
 		music.addProperty("title", mi.title);
-		return new LightApp(appmsg.toString()).plus("[分享]").plus(mi.title).plus("\n").plus(mi.desc).plus("\n").plus(mi.jurl).plus("\n[来自]").plus(mi.source);
+		return new LightApp(appmsg.toString()).plus("[分享]").plus(mi.title).plus("\n").plus(mi.desc).plus("\n")
+				.plus(mi.jurl).plus("\n[来自]").plus(mi.source);
 	}
 
 }

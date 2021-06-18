@@ -58,9 +58,11 @@ import net.mamoe.yamlkt.YamlMap;
  */
 public class MiraiSongPlugin extends JavaPlugin {
 	public MiraiSongPlugin() {
-		super(new JvmPluginDescriptionBuilder(PluginData.id,PluginData.ver).name(PluginData.name).author(PluginData.auth).info(PluginData.info).build());
+		super(new JvmPluginDescriptionBuilder(PluginData.id, PluginData.ver).name(PluginData.name)
+				.author(PluginData.auth).info(PluginData.info).build());
 	}
-	private final String spliter=" ";
+
+	private final String spliter = " ";
 	// 请求音乐的线程池。
 	private Executor exec = Executors.newFixedThreadPool(8);
 
@@ -82,10 +84,10 @@ public class MiraiSongPlugin extends JavaPlugin {
 		sources.put("网易HQ", new NetEaseHQMusicSource());
 		sources.put("酷狗", new KugouMusicSource());
 		sources.put("千千", new BaiduMusicSource());
-		sources.put("Bilibili",new BaiduMusicSource());
+		sources.put("Bilibili", new BaiduMusicSource());
 		sources.put("本地", new LocalFileSource());
 		// 注册外观
-		//cards.put("LightApp", new LightAppCardProvider());
+		// cards.put("LightApp", new LightAppCardProvider());
 		cards.put("LightApp", new XMLCardProvider());
 		cards.put("LightAppX", new LightAppXCardProvider());
 		cards.put("XML", new XMLCardProvider());
@@ -158,7 +160,8 @@ public class MiraiSongPlugin extends JavaPlugin {
 			}
 			exec.execute(() -> {
 				for (MusicSource mc : sources.values()) {
-					if(!mc.isVisible())continue;
+					if (!mc.isVisible())
+						continue;
 					MusicInfo mi;
 					try {
 						mi = mc.get(sn);
@@ -166,7 +169,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 						continue;
 					}
 					try {
-							Utils.getRealSender(event).sendMessage(cb.process(mi, Utils.getRealSender(event)));
+						Utils.getRealSender(event).sendMessage(cb.process(mi, Utils.getRealSender(event)));
 					} catch (Throwable t) {
 						Utils.getRealSender(event).sendMessage("无法生成分享。");
 					}
@@ -174,7 +177,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 				}
 				Utils.getRealSender(event).sendMessage("无法找到歌曲。");
 			});
-			
+
 		};
 	}
 
@@ -193,27 +196,27 @@ public class MiraiSongPlugin extends JavaPlugin {
 		}
 		cfg = Yaml.getDefault().decodeYamlMapFromString(
 				new String(Utils.readAll(new File(this.getDataFolder(), "config.yml")), StandardCharsets.UTF_8));
-		File local=new File("SongPluginLocal.json");
-		if(!local.exists()) {
+		File local = new File("SongPluginLocal.json");
+		if (!local.exists()) {
 			try {
 				local.createNewFile();
-				JsonArray datas=new JsonArray();
-				JsonObject obj=new JsonObject();
-				obj.addProperty("title","标题");
-				obj.addProperty("desc","副标题");
-				obj.addProperty("previewUrl","专辑图片url");
-				obj.addProperty("musicUrl","音乐播放url");
-				obj.addProperty("jumpUrl","点击跳转url");
-				obj.addProperty("source","本地");
+				JsonArray datas = new JsonArray();
+				JsonObject obj = new JsonObject();
+				obj.addProperty("title", "标题");
+				obj.addProperty("desc", "副标题");
+				obj.addProperty("previewUrl", "专辑图片url");
+				obj.addProperty("musicUrl", "音乐播放url");
+				obj.addProperty("jumpUrl", "点击跳转url");
+				obj.addProperty("source", "本地");
 				datas.add(obj);
-				FileWriter fw=new FileWriter(local);
+				FileWriter fw = new FileWriter(local);
 				fw.write(datas.toString());
 				fw.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
 		YamlMap excs = (YamlMap) cfg.get(new YamlLiteral("extracommands"));
 		String addDefault = cfg.getStringOrNull("adddefault");
@@ -271,27 +274,29 @@ public class MiraiSongPlugin extends JavaPlugin {
 						((YamlMap) excs.get(cmd)).getString("card")));
 			}
 		AmrVoiceProvider.ffmpeg = SilkVoiceProvider.ffmpeg = new File(cfg.getString("ffmpeg_path"));
-		String amras=cfg.getStringOrNull("amrqualityshift");
-		String amrwb=cfg.getStringOrNull("amrwb");
-		String usecc=cfg.getStringOrNull("use_custom_ffmpeg_command");
-		String ulocal=cfg.getStringOrNull("enable_local");
-		String vb=cfg.getStringOrNull("verbose");
-		LocalFileSource.autoLocal=ulocal!=null&&ulocal.equals("true");
-		AmrVoiceProvider.autoSize = amras!=null&&amras.equals("true");
-		AmrVoiceProvider.wideBrand = amrwb==null||amrwb.equals("true");
-		AmrVoiceProvider.customCommand=(usecc!=null&&usecc.equals("true"))?cfg.getStringOrNull("custom_ffmpeg_command"):null;
-		Utils.verbose=vb==null||vb.equals("true");
+		String amras = cfg.getStringOrNull("amrqualityshift");
+		String amrwb = cfg.getStringOrNull("amrwb");
+		String usecc = cfg.getStringOrNull("use_custom_ffmpeg_command");
+		String ulocal = cfg.getStringOrNull("enable_local");
+		String vb = cfg.getStringOrNull("verbose");
+		LocalFileSource.autoLocal = ulocal != null && ulocal.equals("true");
+		AmrVoiceProvider.autoSize = amras != null && amras.equals("true");
+		AmrVoiceProvider.wideBrand = amrwb == null || amrwb.equals("true");
+		AmrVoiceProvider.customCommand = (usecc != null && usecc.equals("true"))
+				? cfg.getStringOrNull("custom_ffmpeg_command")
+				: null;
+		Utils.verbose = vb == null || vb.equals("true");
 		SilkVoiceProvider.silk = new File(cfg.getString("silkenc_path"));
-		if(AmrVoiceProvider.customCommand==null) {
+		if (AmrVoiceProvider.customCommand == null) {
 			try {
-				Utils.exeCmd(AmrVoiceProvider.ffmpeg.getAbsolutePath(),"-version");
-			}catch(RuntimeException ex) {
+				Utils.exeCmd(AmrVoiceProvider.ffmpeg.getAbsolutePath(), "-version");
+			} catch (RuntimeException ex) {
 				ex.printStackTrace();
 				getLogger().warning("ffmpeg启动失败，语音功能失效！");
 			}
-			getLogger().info("当前配置项：宽域AMR:"+AmrVoiceProvider.wideBrand+" AMR自动大小:"+AmrVoiceProvider.autoSize);
-		}else
-			getLogger().info("当前配置项：自定义指令:"+AmrVoiceProvider.customCommand);
+			getLogger().info("当前配置项：宽域AMR:" + AmrVoiceProvider.wideBrand + " AMR自动大小:" + AmrVoiceProvider.autoSize);
+		} else
+			getLogger().info("当前配置项：自定义指令:" + AmrVoiceProvider.customCommand);
 		GlobalEventChannel.INSTANCE.registerListenerHost(new SimpleListenerHost(this.getCoroutineContext()) {
 			@EventHandler
 			public void onGroup(GroupMessageEvent event) {
@@ -300,6 +305,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 				if (exec != null)
 					exec.accept(event, args);
 			}
+
 			@EventHandler
 			public void onFriend(FriendMessageEvent event) {
 				String[] args = Utils.getPlainText(event.getMessage()).split(spliter);
@@ -307,6 +313,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 				if (exec != null)
 					exec.accept(event, args);
 			}
+
 			@EventHandler
 			public void onTemp(StrangerMessageEvent event) {
 				String[] args = Utils.getPlainText(event.getMessage()).split(spliter);

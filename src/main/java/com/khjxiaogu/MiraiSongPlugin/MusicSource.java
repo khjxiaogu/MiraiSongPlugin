@@ -20,7 +20,7 @@ public interface MusicSource {
 	 * @throws Exception 如果发生异常或者找不到音乐，都抛出异常。
 	 */
 	public MusicInfo get(String keyword) throws Exception;
-	
+
 	/**
 	 * 返回是否对全部搜索可见<br>
 	 *

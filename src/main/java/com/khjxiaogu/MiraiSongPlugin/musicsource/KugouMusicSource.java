@@ -26,12 +26,13 @@ public class KugouMusicSource implements MusicSource {
 		JsonObject je = JsonParser
 				.parseString(new String(Utils.readAll(huc.getInputStream()), "UTF-8").replaceAll("<!--[_A-Z]+-->", ""))
 				.getAsJsonObject();
-		String song=je.get("data").getAsJsonObject().get("info").getAsJsonArray().get(0).getAsJsonObject()
-				.get("hash").getAsString();
-		String album_id=je.get("data").getAsJsonObject().get("info").getAsJsonArray().get(0).getAsJsonObject()
+		String song = je.get("data").getAsJsonObject().get("info").getAsJsonArray().get(0).getAsJsonObject().get("hash")
+				.getAsString();
+		String album_id = je.get("data").getAsJsonObject().get("info").getAsJsonArray().get(0).getAsJsonObject()
 				.get("album_id").getAsString();
 		HttpURLConnection ihuc = (HttpURLConnection) new URL(
-				"https://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash=" + song+"&album_id="+album_id+"&_="+Utils.getTime()).openConnection();
+				"https://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash=" + song + "&album_id=" + album_id + "&_="
+						+ Utils.getTime()).openConnection();
 		ihuc.setRequestMethod("GET");
 		ihuc.setRequestProperty("Host", "www.kugou.com");
 		ihuc.setRequestProperty("Cookie", COOKIE);

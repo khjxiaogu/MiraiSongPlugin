@@ -22,7 +22,7 @@ public class PlainMusicInfoProvider implements MusicCardProvider {
 
 	@Override
 	public Message process(MusicInfo mi, Contact ct) throws OverFileSizeMaxException, MalformedURLException {
-		Image im=null;
+		Image im = null;
 		try {
 			im = ct.uploadImage(ExternalResource.create(Utils.getFromHttp(mi.purl)));
 		} catch (IOException e) {
@@ -30,7 +30,7 @@ public class PlainMusicInfoProvider implements MusicCardProvider {
 		StringBuilder tsb = new StringBuilder().append("歌名：").append(mi.title).append("\n作者：").append(mi.desc)
 				.append("\n封面：").append(mi.purl).append("\n外链：").append(mi.murl).append("\n链接：").append(mi.jurl)
 				.append("\n来自：").append(mi.source);
-		if(im!=null)
+		if (im != null)
 			return im.plus(tsb.toString());
 		return new PlainText(tsb.toString());
 	}

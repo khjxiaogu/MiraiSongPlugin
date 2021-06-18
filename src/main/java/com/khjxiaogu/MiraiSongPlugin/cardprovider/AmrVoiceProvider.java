@@ -27,6 +27,7 @@ public class AmrVoiceProvider implements MusicCardProvider {
 	private final static String[] brs = new String[] { "23.05k", "19.85k", "18.25k", "15.85k", "14.25k", "12.65k",
 			"8.85k", "6.6k" };
 	public static String customCommand;
+
 	public AmrVoiceProvider() {
 	}
 
@@ -35,9 +36,9 @@ public class AmrVoiceProvider implements MusicCardProvider {
 		HttpURLConnection huc2 = null;
 		try {
 			huc2 = (HttpURLConnection) new URL(mi.murl).openConnection();
-			if(mi.properties!=null)
-				for(Map.Entry<String,String> me:mi.properties.entrySet())
-					huc2.addRequestProperty(me.getKey(),me.getValue());
+			if (mi.properties != null)
+				for (Map.Entry<String, String> me : mi.properties.entrySet())
+					huc2.addRequestProperty(me.getKey(), me.getValue());
 			huc2.setRequestMethod("GET");
 			huc2.connect();
 		} catch (IOException e) {
@@ -52,19 +53,19 @@ public class AmrVoiceProvider implements MusicCardProvider {
 			OutputStream os = new FileOutputStream(f);
 			os.write(Utils.readAll(huc2.getInputStream()));
 			os.close();
-			if(customCommand!=null) {
-				Utils.exeCmd(customCommand.replace("%input%",f.getAbsolutePath()).replace("%output%",f2.getAbsolutePath()));
+			if (customCommand != null) {
+				Utils.exeCmd(customCommand.replace("%input%", f.getAbsolutePath()).replace("%output%",
+						f2.getAbsolutePath()));
 				try (FileInputStream fis = new FileInputStream(f2)) {
 					return ((Group) ct).uploadVoice(ExternalResource.create(fis));
 				}
-			}else
-			if(wideBrand) {
-				if(autoSize)
-				Utils.exeCmd(ffmpeg.getAbsolutePath() ,"-i",f.getAbsolutePath()
-						,"-ab","23.85k","-ar","16000","-ac","1","-acodec","libamr_wb","-fs","1000000","-y" ,f2.getAbsolutePath());
+			} else if (wideBrand) {
+				if (autoSize)
+					Utils.exeCmd(ffmpeg.getAbsolutePath(), "-i", f.getAbsolutePath(), "-ab", "23.85k", "-ar", "16000",
+							"-ac", "1", "-acodec", "libamr_wb", "-fs", "1000000", "-y", f2.getAbsolutePath());
 				else
-					Utils.exeCmd(ffmpeg.getAbsolutePath() ,"-i",f.getAbsolutePath()
-							,"-ab","23.85k","-ar","16000","-ac","1","-acodec","libamr_wb","-y" ,f2.getAbsolutePath());
+					Utils.exeCmd(ffmpeg.getAbsolutePath(), "-i", f.getAbsolutePath(), "-ab", "23.85k", "-ar", "16000",
+							"-ac", "1", "-acodec", "libamr_wb", "-y", f2.getAbsolutePath());
 				int i = 0;
 				do {
 					try {
@@ -73,15 +74,14 @@ public class AmrVoiceProvider implements MusicCardProvider {
 								return ((Group) ct).uploadVoice(ExternalResource.create(fis));
 							}
 					} catch (OverFileSizeMaxException ofse) {
-						Utils.exeCmd(ffmpeg.getAbsolutePath(),"-i",f.getAbsolutePath(),
-								"-ab",brs[i],"-ar","16000","-ac","1","-acodec","libamr_wb","-y",f2.getAbsolutePath());
+						Utils.exeCmd(ffmpeg.getAbsolutePath(), "-i", f.getAbsolutePath(), "-ab", brs[i], "-ar", "16000",
+								"-ac", "1", "-acodec", "libamr_wb", "-y", f2.getAbsolutePath());
 						i++;
 					}
 				} while (autoSize);
-			}
-			else {
-				Utils.exeCmd(ffmpeg.getAbsolutePath(),"-i",f.getAbsolutePath(),
-				"-ab","12.2k","-ar","8000","-ac","1","-fs","1000000","-y",f2.getAbsolutePath());
+			} else {
+				Utils.exeCmd(ffmpeg.getAbsolutePath(), "-i", f.getAbsolutePath(), "-ab", "12.2k", "-ar", "8000", "-ac",
+						"1", "-fs", "1000000", "-y", f2.getAbsolutePath());
 				try (FileInputStream fis = new FileInputStream(f2)) {
 					return ((Group) ct).uploadVoice(ExternalResource.create(fis));
 				}

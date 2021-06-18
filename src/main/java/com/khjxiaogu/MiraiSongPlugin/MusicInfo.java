@@ -2,7 +2,7 @@ package com.khjxiaogu.MiraiSongPlugin;
 
 import java.util.Map;
 
-public class MusicInfo{
+public class MusicInfo {
 	public final String title;
 	public final String desc;
 	public final String purl;
@@ -11,7 +11,8 @@ public class MusicInfo{
 	public final String source;
 	public final String icon;
 	public final long appid;
-	public Map<String,String> properties;
+	public Map<String, String> properties;
+
 	public MusicInfo(String title, String desc, String purl, String murl, String jurl, String source, String icon,
 			long appid) {
 		this.title = title;
@@ -23,6 +24,7 @@ public class MusicInfo{
 		this.icon = icon;
 		this.appid = appid;
 	}
+
 	public MusicInfo(String title, String desc, String purl, String murl, String jurl, String source) {
 		this.appid = 1234561234;
 		this.icon = "";
@@ -33,6 +35,7 @@ public class MusicInfo{
 		this.murl = murl;
 		this.jurl = jurl;
 	}
+
 	public MusicInfo(String title, String desc, String purl, String murl, String jurl, String source, String icon) {
 		this.title = title;
 		this.desc = desc;
