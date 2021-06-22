@@ -63,10 +63,10 @@ public class AmrVoiceProvider implements MusicCardProvider {
 				}
 			} else if (wideBrand) {
 				if (autoSize)
-					Utils.exeCmd(ffmpeg.getAbsolutePath(), "-i", f.getAbsolutePath(), "-ab", "23.85k", "-ar", "16000",
+					Utils.exeCmd(ffmpeg, "-i", f.getAbsolutePath(), "-ab", "23.85k", "-ar", "16000",
 							"-ac", "1", "-acodec", "amr_wb", "-fs", "1000000", "-y", f2.getAbsolutePath());
 				else
-					Utils.exeCmd(ffmpeg.getAbsolutePath(), "-i", f.getAbsolutePath(), "-ab", "23.85k", "-ar", "16000",
+					Utils.exeCmd(ffmpeg, "-i", f.getAbsolutePath(), "-ab", "23.85k", "-ar", "16000",
 							"-ac", "1", "-acodec", "amr_wb", "-y", f2.getAbsolutePath());
 				int i = 0;
 				do {
@@ -76,13 +76,13 @@ public class AmrVoiceProvider implements MusicCardProvider {
 								return ((Group) ct).uploadVoice(ExternalResource.create(fis));
 							}
 					} catch (OverFileSizeMaxException ofse) {
-						Utils.exeCmd(ffmpeg.getAbsolutePath(), "-i", f.getAbsolutePath(), "-ab", brs[i], "-ar", "16000",
+						Utils.exeCmd(ffmpeg, "-i", f.getAbsolutePath(), "-ab", brs[i], "-ar", "16000",
 								"-ac", "1", "-acodec", "amr_wb", "-y", f2.getAbsolutePath());
 						i++;
 					}
 				} while (autoSize);
 			} else {
-				Utils.exeCmd(ffmpeg.getAbsolutePath(), "-i", f.getAbsolutePath(), "-ab", "12.2k", "-ar", "8000", "-ac",
+				Utils.exeCmd(ffmpeg, "-i", f.getAbsolutePath(), "-ab", "12.2k", "-ar", "8000", "-ac",
 						"1", "-fs", "1000000", "-y", f2.getAbsolutePath());
 				try (FileInputStream fis = new FileInputStream(f2)) {
 					return ((Group) ct).uploadVoice(ExternalResource.create(fis));
