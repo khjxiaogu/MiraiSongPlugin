@@ -21,7 +21,7 @@ import net.mamoe.mirai.utils.ExternalResource;
 import net.mamoe.mirai.utils.OverFileSizeMaxException;
 
 public class AmrVoiceProvider implements MusicCardProvider {
-	public static File ffmpeg = new File("ffmpeg.exe");
+	public static String ffmpeg = "ffmpeg";
 	public static boolean autoSize = false;
 	public static boolean wideBrand = false;
 	private final static String[] brs = new String[] { "23.05k", "19.85k", "18.25k", "15.85k", "14.25k", "12.65k",

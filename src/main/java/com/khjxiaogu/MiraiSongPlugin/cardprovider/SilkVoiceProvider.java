@@ -20,8 +20,8 @@ import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.utils.ExternalResource;
 
 public class SilkVoiceProvider implements MusicCardProvider {
-	public static File silk = new File("silk_v3_encoder.exe");
-	public static File ffmpeg = new File("ffmpeg.exe");
+	public static String silk = "silk_v3_encoder";
+	public static String ffmpeg ="ffmpeg";
 
 	public SilkVoiceProvider() {
 	}

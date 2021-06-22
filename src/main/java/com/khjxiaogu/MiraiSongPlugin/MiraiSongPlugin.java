@@ -275,7 +275,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 				commands.put(cmd.toString(), makeTemplate(((YamlMap) excs.get(cmd)).getString("source"),
 						((YamlMap) excs.get(cmd)).getString("card")));
 			}
-		AmrVoiceProvider.ffmpeg = SilkVoiceProvider.ffmpeg = new File(cfg.getString("ffmpeg_path"));
+		AmrVoiceProvider.ffmpeg = SilkVoiceProvider.ffmpeg = cfg.getString("ffmpeg_path");
 		String amras = cfg.getStringOrNull("amrqualityshift");
 		String amrwb = cfg.getStringOrNull("amrwb");
 		String usecc = cfg.getStringOrNull("use_custom_ffmpeg_command");
@@ -288,10 +288,10 @@ public class MiraiSongPlugin extends JavaPlugin {
 				? cfg.getStringOrNull("custom_ffmpeg_command")
 				: null;
 		Utils.verbose = vb == null || vb.equals("true");
-		SilkVoiceProvider.silk = new File(cfg.getString("silkenc_path"));
+		SilkVoiceProvider.silk = cfg.getString("silkenc_path");
 		if (AmrVoiceProvider.customCommand == null) {
 			try {
-				Utils.exeCmd(AmrVoiceProvider.ffmpeg.getAbsolutePath(), "-version");
+				Utils.exeCmd(AmrVoiceProvider.ffmpeg, "-version");
 			} catch (RuntimeException ex) {
 				ex.printStackTrace();
 				getLogger().warning("ffmpeg启动失败，语音功能失效！");
