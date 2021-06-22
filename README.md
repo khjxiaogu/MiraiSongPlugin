@@ -7,7 +7,6 @@
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/khjxiaogu/MiraiSongPlugin?label=%E5%BD%93%E5%89%8D%E7%89%88%E6%9C%AC)
 ![GitHub stars](https://img.shields.io/github/stars/khjxiaogu/MiraiSongPlugin?style=social)
 # 注意
-- 由于tx改了小程序机制，疑似音乐卡片采用了某种反篡改验证机制，导致所有的不正确小程序（影响LightApp外观）无法发出，暂时无法修复。欢迎各位大佬前来issue探讨机制或者Pr。  
 - 由于tx有某种风控机制，新注册的账号发送XML卡片可能出现发不出去的情况，请用电脑QQ之类的登录几天再发，具体时间取决于TX机制，与程序无关，望周知。
 - 本插件均用新旧版本的Mirai测试过，如果不能运行请先确认你mirai为最新版本。   
 - 语音功能需要调用命令行，可能有一些问题。  
@@ -83,7 +82,7 @@
 |参数|值范围|用途|
 |------|------|------|
 |来源|QQ音乐<br>酷狗<br>千千<br>网易<br>网易HQ<br>网易电台<br>网易电台节目<br>Bilibili<br>本地|设定搜索歌曲的来源|
-|外观|LightApp:小程序分享<br>XML:卡片分享<br>Share:普通分享(不能播放)<br>Message:以纯信息形式分享，可以很方便取得音乐的各种链接。<br>AMR:AMR语音，需要配置好`ffmpeg_path`<br>Silk:SILK语音，需要同时配置好`silkenc_path`和`ffmpeg_path`，由于tx限流，质量可能很差（不推荐使用）|设定分享出来的音乐的外观|
+|外观|LightApp:小程序分享<br>Mirai:采用Mirai的MusicShare卡片，如果不存在则fallback为XML卡片<br>XML:卡片分享<br>Share:普通分享(不能播放)<br>Message:以纯信息形式分享，可以很方便取得音乐的各种链接。<br>AMR:AMR语音，需要配置好`ffmpeg_path`<br>Silk:SILK语音，需要同时配置好`silkenc_path`和`ffmpeg_path`，由于tx限流，质量可能很差（不推荐使用）|设定分享出来的音乐的外观|
 # 歌曲API说明
 - 网易电台和网易电台节目的区别是网易电台不能用“电台名称&#124;节目名称”的格式。
 - 网易HQ的API和QQ音乐API均可能有时间限制，长时间后播放链接会失效。
@@ -116,14 +115,14 @@ extracommands:
 |参数|值范围|用途|
 |------|------|------|
 |source|QQ音乐<br>网易<br>网易HQ<br>酷狗<br>千千<br>本地<br>Bilibili<br>all|设定搜索歌曲的来源<br>注意：all为搜索全部平台。|
-|card|LightApp:小程序分享<br>XML:卡片分享<br>Share:普通分享(不能播放)<br>Message:以纯信息形式分享，可以很方便取得音乐的各种链接。<br>AMR:AMR语音，需要配置好`ffmpeg_path`，由于tx限流，质量可能很差<br>Silk:SILK语音，需要同时配置好`silkenc_path`和`ffmpeg_path`，由于tx限流，质量可能很差（不推荐使用）|设定分享出来的音乐的外观|  
+|card|LightApp:小程序分享<br>Mirai:采用Mirai的MusicShare卡片，如果不存在则fallback为XML卡片<br>XML:卡片分享<br>Share:普通分享(不能播放)<br>Message:以纯信息形式分享，可以很方便取得音乐的各种链接。<br>AMR:AMR语音，需要配置好`ffmpeg_path`<br>Silk:SILK语音，需要同时配置好`silkenc_path`和`ffmpeg_path`，由于tx限流，质量可能很差（不推荐使用）|设定分享出来的音乐的外观|  
 
 如果不需要原版的指令，可以设置配置项`adddefault`为false。  
 原版的指令设置，仅供参考。__#点歌是特殊程序实现的，无法通过配置实现！__  
 ```
   "#音乐": 
     source: all
-    card: LightApp
+    card: Mirai
   "#语音": #指令名称
     source: all #搜索来源
     card: AMR #分享外观
@@ -132,19 +131,19 @@ extracommands:
     card: Message
   "#QQ": 
     source: QQ音乐
-    card: XML
+    card: Mirai
   "#网易": 
     source: 网易
-    card: LightApp
+    card: Mirai
   "#酷狗": 
     source: 酷狗
-    card: LightApp
+    card: Mirai
   "#千千": 
     source: 千千
-    card: LightApp
+    card: XML
   "#网易电台": 
     source: 网易电台节目
-    card: LightApp
+    card: Mirai
 ```
 # 关于本地搜索(实验性)
 本地搜索要在配置里面启用，否则搜索全部源不会搜索此项！  
