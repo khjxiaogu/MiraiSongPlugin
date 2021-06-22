@@ -21,6 +21,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.AmrVoiceProvider;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.LightAppXCardProvider;
+import com.khjxiaogu.MiraiSongPlugin.cardprovider.MiraiMusicCard;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.PlainMusicInfoProvider;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.ShareCardProvider;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.SilkVoiceProvider;
@@ -88,13 +89,14 @@ public class MiraiSongPlugin extends JavaPlugin {
 		sources.put("本地", new LocalFileSource());
 		// 注册外观
 		// cards.put("LightApp", new LightAppCardProvider());
-		cards.put("LightApp", new XMLCardProvider());
+		cards.put("LightApp", new MiraiMusicCard());
 		cards.put("LightAppX", new LightAppXCardProvider());
 		cards.put("XML", new XMLCardProvider());
 		cards.put("Silk", new SilkVoiceProvider());
 		cards.put("AMR", new AmrVoiceProvider());
 		cards.put("Share", new ShareCardProvider());
 		cards.put("Message", new PlainMusicInfoProvider());
+		cards.put("Mirai",new MiraiMusicCard());
 	}
 	static {
 		HttpURLConnection.setFollowRedirects(true);
@@ -221,14 +223,14 @@ public class MiraiSongPlugin extends JavaPlugin {
 		YamlMap excs = (YamlMap) cfg.get(new YamlLiteral("extracommands"));
 		String addDefault = cfg.getStringOrNull("adddefault");
 		if (addDefault == null || addDefault.equals("true")) {
-			commands.put("#音乐", makeSearchesTemplate("LightApp"));
+			commands.put("#音乐", makeSearchesTemplate("Mirai"));
 			commands.put("#外链", makeSearchesTemplate("Message"));
 			commands.put("#语音", makeSearchesTemplate("AMR"));
-			commands.put("#QQ", makeTemplate("QQ音乐", "XML"));// 标准样板
-			commands.put("#网易", makeTemplate("网易", "LightApp"));
-			commands.put("#网易电台", makeTemplate("网易电台节目", "LightApp"));
-			commands.put("#酷狗", makeTemplate("酷狗", "LightApp"));
-			commands.put("#千千", makeTemplate("千千", "LightApp"));
+			commands.put("#QQ", makeTemplate("QQ音乐", "Mirai"));// 标准样板
+			commands.put("#网易", makeTemplate("网易", "Mirai"));
+			commands.put("#网易电台", makeTemplate("网易电台节目", "Mirai"));
+			commands.put("#酷狗", makeTemplate("酷狗", "Mirai"));
+			commands.put("#千千", makeTemplate("千千", "XML"));
 			commands.put("#点歌", (event, args) -> {
 				String sn;
 				try {

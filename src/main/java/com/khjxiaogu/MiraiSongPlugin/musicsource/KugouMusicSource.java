@@ -41,7 +41,7 @@ public class KugouMusicSource implements MusicSource {
 				.getAsJsonObject().get("data").getAsJsonObject();
 		return new MusicInfo(info.get("audio_name").getAsString(), info.get("author_name").getAsString(),
 				info.get("img").getAsString(), info.get("play_url").getAsString(),
-				"https://www.kugou.com/song/#hash=" + song + "&album_id=" + info.get("album_id").getAsString(), "酷狗");
+				"https://www.kugou.com/song/#hash=" + song + "&album_id=" + info.get("album_id").getAsString(), "酷狗","",205141);
 	}
 
 }
