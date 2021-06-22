@@ -38,7 +38,12 @@
 # 基本使用方法
 0. 从[Release](https://github.com/khjxiaogu/MiraiSongPlugin/releases)下载
 1. 放置于plugins文件夹
-2. 安装ffmpeg(如果不需要用语音功能可以跳过这步):<br>Windows:下载[ffmpeg](https://github.com/khjxiaogu/MiraiSongPlugin/tree/master/ffmpeg)的两个文件，放置于mirai同一目录<br>Linux: 配置data/MiraiSongPlugin/config.yml的ffmpeg路径为ffmpeg路径
+2. 安装ffmpeg(如果不需要用语音功能可以跳过这步):<br>Windows:下载[ffmpeg](https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.7z)，解压后把ffmpeg.exe放置于mirai同一目录<br>
+Linux:   
+```
+  sudo apt install ffmpeg
+  sudo apt install libavcodec-extra
+```
 3. 运行mirai，登录机器人
 4. 在机器人所在群聊发送“#音乐 test”，机器人返回分享标签即为安装成功。
 # 默认指令列表  
@@ -88,6 +93,7 @@
 - 网易HQ的API和QQ音乐API均可能有时间限制，长时间后播放链接会失效。
 - bilibili的API由于有请求校验，所以只支持语音播放，卡片分享只支持点击卡片打开网页进行播放。
 # 配置项
+配置文件位于`data/点歌插件`
 |名称|介绍|
 |-----|-----|
 |`silkenc_path`|silk编码器文件位置[windows二进制](https://github.com/khjxiaogu/MiraiSongPlugin/blob/master/silk_v3_encoder.exe)|
