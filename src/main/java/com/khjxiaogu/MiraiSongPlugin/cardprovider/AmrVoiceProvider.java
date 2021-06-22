@@ -44,15 +44,17 @@ public class AmrVoiceProvider implements MusicCardProvider {
 		} catch (IOException e) {
 			return new PlainText("获取音频失败");
 		}
-		File f = new File("./temp/", "wv" + System.currentTimeMillis() + ".m4a");
+		File f = new File("temp/", "wv" + System.currentTimeMillis() + ".m4a");
 		// File f2 = new File("./temp/", "wv" + System.currentTimeMillis() + ".silk");
 		// File ft = new File("./temp/", "wv" + System.currentTimeMillis() + ".pcm");
-		File f2 = new File("./temp/", "wv" + System.currentTimeMillis() + ".amr");
+		File f2 = new File("temp/", "wv" + System.currentTimeMillis() + ".amr");
 		try {
 			f.getParentFile().mkdirs();
 			OutputStream os = new FileOutputStream(f);
 			os.write(Utils.readAll(huc2.getInputStream()));
+			os.flush();
 			os.close();
+			while(!new File(f.getAbsolutePath()).exists());
 			if (customCommand != null) {
 				Utils.exeCmd(customCommand.replace("%input%", f.getAbsolutePath()).replace("%output%",
 						f2.getAbsolutePath()));
@@ -62,10 +64,10 @@ public class AmrVoiceProvider implements MusicCardProvider {
 			} else if (wideBrand) {
 				if (autoSize)
 					Utils.exeCmd(ffmpeg.getAbsolutePath(), "-i", f.getAbsolutePath(), "-ab", "23.85k", "-ar", "16000",
-							"-ac", "1", "-acodec", "libamr_wb", "-fs", "1000000", "-y", f2.getAbsolutePath());
+							"-ac", "1", "-acodec", "amr_wb", "-fs", "1000000", "-y", f2.getAbsolutePath());
 				else
 					Utils.exeCmd(ffmpeg.getAbsolutePath(), "-i", f.getAbsolutePath(), "-ab", "23.85k", "-ar", "16000",
-							"-ac", "1", "-acodec", "libamr_wb", "-y", f2.getAbsolutePath());
+							"-ac", "1", "-acodec", "amr_wb", "-y", f2.getAbsolutePath());
 				int i = 0;
 				do {
 					try {
@@ -75,7 +77,7 @@ public class AmrVoiceProvider implements MusicCardProvider {
 							}
 					} catch (OverFileSizeMaxException ofse) {
 						Utils.exeCmd(ffmpeg.getAbsolutePath(), "-i", f.getAbsolutePath(), "-ab", brs[i], "-ar", "16000",
-								"-ac", "1", "-acodec", "libamr_wb", "-y", f2.getAbsolutePath());
+								"-ac", "1", "-acodec", "amr_wb", "-y", f2.getAbsolutePath());
 						i++;
 					}
 				} while (autoSize);
@@ -91,9 +93,9 @@ public class AmrVoiceProvider implements MusicCardProvider {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} finally {
-			f.delete();
+			//f.delete();
 			// ft.delete();
-			f2.delete();
+			//f2.delete();
 		}
 		return new PlainText("当前状态不支持音频");
 	}

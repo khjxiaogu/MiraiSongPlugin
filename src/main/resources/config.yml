@@ -4,7 +4,7 @@ adddefault: true
 amrqualityshift: false
 amrwb: true
 use_custom_ffmpeg_command: false
-custom_ffmpeg_command: "ffmpeg -i %input% -ab 23.85k -ar 16000 -ac 1 -acodec libamr_wb -y %output%"
+custom_ffmpeg_command: "ffmpeg -i %input% -ab 23.85k -ar 16000 -ac 1 -acodec amr_wb -y %output%"
 enable_local: false
 verbose: true
 extracommands: 
