@@ -21,12 +21,12 @@ public class NetEaseMusicSource implements MusicSource {
 	}
 	@Override
 	public MusicInfo get(String keyword) throws Exception {
-		URL url = new URL("http://music.163.com/api/search/pc");
+		URL url = new URL("https://music.163.com/api/search/pc");
 		HttpURLConnection huc = (HttpURLConnection) url.openConnection();
 		huc.setDoInput(true);
 		huc.setDoOutput(true);
 		huc.setRequestMethod("POST");
-		huc.setRequestProperty("Referer", "http://music.163.com/");
+		huc.setRequestProperty("Referer", "https://music.163.com/");
 		huc.setRequestProperty("Cookie", "appver=1.5.0.75771;");
 		huc.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
 		huc.connect();

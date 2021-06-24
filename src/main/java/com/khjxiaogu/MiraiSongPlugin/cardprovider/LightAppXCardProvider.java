@@ -19,11 +19,11 @@ public class LightAppXCardProvider implements MusicCardProvider {
 		JsonObject appmsg = new JsonObject();
 		appmsg.addProperty("app", "com.tencent.miniapp_01");
 		JsonObject cfg = new JsonObject();
-		cfg.addProperty("autosize", 0);
+		cfg.addProperty("autosize",0);
 		cfg.addProperty("ctime", Utils.getTime() / 1000);
 		cfg.addProperty("token", "a95f83e736db2f94d88f9974c09717ad");
 		cfg.addProperty("type", "normal");
-		cfg.addProperty("forward", 1);
+		cfg.addProperty("forward",1);
 		appmsg.add("config", cfg);
 		appmsg.addProperty("view", "music");
 		appmsg.addProperty("ver", "1.0.0.19");
@@ -48,17 +48,16 @@ public class LightAppXCardProvider implements MusicCardProvider {
 		music.addProperty("tag", mi.source);
 		music.addProperty("title", mi.title);
 		JsonObject detail = new JsonObject();
-		meta.add("detail_1", detail);
+		meta.add("detail_1",detail);
 		detail.addProperty("appid", mi.appid);
 		detail.addProperty("desc", mi.desc);
 		detail.addProperty("icon", mi.icon);
 		detail.addProperty("preview", mi.purl);
 		detail.addProperty("qqdocurl", mi.jurl);
 		detail.addProperty("scene", 1036);
-		detail.addProperty("shareTemplateId", "8C8E89B49BE609866298ADDFF2DBABA4");
-		detail.add("shareTemplateData", new JsonObject());
+		detail.addProperty("shareTemplateId","8C8E89B49BE609866298ADDFF2DBABA4");
+		detail.add("shareTemplateData",new JsonObject());
 		detail.addProperty("title", mi.title);
-		return new LightApp(appmsg.toString()).plus(mi.jurl);
-	}
+		return new LightApp(appmsg.toString()).plus(mi.jurl);	}
 
 }

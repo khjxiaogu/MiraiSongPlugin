@@ -16,16 +16,27 @@ public class XMLCardProvider implements MusicCardProvider {
 	@Override
 	public MessageChain process(MusicInfo mi, Contact ct) {
 		StringBuilder xmb = new StringBuilder("<msg serviceID=\"2\" templateID=\"1\" action=\"web\" brief=\"[音乐]")
-				.append(mi.title).append("\" sourceMsgId=\"0\" url=\"").append(mi.jurl.replaceAll("\\&", "&amp;"))
+				.append(escapeXmlTag(mi.title))
+				.append("\" sourceMsgId=\"0\" url=\"")
+				.append(escapeXmlTag(mi.jurl))
 				.append("\" flag=\"0\" adverSign=\"0\" multiMsgFlag=\"0\">\r\n<item layout=\"2\">\r\n")
-				.append("<audio cover=\"").append(mi.purl.replaceAll("\\&", "&amp;")).append("\" src=\"")
-				.append(mi.murl.replaceAll("\\&", "&amp;")).append("\"/>\r\n").append("<title>").append(mi.title)
-				.append("</title>\r\n<summary>").append(mi.desc).append("</summary>\r\n</item>\r\n<source name=\"")
-				.append(mi.source).append("\" icon=\"").append(mi.icon)
+				.append("<audio cover=\"").append(escapeXmlTag(mi.purl))
+				.append("\" src=\"").append(escapeXmlTag(mi.murl)).append("\"/>\r\n")
+				.append("<title>").append(escapeXmlContent(mi.title))
+				.append("</title>\r\n<summary>")
+				.append(escapeXmlContent(mi.desc))
+				.append("</summary>\r\n</item>\r\n<source name=\"")
+				.append(escapeXmlTag(mi.source))
+				.append("\" icon=\"").append(escapeXmlTag(mi.icon))
 				.append("\" url=\"\" action=\"\" a_actionData=\"\" i_actionData=\"\" appid=\"").append(mi.appid)
 				.append("\"/>\r\n</msg>");
 		Message msg = new ServiceMessage(2, xmb.toString());
 		return msg.plus(mi.jurl);
 	}
-
+	public String escapeXmlContent(String org) {
+		return org.replaceAll("<","&lt;").replaceAll(">", "&gt;");
+	}
+	public String escapeXmlTag(String org) {
+		return org.replaceAll("\\&", "&amp;").replaceAll("\"", "&quot;").replaceAll("'","&apos;").replaceAll("<","&lt;").replaceAll(">", "&gt;");
+	}
 }

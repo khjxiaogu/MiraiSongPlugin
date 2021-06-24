@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.Map;
 
 import com.khjxiaogu.MiraiSongPlugin.MusicCardProvider;
 import com.khjxiaogu.MiraiSongPlugin.MusicInfo;
@@ -30,13 +32,15 @@ public class AmrVoiceProvider implements MusicCardProvider {
 
 	@Override
 	public Message process(MusicInfo mi, Contact ct) {
-		HttpURLConnection huc2 = null;
+		URLConnection uc = null;
 		try {
-			huc2 = (HttpURLConnection) new URL(mi.murl).openConnection();
-
-			huc2.setRequestMethod("GET");
-			huc2.connect();
+			uc =new URL(mi.murl).openConnection();
+			if(mi.properties!=null)
+				for(Map.Entry<String,String> me:mi.properties.entrySet())
+					uc.addRequestProperty(me.getKey(),me.getValue());
+			uc.connect();
 		} catch (IOException e) {
+			e.printStackTrace();
 			return new PlainText("获取音频失败");
 		}
 		File f = new File("./temp/", "wv" + System.currentTimeMillis() + ".m4a");
@@ -46,10 +50,10 @@ public class AmrVoiceProvider implements MusicCardProvider {
 		try {
 			f.getParentFile().mkdirs();
 			OutputStream os = new FileOutputStream(f);
-			os.write(Utils.readAll(huc2.getInputStream()));
+			os.write(Utils.readAll(uc.getInputStream()));
 			os.close();
 			if(wideBrand) {
-				Utils.exeCmd('\"' + new File("ffmpeg.exe").getAbsolutePath() + "\" -i \"" + f.getAbsolutePath()
+				Utils.exeCmd('\"' + ffmpeg.getAbsolutePath() + "\" -i \"" + f.getAbsolutePath()
 						+ "\" -ab 23.85k -ar 16000 -ac 1 -acodec libamr_wb "+(autoSize?"":"-fs 1000000")+" -y " + f2.getAbsolutePath());
 				int i = 0;
 				do {
@@ -59,14 +63,14 @@ public class AmrVoiceProvider implements MusicCardProvider {
 								return ((Group) ct).uploadVoice(fis);
 							}
 					} catch (OverFileSizeMaxException ofse) {
-						Utils.exeCmd('\"' + new File("ffmpeg.exe").getAbsolutePath() + "\" -i \"" + f.getAbsolutePath()
+						Utils.exeCmd('\"' + ffmpeg.getAbsolutePath() + "\" -i \"" + f.getAbsolutePath()
 								+ "\" -ab " + brs[i] + " -ar 16000 -ac 1 -acodec libamr_wb -y " + f2.getAbsolutePath());
 						i++;
 					}
 				} while (autoSize);
 			}
 			else {
-				Utils.exeCmd('\"'+new File("ffmpeg.exe").getAbsolutePath() + "\" -i \"" + f.getAbsolutePath()
+				Utils.exeCmd('\"'+ffmpeg.getAbsolutePath() + "\" -i \"" + f.getAbsolutePath()
 				+ "\" -ab 12.2k -ar 8000 -ac 1 -fs 1000000 -y " + f2.getAbsolutePath());
 				try (FileInputStream fis = new FileInputStream(f2)) {
 					return ((Group) ct).uploadVoice(fis);
