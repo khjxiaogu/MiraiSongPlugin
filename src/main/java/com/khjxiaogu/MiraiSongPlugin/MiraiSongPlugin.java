@@ -138,6 +138,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 					Utils.getRealSender(event).sendMessage(cb.process(mi, Utils.getRealSender(event)));
 				} catch (Throwable t) {
 					this.getLogger().debug(t);
+					//this.getLogger().
 					Utils.getRealSender(event).sendMessage("无法生成分享。");
 					return;
 				}
