@@ -130,12 +130,14 @@ public class MiraiSongPlugin extends JavaPlugin {
 				try {
 					mi = mc.get(sn);
 				} catch (Throwable t) {
+					this.getLogger().debug(t);
 					Utils.getRealSender(event).sendMessage("无法找到歌曲。");
 					return;
 				}
 				try {
 					Utils.getRealSender(event).sendMessage(cb.process(mi, Utils.getRealSender(event)));
 				} catch (Throwable t) {
+					this.getLogger().debug(t);
 					Utils.getRealSender(event).sendMessage("无法生成分享。");
 					return;
 				}
@@ -168,11 +170,13 @@ public class MiraiSongPlugin extends JavaPlugin {
 					try {
 						mi = mc.get(sn);
 					} catch (Throwable t) {
+						this.getLogger().debug(t);
 						continue;
 					}
 					try {
 						Utils.getRealSender(event).sendMessage(cb.process(mi, Utils.getRealSender(event)));
 					} catch (Throwable t) {
+						this.getLogger().debug(t);
 						Utils.getRealSender(event).sendMessage("无法生成分享。");
 					}
 					return;

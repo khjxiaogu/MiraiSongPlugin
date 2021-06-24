@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.Date;
 import java.util.Objects;
 
+import net.mamoe.mirai.Mirai;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.MessageEvent;
@@ -216,6 +217,7 @@ public final class Utils {
 			huc.connect();
 			return huc.getResponseCode() == 200;
 		} catch (Exception ex) {
+			
 			return false;
 		}
 	}

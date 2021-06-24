@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.khjxiaogu</groupId>
 	<artifactId>MiraiSongPlugin</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	<name>MiraiSongPlugin</name>
 	<description>使用“#音乐 关键词”、“#QQ 关键词”、“#网易 关键词”等方式进行点歌的插件。</description>
 	<build>
@@ -41,17 +41,6 @@
 				<version>3.2.1</version>
 
 				<configuration>
-					<filters>
-						<filter>
-							<artifact>com.google.code.gson:gson</artifact>
-							<excludes>
-								<exclude>com/google/gson/internal/reflect/*</exclude>
-								<exclude>com/google/gson/internal/bind/util/*</exclude>
-								<exclude>com/google/gson/reflect/*</exclude>
-								<exclude>com/google/gson/annotations/*</exclude>
-							</excludes>
-						</filter>
-					</filters>
 					<createDependencyReducedPom>false</createDependencyReducedPom>
 					<minimizeJar>true</minimizeJar>
 					<artifactSet>
@@ -103,19 +92,13 @@
 		<dependency>
 			<groupId>net.mamoe</groupId>
 			<artifactId>mirai-console</artifactId>
-			<version>2.7-M1-dev-5</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.mamoe</groupId>
-			<artifactId>mirai-console-terminal</artifactId>
-			<version>2.7-M1-dev-5</version>
+			<version>2.7-M1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.mamoe</groupId>
 			<artifactId>mirai-core</artifactId>
-			<version>2.7-M1-dev-5</version>
+			<version>2.7-M1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
