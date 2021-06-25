@@ -93,9 +93,9 @@ public class AmrVoiceProvider implements MusicCardProvider {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} finally {
-			//f.delete();
+			f.delete();
 			// ft.delete();
-			//f2.delete();
+			f2.delete();
 		}
 		return new PlainText("当前状态不支持音频");
 	}
