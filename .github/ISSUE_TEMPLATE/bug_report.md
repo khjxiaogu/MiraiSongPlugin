@@ -2,7 +2,7 @@
 name: bug报告
 about: 提交bug报告
 title: "[BUG]"
-labels: ''
+labels: problem, question
 assignees: ''
 
 ---

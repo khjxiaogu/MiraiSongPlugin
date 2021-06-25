@@ -2,7 +2,7 @@
 name: 添加音乐外观
 about: 为音乐分享添加外观
 title: "[添加外观]"
-labels: ''
+labels: enhancement
 assignees: ''
 
 ---

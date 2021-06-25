@@ -2,7 +2,7 @@
 name: 添加音乐来源
 about: 添加音乐来源api
 title: "[添加来源]"
-labels: ''
+labels: enhancement
 assignees: ''
 
 ---
