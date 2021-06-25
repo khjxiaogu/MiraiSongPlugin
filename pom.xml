@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.khjxiaogu</groupId>
 	<artifactId>MiraiSongPlugin</artifactId>
-	<version>1.0.3</version>
+	<version>1.0.4</version>
 	<name>MiraiSongPlugin</name>
 	<description>使用“#音乐 关键词”、“#QQ 关键词”、“#网易 关键词”等方式进行点歌的插件。</description>
 	<build>
@@ -50,8 +50,8 @@
 					</artifactSet>
 					<relocations>
 						<relocation>
-							<pattern>com.google.code.gson.gson</pattern>
-							<shadedPattern>${project.groupId}.${project.artifactId}</shadedPattern>
+							<pattern>com.google.gson</pattern>
+							<shadedPattern>${project.groupId}.${project.artifactId}.gson</shadedPattern>
 						</relocation>
 					</relocations>
 				</configuration>
