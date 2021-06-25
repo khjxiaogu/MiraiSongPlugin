@@ -1,5 +1,5 @@
-ffmpeg_path: ""
-silkenc_path: "silk_v3_encoder.exe"
+ffmpeg_path: "ffmpeg"
+silkenc_path: "silk_v3_encoder"
 adddefault: true
 amrqualityshift: false
 amrwb: true
