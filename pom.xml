@@ -83,10 +83,6 @@
 			<id>globalmvn</id>
 			<url>https://mvnrepository.com/artifact/</url>
 		</repository>
-		<repository>
-			<id>kotlin</id>
-			<url>https://kotlin.bintray.com/kotlinx/</url>
-		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
