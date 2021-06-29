@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Objects;
 
@@ -117,10 +118,7 @@ public final class Utils {
 	 *         第一条文本，去除首尾空格
 	 */
 	public static String getPlainText(MessageChain msg) {
-		MessageContent pt = msg.get(PlainText.Key);
-		if (pt == null)
-			return "";
-		return pt.contentToString().trim();
+		return msg.contentToString().trim();
 	}
 
 	/**
@@ -233,7 +231,17 @@ public final class Utils {
 			throw e;
 		}
 	}
+	public static String fetchHttp(String url) throws IOException {
+		try {
+			HttpURLConnection huc2 = (HttpURLConnection) new URL(url).openConnection();
 
+			huc2.setRequestMethod("GET");
+			huc2.connect();
+			return new String(Utils.readAll(huc2.getInputStream()),StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			throw e;
+		}
+	}
 	public static int compare(String str, String target) {
 		int d[][];
 		int n = str.length();
