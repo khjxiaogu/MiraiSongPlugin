@@ -13,10 +13,10 @@ public class XMLCardProvider implements MusicCardProvider {
 
 	public XMLCardProvider() {
 	}
-
+	
 	@Override
 	public MessageChain process(MusicInfo mi, Contact ct) {
-		StringBuilder xmb = new StringBuilder("<msg serviceID=\"2\" templateID=\"1\" action=\"web\" brief=\"[音乐]")
+		StringBuilder xmb = new StringBuilder("<msg serviceID=\"2\" templateID=\"1\" action=\"web\" actionData=\"\" a_actionData=\"\" i_actionData=\"\" brief=\"[音乐]")
 				.append(escapeXmlTag(mi.title)).append("\" sourceMsgId=\"0\" url=\"").append(escapeXmlTag(mi.jurl))
 				.append("\" flag=\"0\" adverSign=\"0\" multiMsgFlag=\"0\">\r\n<item layout=\"2\">\r\n")
 				.append("<audio cover=\"").append(escapeXmlTag(mi.purl)).append("\" src=\"")
@@ -24,7 +24,7 @@ public class XMLCardProvider implements MusicCardProvider {
 				.append("</title>\r\n<summary>").append(escapeXmlContent(mi.desc))
 				.append("</summary>\r\n</item>\r\n<source name=\"").append(escapeXmlTag(mi.source)).append("\" icon=\"")
 				.append(escapeXmlTag(mi.icon))
-				.append("\" url=\"\" action=\"\" a_actionData=\"\" i_actionData=\"\" appid=\"").append(mi.appid)
+				.append("\" url=\"\" action=\"web\" a_actionData=\"tencent0://\" i_actionData=\"\" appid=\"").append(mi.appid)
 				.append("\"/>\r\n</msg>");
 		Message msg = new SimpleServiceMessage(2, xmb.toString());
 		return msg.plus(mi.jurl);
