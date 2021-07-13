@@ -59,7 +59,7 @@ public class AmrVoiceProvider implements MusicCardProvider {
 				Utils.exeCmd(customCommand.replace("%input%", f.getAbsolutePath()).replace("%output%",
 						f2.getAbsolutePath()));
 				try (FileInputStream fis = new FileInputStream(f2);ExternalResource ex=ExternalResource.create(fis)) {
-					return ((Group) ct).uploadVoice(ex);
+					return Utils.uploadVoice(ex,ct);
 				}
 			} else if (wideBrand) {
 				if (autoSize)
@@ -71,9 +71,8 @@ public class AmrVoiceProvider implements MusicCardProvider {
 				int i = 0;
 				do {
 					try {
-						if (ct instanceof Group)
-							try (FileInputStream fis = new FileInputStream(f2)) {
-								return ((Group) ct).uploadVoice(ExternalResource.create(fis));
+							try (FileInputStream fis = new FileInputStream(f2);ExternalResource ex=ExternalResource.create(fis)) {
+								return Utils.uploadVoice(ex,ct);
 							}
 					} catch (OverFileSizeMaxException ofse) {
 						Utils.exeCmd(ffmpeg, "-i", f.getAbsolutePath(), "-ab", brs[i], "-ar", "16000",
@@ -84,8 +83,9 @@ public class AmrVoiceProvider implements MusicCardProvider {
 			} else {
 				Utils.exeCmd(ffmpeg, "-i", f.getAbsolutePath(), "-ab", "12.2k", "-ar", "8000", "-ac",
 						"1", "-fs", "1000000", "-y", f2.getAbsolutePath());
-				try (FileInputStream fis = new FileInputStream(f2)) {
-					return ((Group) ct).uploadVoice(ExternalResource.create(fis));
+				
+				try (FileInputStream fis = new FileInputStream(f2);ExternalResource ex=ExternalResource.create(fis)) {
+					return Utils.uploadVoice(ex,ct);
 				}
 			}
 

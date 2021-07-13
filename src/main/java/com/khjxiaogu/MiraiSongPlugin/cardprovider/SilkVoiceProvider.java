@@ -57,8 +57,7 @@ public class SilkVoiceProvider implements MusicCardProvider {
 			Utils.exeCmd(silk, ft.getAbsolutePath(), f2.getAbsolutePath(), "-Fs_API", "24000",
 					"-tencent");
 			try (FileInputStream fis = new FileInputStream(f2);ExternalResource ex=ExternalResource.create(fis)) {
-				if (ct instanceof Group)
-					return ((Group) ct).uploadVoice(ex);
+				return Utils.uploadVoice(ex,ct);
 			}
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block

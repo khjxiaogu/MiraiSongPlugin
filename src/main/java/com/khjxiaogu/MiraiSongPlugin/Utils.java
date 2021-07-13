@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -14,11 +15,14 @@ import java.util.Objects;
 
 import net.mamoe.mirai.Mirai;
 import net.mamoe.mirai.contact.Contact;
+import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageContent;
 import net.mamoe.mirai.message.data.PlainText;
+import net.mamoe.mirai.message.data.Voice;
+import net.mamoe.mirai.utils.ExternalResource;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -241,6 +245,18 @@ public final class Utils {
 		} catch (IOException e) {
 			throw e;
 		}
+	}
+	public static Voice uploadVoice(ExternalResource ex,Contact ct) {
+		try {
+			return (Voice) ct.getClass().getMethod("uploadVoice",ExternalResource.class).invoke(ct,ex);
+		} catch(IllegalAccessException|SecurityException e) {
+			throw new UnsupportedOperationException("方法调用失败");
+		} catch (InvocationTargetException e) {
+			throw new RuntimeException(e.getCause());
+		} catch (NoSuchMethodException e) {
+			throw new UnsupportedOperationException("当前联系人不支持语音");
+		}
+		
 	}
 	public static int compare(String str, String target) {
 		int d[][];
