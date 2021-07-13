@@ -86,11 +86,11 @@
 		</repository>
 	</repositories>
 	<dependencies>
-		<!--<dependency>
+		<dependency>
 			<groupId>io.github.mzdluo123</groupId>
 			<artifactId>silk4j</artifactId>
 			<version>1.2-dev</version>
-		</dependency>-->
+		</dependency>
 		<dependency>
 			<groupId>net.mamoe</groupId>
 			<artifactId>mirai-console</artifactId>
