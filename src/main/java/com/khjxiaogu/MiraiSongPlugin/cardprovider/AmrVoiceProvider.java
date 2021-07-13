@@ -58,8 +58,8 @@ public class AmrVoiceProvider implements MusicCardProvider {
 			if (customCommand != null) {
 				Utils.exeCmd(customCommand.replace("%input%", f.getAbsolutePath()).replace("%output%",
 						f2.getAbsolutePath()));
-				try (FileInputStream fis = new FileInputStream(f2)) {
-					return ((Group) ct).uploadVoice(ExternalResource.create(fis));
+				try (FileInputStream fis = new FileInputStream(f2);ExternalResource ex=ExternalResource.create(fis)) {
+					return ((Group) ct).uploadVoice(ex);
 				}
 			} else if (wideBrand) {
 				if (autoSize)
