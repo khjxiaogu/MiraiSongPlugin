@@ -56,12 +56,21 @@ public class SilkVoiceProvider implements MusicCardProvider {
 			// exeCmd(new File("ffmpeg.exe").getAbsolutePath() + " -i \"" +
 			// f.getAbsolutePath()
 			// + "\" -ab 12.2k -ar 8000 -ac 1 -y " + f2.getAbsolutePath());
+<<<<<<< HEAD
 			//Utils.exeCmd(ffmpeg, "-i", f.getAbsolutePath(), "-y", ft.getAbsolutePath());
 			f2=AudioUtils.mp3ToSilk(huc2.getInputStream());
 			
 			try (FileInputStream fis = new FileInputStream(f2);ExternalResource ex=ExternalResource.create(fis)) {
 				if (ct instanceof Group)
 					return ((Group) ct).uploadVoice(ex);
+=======
+			Utils.exeCmd(ffmpeg, "-i", f.getAbsolutePath(), "-f", "s16le", "-ar", "24000", "-ac", "1",
+					"-acodec", "pcm_s16le", "-y", ft.getAbsolutePath());
+			Utils.exeCmd(silk, ft.getAbsolutePath(), f2.getAbsolutePath(), "-Fs_API", "24000",
+					"-tencent");
+			try (FileInputStream fis = new FileInputStream(f2);ExternalResource ex=ExternalResource.create(fis)) {
+				return Utils.uploadVoice(ex,ct);
+>>>>>>> refs/heads/master
 			}
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
