@@ -27,6 +27,7 @@ import com.khjxiaogu.MiraiSongPlugin.cardprovider.ShareCardProvider;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.SilkVoiceProvider;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.XMLCardProvider;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.BaiduMusicSource;
+import com.khjxiaogu.MiraiSongPlugin.musicsource.BiliBiliMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.KugouMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.LocalFileSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseAdvancedRadio;
@@ -86,7 +87,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 		sources.put("网易HQ", new NetEaseHQMusicSource());
 		sources.put("酷狗", new KugouMusicSource());
 		sources.put("千千", new BaiduMusicSource());
-		sources.put("Bilibili", new BaiduMusicSource());
+		sources.put("Bilibili", new BiliBiliMusicSource());
 		sources.put("喜马拉雅",new XimalayaSource());
 		sources.put("本地", new LocalFileSource());
 		// 注册外观
@@ -261,12 +262,14 @@ public class MiraiSongPlugin extends JavaPlugin {
 						try {
 							mi = ms.get(sn);
 						} catch (Throwable t) {
+							this.getLogger().debug(t);
 							Utils.getRealSender(event).sendMessage("无法找到歌曲。");
 							return;
 						}
 						try {
 							Utils.getRealSender(event).sendMessage(mcp.process(mi, Utils.getRealSender(event)));
 						} catch (Throwable t) {
+							this.getLogger().debug(t);
 							Utils.getRealSender(event).sendMessage("无法生成分享。");
 							return;
 						}
