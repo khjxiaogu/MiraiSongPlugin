@@ -26,7 +26,7 @@ public class MusicInfo {
 	}
 
 	public MusicInfo(String title, String desc, String purl, String murl, String jurl, String source) {
-		this.appid = 1234561234;
+		this.appid = 0;
 		this.icon = "";
 		this.source = source;
 		this.title = title;
@@ -44,6 +44,6 @@ public class MusicInfo {
 		this.jurl = jurl;
 		this.source = source;
 		this.icon = icon;
-		this.appid = 1234561234;
+		this.appid = 0;
 	}
 }
