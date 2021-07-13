@@ -8,7 +8,7 @@
 	<name>MiraiSongPlugin</name>
 	<description>使用“#音乐 关键词”、“#QQ 关键词”、“#网易 关键词”等方式进行点歌的插件。</description>
 	<build>
-		<finalName>${project.name}-2.7-${project.version}</finalName>
+		<finalName>${project.name}-2.7-s4j-${project.version}</finalName>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<resources>
 			<resource>
