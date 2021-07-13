@@ -38,7 +38,7 @@ public class BaiduMusicSource implements MusicSource {
 				"http://tingapi.ting.baidu.com/v1/restserver/ting?format=json&calback=&from=webapp_music&method=baidu.ting.song.play&songid="
 						+ sid).openConnection();
 		huc.setRequestProperty("Host", "tingapi.ting.baidu.com");
-		huc.setRequestProperty("Referrer", "http://http://music.taihe.com/");
+		huc.setRequestProperty("Referrer", "http://music.taihe.com/");
 		huc.setRequestProperty("User-Agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36");
 		huc.setRequestMethod("GET");

@@ -37,7 +37,7 @@ public class XimalayaSource implements MusicSource {
 		String out=new String(Utils.readAll(huc2.getInputStream()), "UTF-8");
 		String path=JsonParser.parseString(out).getAsJsonObject().get("play_path").getAsString();
 		
-		return new MusicInfo(song.get("title").getAsString(),song.get("nickname").getAsString(),"https:"+song.get("coverPath").getAsString(),path,"https://www.ximalaya.com"+song.get("trackUrl").getAsString(),"喜马拉雅FM");
+		return new MusicInfo(song.get("title").getAsString(),song.get("nickname").getAsString(),"https:"+song.get("coverPath").getAsString(),path,"https://www.ximalaya.com"+song.get("trackUrl").getAsString(),"喜马拉雅");
 	}
 
 }

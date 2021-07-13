@@ -41,7 +41,7 @@ public class BiliBiliMusicSource implements MusicSource {
 		MusicInfo mi = new MusicInfo(jo.get("title").getAsString(),
 				"UP:" + jo.get("up_name").getAsString() + "创作:" + jo.get("author").getAsString(),
 				jo.get("cover").getAsString(), murl, "https://www.bilibili.com/audio/au" + jo.get("id").getAsString(),
-				"哔哩哔哩(请打开后播放)");
+				"哔哩哔哩","https://open.gtimg.cn/open/app_icon/00/95/17/76/100951776_100_m.png?t=1624441854",100951776);
 		mi.properties = new HashMap<>();
 		mi.properties.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.106 Safari/537.36");
