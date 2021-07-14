@@ -7,6 +7,12 @@ use_custom_ffmpeg_command: false
 custom_ffmpeg_command: "ffmpeg -i %input% -ab 23.85k -ar 16000 -ac 1 -acodec amr_wb -y %output%"
 enable_local: false
 verbose: true
+hintsongnotfound: "无法找到歌曲。"
+hintcarderror: "分享歌曲失败。"
+hintnotemplate: "无法找到卡片。"
+hintsourcenotfound: "无法找到来源。"
+admins: 
+  - 0
 extracommands: 
   "#分享": 
     source: all
