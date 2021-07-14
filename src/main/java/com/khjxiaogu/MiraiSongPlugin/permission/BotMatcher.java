@@ -19,7 +19,7 @@ public class BotMatcher implements PermissionMatcher {
 	LinkedHashMap<String, PermissionMatcher> restricted = new LinkedHashMap<>(5);
 	Map<Long, GroupMatcher> groupmatchers = new ConcurrentHashMap<>(10);
 	Map<Long, PermissionResult> friendpermissions = new ConcurrentHashMap<>(10);
-	Map<WildcardPermission, GroupMatcher> permmatcher = new ConcurrentHashMap<>();
+	Map<WildcardPermission, GroupMatcher> permmatcher = new LinkedHashMap<>();
 
 	@FunctionalInterface
 	interface PermissionFactory {
@@ -36,6 +36,7 @@ public class BotMatcher implements PermissionMatcher {
 		for (PermissionMatcher pm : restricted.values()) {
 			pr=pr.and(pm.match(id, group, bot));
 		}
+		pr=pr.and(friendpermissions.getOrDefault(id, PermissionResult.UNSPECIFIED));
 		if (group != 0) {
 			MemberPermission mp = bot.getGroup(group).getBotPermission();
 			for (Entry<WildcardPermission, GroupMatcher> me : permmatcher.entrySet()) {
@@ -47,8 +48,6 @@ public class BotMatcher implements PermissionMatcher {
 			if (pm != null) {
 				pr=pr.and(pm.match(id, group, bot));
 			}
-		} else {
-			pr=pr.and(friendpermissions.getOrDefault(id, PermissionResult.UNSPECIFIED));
 		}
 		return pr;
 	}
@@ -59,6 +58,7 @@ public class BotMatcher implements PermissionMatcher {
 		for (PermissionMatcher pm : restricted.values()) {
 			pr=pr.and(pm.match(m));
 		}
+		pr=pr.and(friendpermissions.getOrDefault(m.getId(), PermissionResult.UNSPECIFIED));
 		MemberPermission mp = m.getGroup().getBotPermission();
 		for (Entry<WildcardPermission, GroupMatcher> me : permmatcher.entrySet()) {
 			if (me.getKey().isMatch(mp)) {

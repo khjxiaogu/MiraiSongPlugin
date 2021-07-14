@@ -8,7 +8,8 @@ public enum WildcardPermission {
 	admin(m->m==MemberPermission.ADMINISTRATOR),
 	admins(m->m!=MemberPermission.MEMBER),
 	owner(m->m==MemberPermission.OWNER),
-	member(m->m==MemberPermission.MEMBER);
+	member(m->m==MemberPermission.MEMBER),
+	members(m->true);
 	private final Predicate<MemberPermission> matcher;
 
 	private WildcardPermission(Predicate<MemberPermission> matcher) {
