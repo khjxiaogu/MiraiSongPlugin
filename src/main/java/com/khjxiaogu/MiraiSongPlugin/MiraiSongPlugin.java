@@ -1,6 +1,7 @@
 package com.khjxiaogu.MiraiSongPlugin;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,9 +9,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
@@ -36,6 +40,7 @@ import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseRadioSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.QQMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.XimalayaSource;
+import com.khjxiaogu.MiraiSongPlugin.permission.GlobalMatcher;
 
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
@@ -46,6 +51,7 @@ import net.mamoe.mirai.event.events.FriendMessageEvent;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.event.events.StrangerMessageEvent;
+import net.mamoe.mirai.utils.MiraiLogger;
 import net.mamoe.yamlkt.Yaml;
 import net.mamoe.yamlkt.YamlElement;
 import net.mamoe.yamlkt.YamlLiteral;
@@ -66,6 +72,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 	}
 
 	private final String spliter = " ";
+	List<Long> admins = new ArrayList<>();
 	// 请求音乐的线程池。
 	private Executor exec = Executors.newFixedThreadPool(8);
 
@@ -88,7 +95,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 		sources.put("酷狗", new KugouMusicSource());
 		sources.put("千千", new BaiduMusicSource());
 		sources.put("Bilibili", new BiliBiliMusicSource());
-		sources.put("喜马拉雅",new XimalayaSource());
+		sources.put("喜马拉雅", new XimalayaSource());
 		sources.put("本地", new LocalFileSource());
 		// 注册外观
 		// cards.put("LightApp", new LightAppCardProvider());
@@ -99,11 +106,22 @@ public class MiraiSongPlugin extends JavaPlugin {
 		cards.put("AMR", new AmrVoiceProvider());
 		cards.put("Share", new ShareCardProvider());
 		cards.put("Message", new PlainMusicInfoProvider());
-		cards.put("Mirai",new MiraiMusicCard());
+		cards.put("Mirai", new MiraiMusicCard());
 	}
 	static {
 		HttpURLConnection.setFollowRedirects(true);
 	}
+	private static MiraiSongPlugin plugin;
+
+	public static MiraiLogger getMLogger() {
+		return plugin.getLogger();
+	}
+
+	GlobalMatcher matcher = new GlobalMatcher();
+	String unfoundSong;
+	String unavailableShare;
+	String templateNotFound;
+	String sourceNotFound;
 
 	/**
 	 * 使用现有的来源和外观制作指令执行器
@@ -134,15 +152,15 @@ public class MiraiSongPlugin extends JavaPlugin {
 					mi = mc.get(sn);
 				} catch (Throwable t) {
 					this.getLogger().debug(t);
-					Utils.getRealSender(event).sendMessage("无法找到歌曲。");
+					Utils.getRealSender(event).sendMessage(unfoundSong);
 					return;
 				}
 				try {
 					Utils.getRealSender(event).sendMessage(cb.process(mi, Utils.getRealSender(event)));
 				} catch (Throwable t) {
 					this.getLogger().debug(t);
-					//this.getLogger().
-					Utils.getRealSender(event).sendMessage("无法生成分享。");
+					// this.getLogger().
+					Utils.getRealSender(event).sendMessage(unavailableShare);
 					return;
 				}
 			});
@@ -181,11 +199,11 @@ public class MiraiSongPlugin extends JavaPlugin {
 						Utils.getRealSender(event).sendMessage(cb.process(mi, Utils.getRealSender(event)));
 					} catch (Throwable t) {
 						this.getLogger().debug(t);
-						Utils.getRealSender(event).sendMessage("无法生成分享。");
+						Utils.getRealSender(event).sendMessage(unavailableShare);
 					}
 					return;
 				}
-				Utils.getRealSender(event).sendMessage("无法找到歌曲。");
+				Utils.getRealSender(event).sendMessage(unfoundSong);
 			});
 
 		};
@@ -194,7 +212,18 @@ public class MiraiSongPlugin extends JavaPlugin {
 	@SuppressWarnings("resource")
 	@Override
 	public void onEnable() {
-		YamlMap cfg;
+		plugin = this;
+		if (!new File(this.getDataFolder(), "global.permission").exists()) {
+			try (FileOutputStream fos = new FileOutputStream(new File(this.getDataFolder(), "global.permission"))) {
+				fos.write("#global fallback permission file".getBytes());
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		if (!new File(this.getDataFolder(), "config.yml").exists()) {
 			try {
 				new FileOutputStream(new File(this.getDataFolder(), "config.yml"))
@@ -204,8 +233,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 				e.printStackTrace();
 			}
 		}
-		cfg = Yaml.getDefault().decodeYamlMapFromString(
-				new String(Utils.readAll(new File(this.getDataFolder(), "config.yml")), StandardCharsets.UTF_8));
+
 		File local = new File("SongPluginLocal.json");
 		if (!local.exists()) {
 			try {
@@ -228,8 +256,62 @@ public class MiraiSongPlugin extends JavaPlugin {
 			}
 
 		}
+		reload();
+		GlobalEventChannel.INSTANCE.registerListenerHost(new SimpleListenerHost(this.getCoroutineContext()) {
+			@EventHandler
+			public void onGroup(GroupMessageEvent event) {
+				String[] args = Utils.getPlainText(event.getMessage()).split(spliter);
+				BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
+				if (exec != null)
+					if (matcher.match(event.getSender()).isAllowed())
+						exec.accept(event, args);
+
+			}
+
+			@EventHandler
+			public void onFriend(FriendMessageEvent event) {
+				String[] args = Utils.getPlainText(event.getMessage()).split(spliter);
+				BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
+				if (exec != null)
+					if (matcher.match(event.getSender(),false).isAllowed())
+						exec.accept(event, args);
+
+			}
+
+			@EventHandler
+			public void onTemp(StrangerMessageEvent event) {
+				String[] args = Utils.getPlainText(event.getMessage()).split(spliter);
+				BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
+				if (exec != null)
+					if (matcher.match(event.getSender(), true).isAllowed())
+						exec.accept(event, args);
+
+			}
+		});
+		getLogger().info("插件加载完毕!");
+	}
+
+	public void reload() {
+		YamlMap cfg = Yaml.getDefault().decodeYamlMapFromString(
+				new String(Utils.readAll(new File(this.getDataFolder(), "config.yml")), StandardCharsets.UTF_8));
+		matcher.load(this.getDataFolder());
 		YamlMap excs = (YamlMap) cfg.get(new YamlLiteral("extracommands"));
 		String addDefault = cfg.getStringOrNull("adddefault");
+		try {
+			List<Object> adms = cfg.getList("admins");
+			if (adms != null)
+				for (Object o : adms) {
+					try {
+						admins.add(Long.parseLong(String.valueOf(o)));
+					} catch (Exception ex) {
+						this.getLogger().warning(ex);
+					}
+				}
+		} catch (Exception ex) {
+			this.getLogger().warning("未配置管理列表，可能导致无法管理！");
+		}
+
+		commands.clear();
 		if (addDefault == null || addDefault.equals("true")) {
 			commands.put("#音乐", makeSearchesTemplate("Mirai"));
 			commands.put("#外链", makeSearchesTemplate("Message"));
@@ -263,19 +345,19 @@ public class MiraiSongPlugin extends JavaPlugin {
 							mi = ms.get(sn);
 						} catch (Throwable t) {
 							this.getLogger().debug(t);
-							Utils.getRealSender(event).sendMessage("无法找到歌曲。");
+							Utils.getRealSender(event).sendMessage(unfoundSong);
 							return;
 						}
 						try {
 							Utils.getRealSender(event).sendMessage(mcp.process(mi, Utils.getRealSender(event)));
 						} catch (Throwable t) {
 							this.getLogger().debug(t);
-							Utils.getRealSender(event).sendMessage("无法生成分享。");
+							Utils.getRealSender(event).sendMessage(unavailableShare);
 							return;
 						}
 					} catch (Throwable e) {
 						e.printStackTrace();
-						Utils.getRealSender(event).sendMessage("无法找到歌曲");
+						Utils.getRealSender(event).sendMessage(unfoundSong);
 					}
 				});
 			});
@@ -285,12 +367,72 @@ public class MiraiSongPlugin extends JavaPlugin {
 				commands.put(cmd.toString(), makeTemplate(((YamlMap) excs.get(cmd)).getString("source"),
 						((YamlMap) excs.get(cmd)).getString("card")));
 			}
+		commands.put("/msp", (ev, args) -> {
+			if (!admins.contains(ev.getSender().getId()))
+				return;
+			if (args[1].equals("reload")) {
+				reload();
+				ev.getSender().sendMessage("重载成功！");
+			} else if (args[1].equals("setperm")) {
+				try {
+					matcher.loadString(args[2], ev.getBot());
+					ev.getSender().sendMessage("本机权限设置成功！");
+				} catch (Exception ex) {
+					ev.getSender().sendMessage("本机权限设置失败！");
+					getLogger().warning(ex);
+				}
+			} else if (args[1].equals("setgperm")) {
+				try {
+					matcher.loadString(args[2]);
+					ev.getSender().sendMessage("全局权限设置成功！");
+				} catch (Exception ex) {
+					ev.getSender().sendMessage("全局权限设置失败！");
+					getLogger().warning(ex);
+				}
+			} else if (args[1].equals("buildperm")) {
+				try {
+					matcher.rebuildConfig();
+				} catch (Exception ex) {
+					ev.getSender().sendMessage("权限整理失败！");
+					getLogger().warning(ex);
+				}
+			} else if (args[1].equals("addcmd")) {
+				try {
+					commands.put(args[2], makeTemplate(args[3], args[4]));
+					YamlMap cfgx = Yaml.getDefault().decodeYamlMapFromString(new String(
+							Utils.readAll(new File(this.getDataFolder(), "config.yml")), StandardCharsets.UTF_8));
+					YamlMap ec = (YamlMap) cfg.get(new YamlLiteral("extracommands"));
+					Map<YamlElement, YamlElement> ym = new HashMap<>(2);
+					ym.put(new YamlLiteral("source"), new YamlLiteral(args[3]));
+					ym.put(new YamlLiteral("card"), new YamlLiteral(args[4]));
+					ec.put(new YamlLiteral(args[2]), new YamlMap(ym));
+					try (FileOutputStream fos = new FileOutputStream(new File(this.getDataFolder(), "config.yml"))) {
+						fos.write(Yaml.getDefault().encodeToString(cfgx).getBytes(StandardCharsets.UTF_8));
+					}
+				} catch (Exception ex) {
+					ev.getSender().sendMessage("指令添加失败！");
+					getLogger().warning(ex);
+				}
+			}
+		});
 		AmrVoiceProvider.ffmpeg = SilkVoiceProvider.ffmpeg = cfg.getString("ffmpeg_path");
 		String amras = cfg.getStringOrNull("amrqualityshift");
 		String amrwb = cfg.getStringOrNull("amrwb");
 		String usecc = cfg.getStringOrNull("use_custom_ffmpeg_command");
 		String ulocal = cfg.getStringOrNull("enable_local");
 		String vb = cfg.getStringOrNull("verbose");
+		unfoundSong = cfg.getStringOrNull("hintsongnotfound");
+		if (unfoundSong == null)
+			unfoundSong = "无法找到歌曲。";
+		unavailableShare = cfg.getStringOrNull("hintcarderror");
+		if (unavailableShare == null)
+			unavailableShare = "分享歌曲失败。";
+		templateNotFound = cfg.getStringOrNull("hintnotemplate");
+		if (templateNotFound == null)
+			templateNotFound = "无法找到卡片。";
+		sourceNotFound = cfg.getStringOrNull("hintsourcenotfound");
+		if (sourceNotFound == null)
+			sourceNotFound = "无法找到来源。";
 		LocalFileSource.autoLocal = ulocal != null && ulocal.equals("true");
 		AmrVoiceProvider.autoSize = amras != null && amras.equals("true");
 		AmrVoiceProvider.wideBrand = amrwb == null || amrwb.equals("true");
@@ -309,32 +451,5 @@ public class MiraiSongPlugin extends JavaPlugin {
 			getLogger().info("当前配置项：宽域AMR:" + AmrVoiceProvider.wideBrand + " AMR自动大小:" + AmrVoiceProvider.autoSize);
 		} else
 			getLogger().info("当前配置项：自定义指令:" + AmrVoiceProvider.customCommand);
-		GlobalEventChannel.INSTANCE.registerListenerHost(new SimpleListenerHost(this.getCoroutineContext()) {
-			@EventHandler
-			public void onGroup(GroupMessageEvent event) {
-				String[] args = Utils.getPlainText(event.getMessage()).split(spliter);
-				BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
-				if (exec != null)
-					exec.accept(event, args);
-			}
-
-			@EventHandler
-			public void onFriend(FriendMessageEvent event) {
-				String[] args = Utils.getPlainText(event.getMessage()).split(spliter);
-				BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
-				if (exec != null)
-					exec.accept(event, args);
-			}
-
-			@EventHandler
-			public void onTemp(StrangerMessageEvent event) {
-				String[] args = Utils.getPlainText(event.getMessage()).split(spliter);
-				BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
-				if (exec != null)
-					exec.accept(event, args);
-			}
-		});
-		getLogger().info("插件加载完毕!");
 	}
-
 }
