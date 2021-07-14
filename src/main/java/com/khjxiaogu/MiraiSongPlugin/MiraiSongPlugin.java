@@ -397,7 +397,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 					ev.getSender().sendMessage("权限整理失败！");
 					getLogger().warning(ex);
 				}
-			} else if (args[1].equals("addcmd")) {
+			}/* else if (args[1].equals("addcmd")) {
 				try {
 					commands.put(args[2], makeTemplate(args[3], args[4]));
 					YamlMap cfgx = Yaml.getDefault().decodeYamlMapFromString(new String(
@@ -406,6 +406,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 					Map<YamlElement, YamlElement> ym = new HashMap<>(2);
 					ym.put(new YamlLiteral("source"), new YamlLiteral(args[3]));
 					ym.put(new YamlLiteral("card"), new YamlLiteral(args[4]));
+					
 					ec.put(new YamlLiteral(args[2]), new YamlMap(ym));
 					try (FileOutputStream fos = new FileOutputStream(new File(this.getDataFolder(), "config.yml"))) {
 						fos.write(Yaml.getDefault().encodeToString(cfgx).getBytes(StandardCharsets.UTF_8));
@@ -414,7 +415,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 					ev.getSender().sendMessage("指令添加失败！");
 					getLogger().warning(ex);
 				}
-			}
+			}*/
 		});
 		AmrVoiceProvider.ffmpeg = SilkVoiceProvider.ffmpeg = cfg.getString("ffmpeg_path");
 		String amras = cfg.getStringOrNull("amrqualityshift");
