@@ -392,6 +392,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 			} else if (args[1].equals("buildperm")) {
 				try {
 					matcher.rebuildConfig();
+					ev.getSender().sendMessage("权限整理完成！");
 				} catch (Exception ex) {
 					ev.getSender().sendMessage("权限整理失败！");
 					getLogger().warning(ex);
