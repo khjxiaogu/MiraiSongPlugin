@@ -16,4 +16,8 @@ assignees: ''
 
 **你希望的修复后结果**
 
+**系统信息**
+mirai版本：
+MiraiSongPlugin版本：
+查看消息的QQ客户端：电脑/安卓/IOS/其他
 **截屏/报错信息**
