@@ -70,11 +70,11 @@ public class NetEaseRadioSource implements MusicSource {
 				if (data.size() <= 1 || keyword == null) {
 					return data.get(0).getAsJsonObject().get("mainSong").getAsJsonObject();
 				}
-				int curmax = Integer.MAX_VALUE;
+				double curmax = Integer.MAX_VALUE;
 				JsonObject result = null;
 				for (JsonElement je : data) {
 					JsonObject song = je.getAsJsonObject();
-					int sim = Utils.compare(keyword, song.get("name").getAsString());
+					double sim = Utils.compare(keyword, song.get("name").getAsString());
 					if (sim < curmax) {
 						curmax = sim;
 						result = song;

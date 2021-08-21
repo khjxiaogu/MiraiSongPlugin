@@ -43,11 +43,11 @@ public class LocalFileSource implements MusicSource {
 		String rkw = URLDecoder.decode(keyword, "UTF-8");
 		JsonArray localfs = JsonParser.parseReader(new FileReader("SongPluginLocal.json")).getAsJsonArray();
 		JsonObject result = null;
-		int min = Integer.MAX_VALUE;
+		double min = Integer.MAX_VALUE;
 		for (JsonElement je : localfs) {
 			JsonObject cur = je.getAsJsonObject();
 			String ckw = forceGetJsonString(cur, "title");
-			int curm = Utils.compare(rkw, ckw);
+			double curm = Utils.compare(rkw, ckw);
 			if (curm < min) {
 				min = curm;
 				result = cur;
