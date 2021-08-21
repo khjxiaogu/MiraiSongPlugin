@@ -13,14 +13,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Objects;
 
-import net.mamoe.mirai.Mirai;
+import net.mamoe.mirai.contact.AudioSupported;
 import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.MessageEvent;
+import net.mamoe.mirai.message.data.Audio;
 import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.MessageContent;
-import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.Voice;
 import net.mamoe.mirai.utils.ExternalResource;
 
@@ -246,56 +244,67 @@ public final class Utils {
 			throw e;
 		}
 	}
-	public static Voice uploadVoice(ExternalResource ex,Contact ct) {
-		try {
-			return (Voice) ct.getClass().getMethod("uploadVoice",ExternalResource.class).invoke(ct,ex);
-		} catch(IllegalAccessException|SecurityException e) {
-			throw new UnsupportedOperationException("方法调用失败");
-		} catch (InvocationTargetException e) {
-			throw new RuntimeException(e.getCause());
-		} catch (NoSuchMethodException e) {
-			throw new UnsupportedOperationException("当前联系人不支持语音");
+	public static Audio uploadVoice(ExternalResource ex,Contact ct) {
+		if(ct instanceof AudioSupported) {
+			return ((AudioSupported) ct).uploadAudio(ex);
 		}
-		
+		return null;
 	}
-	public static int compare(String str, String target) {
-		int d[][];
-		int n = str.length();
-		int m = target.length();
-		int i;
-		int j;
-		char ch1;
-		char ch2;
-		int temp;
-		if (n == 0) {
-			return m;
+	static class Pair {
+		int first;
+		int second;
+
+		public Pair(int first, int second) {
+			this.first = first;
+			this.second = second;
 		}
-		if (m == 0) {
-			return n;
-		}
-		d = new int[n + 1][m + 1];
-		for (i = 0; i <= n; i++) {
-			d[i][0] = i;
-		}
-		for (j = 0; j <= m; j++) {
-			d[0][j] = j;
-		}
-		for (i = 1; i <= n; i++) {
-			ch1 = str.charAt(i - 1);
-			for (j = 1; j <= m; j++) {
-				ch2 = target.charAt(j - 1);
-				if (ch1 == ch2 || ch1 == ch2 + 32 || ch1 + 32 == ch2) {
-					temp = 0;
-				} else {
-					temp = 1;
+	}
+	/*
+	 * String Compare method by alphagem
+	 * */
+	public static double compare(String s, String t) {
+		int n = s.length();
+		int m = t.length();
+		boolean[] match = new boolean[m+n+2];
+		int[][] cost = new int[s.length()+1][t.length()+1];
+		Pair[][] from = new Pair[s.length()+1][t.length()+1];
+		int count = 0;
+		for (int i = 0; i <= n; ++i)
+			for (int j = 0; j <= m; ++j)
+				if (i != 0 || j != 0) {
+					int best_cost = 999;
+					Pair best_from = null;
+					if (i > 0 && j > 0 && s.charAt(i-1) == t.charAt(j-1) && cost[i - 1][j - 1] < best_cost) {
+						best_cost = cost[i - 1][j - 1];
+						best_from = new Pair(i - 1, j - 1);
+					}
+					if (i > 0 && cost[i - 1][j] + 1 < best_cost) {
+						best_cost = cost[i - 1][j] + 1;
+						best_from = new Pair(i - 1, j);
+					}
+					if (j > 0 && cost[i][j - 1] + 1 < best_cost) {
+						best_cost = cost[i][j - 1] + 1;
+						best_from = new Pair(i, j - 1);
+					}
+					cost[i][j] = best_cost;
+					from[i][j] = best_from;
 				}
-				d[i][j] = min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + temp);
+		for (int i = n, j = m, ii, jj; i != 0 || j != 0; i = ii, j = jj) {
+			ii = from[i][j].first;
+			jj = from[i][j].second;
+			match[count++] = (i > ii && j > jj);
+		}
+		double ans = 0, total = count;
+		for (int i = 0; i < count && !match[i]; ++i)
+			total -= 0.5;
+		for (int i = 0, tmp = 0; i <= count; ++i) {
+			if (match[i])
+				++tmp;
+			else {
+				ans += (1D * tmp / total) * (1D * tmp / total);
+				tmp = 0;
 			}
 		}
-		return d[n][m];
-	}
-
-	private static int min(int one, int two, int three) {
-		return (one = one < two ? one : two) < three ? one : three;
+		return 1-ans;
 	}
 }
