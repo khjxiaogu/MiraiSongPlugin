@@ -38,6 +38,7 @@ import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseAdvancedRadio;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseHQMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseRadioSource;
+import com.khjxiaogu.MiraiSongPlugin.musicsource.QQMusicHQSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.QQMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.XimalayaSource;
 import com.khjxiaogu.MiraiSongPlugin.permission.GlobalMatcher;
@@ -87,7 +88,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 	static {
 		// 注册音乐来源
 		sources.put("QQ音乐", new QQMusicSource());
-		// sources.put("QQ音乐HQ",new QQMusicHQSource());//这个音乐源已被tx禁用。
+		sources.put("QQ音乐HQ",new QQMusicHQSource());
 		sources.put("网易", new NetEaseMusicSource());
 		sources.put("网易电台节目", new NetEaseAdvancedRadio());
 		sources.put("网易电台", new NetEaseRadioSource());
