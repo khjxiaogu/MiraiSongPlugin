@@ -12,7 +12,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -293,7 +292,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 	}
 
 	public void reload() {
-		YamlMap cfg = Yaml.getDefault().decodeYamlMapFromString(
+		YamlMap cfg = Yaml.Default.decodeYamlMapFromString(
 				new String(Utils.readAll(new File(this.getDataFolder(), "config.yml")), StandardCharsets.UTF_8));
 		matcher.load(this.getDataFolder());
 		YamlMap excs = (YamlMap) cfg.get(new YamlLiteral("extracommands"));

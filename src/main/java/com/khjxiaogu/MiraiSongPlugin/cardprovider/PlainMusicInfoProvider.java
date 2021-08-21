@@ -2,7 +2,6 @@ package com.khjxiaogu.MiraiSongPlugin.cardprovider;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 
 import com.khjxiaogu.MiraiSongPlugin.MusicCardProvider;
 import com.khjxiaogu.MiraiSongPlugin.MusicInfo;

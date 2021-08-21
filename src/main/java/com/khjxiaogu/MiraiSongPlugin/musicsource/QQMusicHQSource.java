@@ -5,7 +5,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.khjxiaogu.MiraiSongPlugin.Utils;
@@ -71,7 +70,7 @@ public class QQMusicHQSource extends QQMusicSource {
 					if(fns.size()>0)
 						fns.remove(0);
 					fns.add(availenc[i] + songmid +songmid + availext[i]);
-					URL u = new URL(urlsb.toString() + URLEncoder.encode(main.toString()));
+					URL u = new URL(urlsb.toString() + URLEncoder.encode(main.toString(),"UTF-8"));
 					//System.out.println("incoming " + u.toString());
 					HttpURLConnection conn = (HttpURLConnection) u.openConnection();
 					conn.setDoOutput(true);

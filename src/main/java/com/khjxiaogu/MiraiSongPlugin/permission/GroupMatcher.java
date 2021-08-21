@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.khjxiaogu.MiraiSongPlugin.MiraiSongPlugin;
 import com.khjxiaogu.MiraiSongPlugin.permission.BotMatcher.PermissionFactory;
 
 import net.mamoe.mirai.Bot;

@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.khjxiaogu.MiraiSongPlugin.MusicInfo;
 import com.khjxiaogu.MiraiSongPlugin.MusicSource;
-import com.khjxiaogu.MiraiSongPlugin.musicsource.*;
+import com.khjxiaogu.MiraiSongPlugin.musicsource.BiliBiliMusicSource;
 
 public class Main {
 	public static final Map<String, MusicSource> sources = Collections.synchronizedMap(new LinkedHashMap<>());

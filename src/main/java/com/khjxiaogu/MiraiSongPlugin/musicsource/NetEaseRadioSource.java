@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
 import com.google.gson.JsonArray;
@@ -118,7 +117,6 @@ public class NetEaseRadioSource implements MusicSource {
 
 		JsonObject jo = getRadioSong(detail.get("id").getAsString(), songname);
 		murl = queryRealUrl(jo.get("id").getAsString());
-		int i = 0;
 		JsonObject dj = detail.get("dj").getAsJsonObject();
 		return new MusicInfo(jo.get("name").getAsString(), dj.get("nickname").getAsString(),
 				detail.get("picUrl").getAsString(), murl,

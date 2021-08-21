@@ -1,14 +1,8 @@
 package com.khjxiaogu.MiraiSongPlugin.musicsource;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -41,21 +35,25 @@ public class LocalFileSource implements MusicSource {
 	@Override
 	public MusicInfo get(String keyword) throws Exception {
 		String rkw = URLDecoder.decode(keyword, "UTF-8");
-		JsonArray localfs = JsonParser.parseReader(new FileReader("SongPluginLocal.json")).getAsJsonArray();
-		JsonObject result = null;
-		double min = Integer.MAX_VALUE;
-		for (JsonElement je : localfs) {
-			JsonObject cur = je.getAsJsonObject();
-			String ckw = forceGetJsonString(cur, "title");
-			double curm = Utils.compare(rkw, ckw);
-			if (curm < min) {
-				min = curm;
-				result = cur;
+		try(FileReader fr=new FileReader("SongPluginLocal.json")){
+			JsonArray localfs = JsonParser.parseReader(fr).getAsJsonArray();
+		
+			JsonObject result = null;
+			double min = Integer.MAX_VALUE;
+			for (JsonElement je : localfs) {
+				JsonObject cur = je.getAsJsonObject();
+				String ckw = forceGetJsonString(cur, "title");
+				double curm = Utils.compare(rkw, ckw);
+				if (curm < min) {
+					min = curm;
+					result = cur;
+				}
 			}
+			
+			return new MusicInfo(forceGetJsonString(result, "title"), forceGetJsonString(result, "desc"),
+					forceGetJsonString(result, "previewUrl"), forceGetJsonString(result, "musicUrl"),
+					forceGetJsonString(result, "jumpUrl"), forceGetJsonString(result, "source", "本地"));
 		}
-		return new MusicInfo(forceGetJsonString(result, "title"), forceGetJsonString(result, "desc"),
-				forceGetJsonString(result, "previewUrl"), forceGetJsonString(result, "musicUrl"),
-				forceGetJsonString(result, "jumpUrl"), forceGetJsonString(result, "source", "本地"));
 	}
 
 }
