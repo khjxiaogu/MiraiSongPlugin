@@ -3,13 +3,16 @@ package com.khjxiaogu.MiraiSongPlugin.musicsource;
 import java.io.FileNotFoundException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import com.khjxiaogu.MiraiSongPlugin.MusicInfo;
 import com.khjxiaogu.MiraiSongPlugin.MusicSource;
+import com.khjxiaogu.MiraiSongPlugin.NetEaseCrypto;
 import com.khjxiaogu.MiraiSongPlugin.Utils;
 
 public class NetEaseMusicSource implements MusicSource {
@@ -23,7 +26,17 @@ public class NetEaseMusicSource implements MusicSource {
 
 	@Override
 	public MusicInfo get(String keyword) throws Exception {
-		URL url = new URL("http://music.163.com/api/search/pc");
+		JsonObject params = new JsonObject();
+		params.add("s", new JsonPrimitive(URLDecoder.decode(keyword, "UTF-8")));
+		params.add("type",new JsonPrimitive(1));
+		params.add("offset",new JsonPrimitive(0));
+		params.add("limit",new JsonPrimitive(3));
+		String[] encrypt = NetEaseCrypto.weapiEncrypt(params.toString());
+		StringBuilder sb = new StringBuilder("params=");
+		sb.append(encrypt[0]);
+		sb.append("&encSecKey=");
+		sb.append(encrypt[1]);
+		URL url = new URL("https://music.163.com/weapi/cloudsearch/get/web?csrf_token=");
 		HttpURLConnection huc = (HttpURLConnection) url.openConnection();
 		huc.setDoInput(true);
 		huc.setDoOutput(true);
@@ -32,11 +45,12 @@ public class NetEaseMusicSource implements MusicSource {
 		huc.setRequestProperty("Cookie", "appver=1.5.0.75771;");
 		huc.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
 		huc.connect();
-		huc.getOutputStream().write(("type=1&offset=0&limit=3&s=" + keyword).getBytes(StandardCharsets.UTF_8));
+		huc.getOutputStream().write(sb.toString().getBytes(StandardCharsets.UTF_8));
 		JsonArray ja;
 		String murl;
+		String data=new String(Utils.readAll(huc.getInputStream()), StandardCharsets.UTF_8);
 		if (huc.getResponseCode() == 200) {
-			ja = JsonParser.parseString(new String(Utils.readAll(huc.getInputStream()), StandardCharsets.UTF_8))
+			ja = JsonParser.parseString(data)
 					.getAsJsonObject().get("result").getAsJsonObject().get("songs").getAsJsonArray();
 		} else
 			throw new FileNotFoundException();
@@ -48,8 +62,8 @@ public class NetEaseMusicSource implements MusicSource {
 			murl = queryRealUrl(jo.get("id").getAsString());
 		}
 		return new MusicInfo(jo.get("name").getAsString(),
-				jo.get("artists").getAsJsonArray().get(0).getAsJsonObject().get("name").getAsString(),
-				jo.get("album").getAsJsonObject().get("picUrl").getAsString(), murl,
+				jo.get("ar").getAsJsonArray().get(0).getAsJsonObject().get("name").getAsString(),
+				jo.get("al").getAsJsonObject().get("picUrl").getAsString(), murl,
 				"https://y.music.163.com/m/song?id=" + jo.get("id").getAsString(), "网易云音乐", "", 100495085);
 	}
 
