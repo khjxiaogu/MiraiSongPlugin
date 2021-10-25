@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
 import com.google.gson.JsonArray;
@@ -93,7 +94,17 @@ public class NetEaseRadioSource implements MusicSource {
 
 	public MusicInfo get(String keyword, String songname) throws Exception {
 
-		URL url = new URL("http://music.163.com/api/search/pc");
+		JsonObject params = new JsonObject();
+		params.add("s", new JsonPrimitive(URLDecoder.decode(keyword, "UTF-8")));
+		params.add("type",new JsonPrimitive(1009));
+		params.add("offset",new JsonPrimitive(0));
+		params.add("limit",new JsonPrimitive(3));
+		String[] encrypt = NetEaseCrypto.weapiEncrypt(params.toString());
+		StringBuilder sb = new StringBuilder("params=");
+		sb.append(encrypt[0]);
+		sb.append("&encSecKey=");
+		sb.append(encrypt[1]);
+		URL url = new URL("https://music.163.com/weapi/cloudsearch/get/web?csrf_token=");
 		HttpURLConnection huc = (HttpURLConnection) url.openConnection();
 		huc.setDoInput(true);
 		huc.setDoOutput(true);
@@ -102,8 +113,7 @@ public class NetEaseRadioSource implements MusicSource {
 		huc.setRequestProperty("Cookie", "appver=1.5.0.75771;");
 		huc.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
 		huc.connect();
-
-		huc.getOutputStream().write(("type=1009&offset=0&limit=1&s=" + keyword).getBytes(StandardCharsets.UTF_8));
+		huc.getOutputStream().write(sb.toString().getBytes(StandardCharsets.UTF_8));
 		JsonArray ja;
 		String murl;
 		if (huc.getResponseCode() == 200) {
