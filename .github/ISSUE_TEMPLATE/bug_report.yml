@@ -1,67 +1,59 @@
-name: bug报告
-description: 提交bug报告
+name: Bug Report
+description: Submit bug report
 title: "[Bug] "
-labels: problem, question
+labels: bug
 body:
   - type: markdown
     attributes:
       value: |
-        在反馈问题前，请确保本插件是在最新版。
+        Before submitting a bug report, please ensure your modpack version is latest
   - type: textarea
     id: error_behaviour
     attributes:
-      label: 错误现像描述
-      description: 详细描述错误的现像
+      label: Error Behaviour
+      description: Describe error behaviour in detail.
     validations:
       required: true
   - type: textarea
     id: expected_behaviour
     attributes:
-      label: 预计结果
-      description: 你希望的修复后结果
+      label: Expected Behaviour
+      description: What do you want?
     validations:
       required: true
   - type: textarea
     id: reproduction
     attributes:
-      label: 重现步骤
-      description: 列表展示发生bug的步骤
+      label: Reproduce
+      description: How to reproduce this error?
       placeholder: |
-        1. 设置配置为blablabla
-        2. 执行blablabla操作
-        3. 出现错误
+        1. do blablabla
+        2. click blablabla
+        3. something wrong
         4. ...
     validations:
       required: true
   - type: input
     id: crashlog
     attributes:
-      label: 错误报告
-      description: 贴出或者截图错误堆栈，也可以贴pastebin链接
+      label: Crash Report
+      description: If this is a game crash, paste your crash report on some pastebin and put link here.
       placeholder: https://paste.ubuntu.com/
   - type: input
-    id: plugin-version
+    id: modpack-version
     attributes:
-      label: 插件版本
-      placeholder: 1.0.0
+      label: Modpack version
+      placeholder: 0.4.7
     validations:
       required: true
   - type: input
-    id: mirai-version
+    id: server-version
     attributes:
-      label: mirai版本
-      placeholder: 2.0.0
-    validations:
-      required: true
-  - type: input
-    id: system
-    attributes:
-      label: 系统信息
-      placeholder: Windows Server 2020
-    validations:
-      required: true
+      label: Server version
+      description: If you are using a dedicated server, please write down your server core brand and version.
+      placeholder: Forge server version xxx
   - type: textarea
-    id: config
+    id: others
     attributes:
-      label: 配置文件
-      description: 如果是配置相关错误，请贴上你的配置文件。
+      label: Other mods and plugins
+      description: If you install any other mods or plugins(though unrecommended), please provide its name and version
