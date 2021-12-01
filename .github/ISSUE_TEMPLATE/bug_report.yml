@@ -1,0 +1,67 @@
+name: bug报告
+description: 提交bug报告
+title: "[Bug] "
+labels: problem, question
+body:
+  - type: markdown
+    attributes:
+      value: |
+        在反馈问题前，请确保本插件是在最新版。
+  - type: textarea
+    id: error_behaviour
+    attributes:
+      label: 错误现像描述
+      description: 详细描述错误的现像
+    validations:
+      required: true
+  - type: textarea
+    id: expected_behaviour
+    attributes:
+      label: 预计结果
+      description: 你希望的修复后结果
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 重现步骤
+      description: 列表展示发生bug的步骤
+      placeholder: |
+        1. 设置配置为blablabla
+        2. 执行blablabla操作
+        3. 出现错误
+        4. ...
+    validations:
+      required: true
+  - type: input
+    id: crashlog
+    attributes:
+      label: 错误报告
+      description: 贴出或者截图错误堆栈，也可以贴pastebin链接
+      placeholder: https://paste.ubuntu.com/
+  - type: input
+    id: plugin-version
+    attributes:
+      label: 插件版本
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: input
+    id: mirai-version
+    attributes:
+      label: mirai版本
+      placeholder: 2.0.0
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: 系统信息
+      placeholder: Windows Server 2020
+    validations:
+      required: true
+  - type: textarea
+    id: config
+    attributes:
+      label: 配置文件
+      description: 如果是配置相关错误，请贴上你的配置文件。
