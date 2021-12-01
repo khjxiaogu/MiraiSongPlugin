@@ -1,0 +1,24 @@
+name: 添加音乐来源
+about: 添加音乐来源api
+title: "[添加来源]"
+labels: enhancement
+assignees: ''
+body:
+  - type: markdown
+    attributes:
+      value: |
+        在反馈问题前，请确保本插件是在最新版。
+  - type: textarea
+    id: main_link
+    attributes:
+      label: 音乐来源，官网链接
+      description: 最好是提供API项目链接/API相关文章
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: 为什么要添加这个来源
+      description: 它有什么独特之处或者独有版权？
+    validations:
+      required: true
