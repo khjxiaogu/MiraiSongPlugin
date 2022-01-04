@@ -1,0 +1,26 @@
+name: 特性建议
+description: 建议添加新的功能/特性
+title: "[建议]"
+labels: enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        在反馈问题前，请确保本插件是在最新版。
+  - type: textarea
+    id: main
+    attributes:
+      label: 建议功能描述
+      description: 你希望有什么样的功能
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: 为什么要添加这个功能？
+      description: 它能有什么作用？
+  - type: textarea
+    id: how
+    attributes:
+      label: 有相似功能的其他插件
+      description: 如果有相似功能的其他插件，可以贴上项目代码。
