@@ -20,6 +20,7 @@ package com.khjxiaogu.MiraiSongPlugin.musicsource;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -43,12 +44,11 @@ public class NetEaseRadioSource implements MusicSource {
 	public String queryRealUrl(String id) throws Exception {
 		return "http://music.163.com/song/media/outer/url?id=" + id + ".mp3";
 	}
-
-	protected JsonObject getRadioSong(String id, String keyword) throws IOException {
+	protected JsonObject getSlice(String id,int offset,int limit) throws IOException {
 		JsonObject params = new JsonObject();
-		params.add("radioId", new JsonPrimitive(id));
-		params.add("limit", new JsonPrimitive(100));
-		params.add("offset", new JsonPrimitive(0));
+		params.addProperty("radioId",id);
+		params.addProperty("limit",1000);
+		params.addProperty("offset",0);
 		params.addProperty("asc", true);
 		String[] encrypt = NetEaseCrypto.weapiEncrypt(params.toString());
 		StringBuilder sb = new StringBuilder("params=");
@@ -75,31 +75,58 @@ public class NetEaseRadioSource implements MusicSource {
 		conn.setRequestProperty("User-Agent", NetEaseCrypto.getUserAgent());
 		conn.connect();
 		conn.getOutputStream().write(towrite);
+		
 		if (conn.getResponseCode() == 200) {
 			InputStream is = conn.getInputStream();
 			byte[] bs = null;
 			bs = Utils.readAll(is);
 			is.close();
 			conn.disconnect();
-			JsonObject main = JsonParser.parseString(new String(bs, "UTF-8")).getAsJsonObject();
-			if (main.get("code").getAsInt() == 200) {
-				JsonArray data = main.get("programs").getAsJsonArray();
-				if (data.size() <= 1 || keyword == null) {
-					return data.get(0).getAsJsonObject().get("mainSong").getAsJsonObject();
-				}
-				double curmax = Integer.MAX_VALUE;
-				JsonObject result = null;
+			return JsonParser.parseString(new String(bs, "UTF-8")).getAsJsonObject();
+			
+		}
+		return null;
+	}
+
+	protected JsonObject getRadioSong(String id, String keyword) throws IOException {
+		JsonObject main = getSlice(id, 0, 10);
+		int cur=10;
+		if (main != null && main.get("code").getAsInt() == 200) {
+			JsonArray data = main.get("programs").getAsJsonArray();
+			double curmax = Integer.MAX_VALUE;
+			JsonObject result = null;
+			int count=main.get("count").getAsInt();
+			if (data.size() <= 1 || keyword == null) {
+				if (data.size() == 0)
+					return null;
+				return data.get(0).getAsJsonObject().get("mainSong").getAsJsonObject();
+			}
+			
+			do{
+				System.out.println(main);
 				for (JsonElement je : data) {
 					JsonObject song = je.getAsJsonObject();
-					double sim = Utils.compare(keyword, song.get("name").getAsString());
+					String sn = song.get("name").getAsString();
+					double sim = Utils.compare(keyword, sn);
+					if (sn.equals(keyword)) {
+						return song.get("mainSong").getAsJsonObject();
+					}
 					if (sim < curmax) {
 						curmax = sim;
 						result = song;
 					}
 				}
-				return result.get("mainSong").getAsJsonObject();
+				 main = getSlice(id,cur, 50);
+				 cur+=50;
+				 if (main == null|| main.get("code").getAsInt() != 200)
+					 break;
+				 data = main.get("programs").getAsJsonArray();
+				 
+				 if (data.size() < 1)
+					 break;
+			}while(cur<count);
+			return result.get("mainSong").getAsJsonObject();
 
-			}
 		}
 		return null;
 	}
