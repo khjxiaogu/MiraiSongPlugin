@@ -94,6 +94,7 @@ public class NetEaseRadioSource implements MusicSource {
 			double curmax = Integer.MAX_VALUE;
 			JsonObject result = null;
 			int count=main.get("count").getAsInt();
+			
 			if (data.size() <= 1 || keyword == null) {
 				if (data.size() == 0)
 					return null;
