@@ -20,7 +20,6 @@ package com.khjxiaogu.MiraiSongPlugin.musicsource;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -30,7 +29,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
 import com.khjxiaogu.MiraiSongPlugin.MusicInfo;
 import com.khjxiaogu.MiraiSongPlugin.MusicSource;
 import com.khjxiaogu.MiraiSongPlugin.NetEaseCrypto;
@@ -47,8 +45,8 @@ public class NetEaseRadioSource implements MusicSource {
 	protected JsonObject getSlice(String id,int offset,int limit) throws IOException {
 		JsonObject params = new JsonObject();
 		params.addProperty("radioId",id);
-		params.addProperty("limit",1000);
-		params.addProperty("offset",0);
+		params.addProperty("limit",limit);
+		params.addProperty("offset",offset);
 		params.addProperty("asc", true);
 		String[] encrypt = NetEaseCrypto.weapiEncrypt(params.toString());
 		StringBuilder sb = new StringBuilder("params=");
@@ -103,7 +101,6 @@ public class NetEaseRadioSource implements MusicSource {
 			}
 			
 			do{
-				System.out.println(main);
 				for (JsonElement je : data) {
 					JsonObject song = je.getAsJsonObject();
 					String sn = song.get("name").getAsString();
@@ -139,10 +136,10 @@ public class NetEaseRadioSource implements MusicSource {
 	public MusicInfo get(String keyword, String songname) throws Exception {
 
 		JsonObject params = new JsonObject();
-		params.add("s", new JsonPrimitive(URLDecoder.decode(keyword, "UTF-8")));
-		params.add("type",new JsonPrimitive(1009));
-		params.add("offset",new JsonPrimitive(0));
-		params.add("limit",new JsonPrimitive(3));
+		params.addProperty("s",URLDecoder.decode(keyword, "UTF-8"));
+		params.addProperty("type",1009);
+		params.addProperty("offset",0);
+		params.addProperty("limit",3);
 		String[] encrypt = NetEaseCrypto.weapiEncrypt(params.toString());
 		StringBuilder sb = new StringBuilder("params=");
 		sb.append(encrypt[0]);

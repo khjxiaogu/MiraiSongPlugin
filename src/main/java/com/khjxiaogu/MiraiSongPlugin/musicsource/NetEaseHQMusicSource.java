@@ -24,7 +24,6 @@ import java.net.URL;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
 import com.khjxiaogu.MiraiSongPlugin.NetEaseCrypto;
 import com.khjxiaogu.MiraiSongPlugin.Utils;
 
@@ -36,8 +35,8 @@ public class NetEaseHQMusicSource extends NetEaseMusicSource {
 	@Override
 	public String queryRealUrl(String id) throws Exception {
 		JsonObject params = new JsonObject();
-		params.add("ids", new JsonPrimitive("[" + id + "]"));
-		params.add("br", new JsonPrimitive(999000));
+		params.addProperty("ids","[" + id + "]");
+		params.addProperty("br",999000);
 		String[] encrypt = NetEaseCrypto.weapiEncrypt(params.toString());
 		StringBuilder sb = new StringBuilder("params=");
 		sb.append(encrypt[0]);

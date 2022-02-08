@@ -26,7 +26,6 @@ import java.nio.charset.StandardCharsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
 import com.khjxiaogu.MiraiSongPlugin.MusicInfo;
 import com.khjxiaogu.MiraiSongPlugin.MusicSource;
 import com.khjxiaogu.MiraiSongPlugin.NetEaseCrypto;
@@ -44,10 +43,10 @@ public class NetEaseMusicSource implements MusicSource {
 	@Override
 	public MusicInfo get(String keyword) throws Exception {
 		JsonObject params = new JsonObject();
-		params.add("s", new JsonPrimitive(URLDecoder.decode(keyword, "UTF-8")));
-		params.add("type",new JsonPrimitive(1));
-		params.add("offset",new JsonPrimitive(0));
-		params.add("limit",new JsonPrimitive(3));
+		params.addProperty("s", URLDecoder.decode(keyword, "UTF-8"));
+		params.addProperty("type",1);
+		params.addProperty("offset",0);
+		params.addProperty("limit",3);
 		String[] encrypt = NetEaseCrypto.weapiEncrypt(params.toString());
 		StringBuilder sb = new StringBuilder("params=");
 		sb.append(encrypt[0]);
