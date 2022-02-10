@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
@@ -37,6 +38,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.khjxiaogu.MiraiSongPlugin.cardprovider.AmrVoiceProvider;
@@ -254,6 +257,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 		File local = new File("SongPluginLocal.json");
 		if (!local.exists()) {
 			try {
+				Gson gs=new GsonBuilder().setPrettyPrinting().create();
 				local.createNewFile();
 				JsonArray datas = new JsonArray();
 				JsonObject obj = new JsonObject();
@@ -264,9 +268,9 @@ public class MiraiSongPlugin extends JavaPlugin {
 				obj.addProperty("jumpUrl", "点击跳转url");
 				obj.addProperty("source", "本地");
 				datas.add(obj);
-				FileWriter fw = new FileWriter(local);
-				fw.write(datas.toString());
-				fw.close();
+				try(OutputStreamWriter fw = new OutputStreamWriter(new FileOutputStream(local),"UTF-8")){
+					gs.toJson(datas,fw);
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
