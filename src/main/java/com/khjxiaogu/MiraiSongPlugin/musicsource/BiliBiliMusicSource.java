@@ -34,6 +34,7 @@ public class BiliBiliMusicSource implements MusicSource {
 
 	@Override
 	public MusicInfo get(String keyword) throws Exception {
+		keyword=Utils.urlEncode(keyword);
 		URL url = new URL("https://api.bilibili.com/audio/music-service-c/s?keyword=" + keyword);
 		HttpURLConnection huc = (HttpURLConnection) url.openConnection();
 		huc.setDoInput(true);

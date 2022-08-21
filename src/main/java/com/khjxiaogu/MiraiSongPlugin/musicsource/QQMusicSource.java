@@ -69,23 +69,40 @@ public class QQMusicSource implements MusicSource {
 
 	@Override
 	public MusicInfo get(String keyword) throws Exception {
-		URL url = new URL("https://c.y.qq.com/soso/fcgi-bin/client_search_cp?p=1&cr=1&aggr=1&flag_qc=0&n=3&w=" + keyword
-				+ "&format=json");
+		URL url = new URL("https://u.y.qq.com/cgi-bin/musicu.fcg");
 		HttpURLConnection huc = (HttpURLConnection) url.openConnection();
 		huc.setRequestProperty("User-Agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36");
-		huc.setRequestMethod("GET");
+
+		JsonObject scs=new JsonObject();
+		JsonObject search=new JsonObject();
+		JsonObject searchParam=new JsonObject();
+		searchParam.addProperty("query", keyword);
+		searchParam.addProperty("num_per_page",3);
+		searchParam.addProperty("search_type",0);
+		searchParam.addProperty("page_num",1);
+		search.add("param",searchParam);
+		search.addProperty("module","music.search.SearchCgiService");
+		search.addProperty("method", "DoSearchForQQMusicDesktop");
+		scs.add("music.search.SearchCgiService", search);
+		huc.setRequestMethod("POST");
+		huc.setRequestProperty("referer","https://y.qq.com");
+		huc.setDoOutput(true);
 		huc.connect();
-		JsonArray ss = JsonParser.parseString(new String(Utils.readAll(huc.getInputStream()), StandardCharsets.UTF_8))
-				.getAsJsonObject().get("data").getAsJsonObject().get("song").getAsJsonObject().get("list")
+		huc.getOutputStream().write(scs.toString().getBytes(StandardCharsets.UTF_8));
+		String s=new String(Utils.readAll(huc.getInputStream()), StandardCharsets.UTF_8);
+		s=s.substring(s.indexOf("{"));
+		s=s.substring(0,s.lastIndexOf("}")+1);
+		JsonArray ss = JsonParser.parseString(s).getAsJsonObject().get("music.search.SearchCgiService")
+				.getAsJsonObject().get("data").getAsJsonObject().get("body").getAsJsonObject().get("song").getAsJsonObject().get("list")
 				.getAsJsonArray();
 		JsonObject song = ss.get(0).getAsJsonObject();// .data.song.list
-		String mid = song.get("songmid").getAsString();
+		String mid = song.get("mid").getAsString();
 		String musicURL = queryRealUrl(mid);
 		int i = 0;
 		while (!Utils.isExistent(musicURL)) {
 			song = ss.get(++i).getAsJsonObject();
-			mid = song.get("songmid").getAsString();
+			mid = song.get("mid").getAsString();
 			musicURL = queryRealUrl(mid);
 		}
 		String desc;
@@ -99,15 +116,15 @@ public class QQMusicSource implements MusicSource {
 			sgs.deleteCharAt(sgs.length() - 1);
 			desc = sgs.toString();
 		} catch (Exception e) {
-			desc = song.get("albumname").getAsString();
+			desc = song.get("album").getAsJsonObject().get("name").getAsString();
 		}
 
 		if (musicURL == null) {
 			throw new FileNotFoundException();
 		}
-		return new MusicInfo(song.get("songname").getAsString(), desc,
-				"http://y.gtimg.cn/music/photo_new/T002R300x300M000" + song.get("albummid").getAsString() + ".jpg",
-				musicURL, "https://i.y.qq.com/v8/playsong.html?_wv=1&songid=" + song.get("songid").getAsString()
+		return new MusicInfo(song.get("title").getAsString(), desc,
+				"http://y.gtimg.cn/music/photo_new/T002R300x300M000" + song.get("album").getAsJsonObject().get("mid").getAsString() + ".jpg",
+				musicURL, "https://i.y.qq.com/v8/playsong.html?_wv=1&songid=" + song.get("id").getAsString()
 						+ "&source=qqshare&ADTAG=qqshare",
 				"QQ音乐", "https://url.cn/PwqZ4Jpi", 100497308);
 	}

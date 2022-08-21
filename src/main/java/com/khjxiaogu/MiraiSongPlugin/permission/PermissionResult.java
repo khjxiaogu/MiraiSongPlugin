@@ -35,6 +35,9 @@ public enum PermissionResult {
 	public boolean isAllowed() {
 		return allow;
 	}
+	public boolean isForceAllowed() {
+		return this==ALLOW;
+	}
 	public PermissionResult and(PermissionResult oth) {
 		if(oth==UNSPECIFIED)
 			return this;

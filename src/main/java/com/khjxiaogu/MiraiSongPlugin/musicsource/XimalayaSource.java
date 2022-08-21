@@ -31,6 +31,7 @@ public class XimalayaSource implements MusicSource {
 
 	@Override
 	public MusicInfo get(String keyword) throws Exception {
+		keyword=Utils.urlEncode(keyword);
 		HttpURLConnection huc = (HttpURLConnection) new URL(
 				"https://www.ximalaya.com/revision/search/main?page=1&spellchecker=true&paidFilter=true&condition=relation&rows=10&device=iPhone&core=track&kw="
 						+ keyword).openConnection();

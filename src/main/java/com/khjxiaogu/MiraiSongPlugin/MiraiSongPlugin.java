@@ -20,16 +20,15 @@ package com.khjxiaogu.MiraiSongPlugin;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +60,7 @@ import com.khjxiaogu.MiraiSongPlugin.musicsource.QQMusicHQSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.QQMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.XimalayaSource;
 import com.khjxiaogu.MiraiSongPlugin.permission.GlobalMatcher;
+import com.khjxiaogu.MiraiSongPlugin.permission.MatchInfo;
 
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
@@ -92,7 +92,6 @@ public class MiraiSongPlugin extends JavaPlugin {
 	}
 
 	private final String spliter = " ";
-	List<Long> admins = new ArrayList<>();
 	// 请求音乐的线程池。
 	private Executor exec = Executors.newFixedThreadPool(8);
 
@@ -107,7 +106,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 	static {
 		// 注册音乐来源
 		sources.put("QQ音乐", new QQMusicSource());
-		sources.put("QQ音乐HQ",new QQMusicHQSource());
+		sources.put("QQ音乐HQ", new QQMusicHQSource());
 		sources.put("网易", new NetEaseMusicSource());
 		sources.put("网易电台节目", new NetEaseAdvancedRadio());
 		sources.put("网易电台", new NetEaseRadioSource());
@@ -160,12 +159,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 		if (mc == null)
 			throw new IllegalArgumentException("music source not exists");
 		return (event, args) -> {
-			String sn;
-			try {
-				sn = URLEncoder.encode(String.join(spliter, Arrays.copyOfRange(args, 1, args.length)), "UTF-8");
-			} catch (UnsupportedEncodingException ignored) {
-				return;
-			}
+			String sn = String.join(spliter, Arrays.copyOfRange(args, 1, args.length));
 			exec.execute(() -> {
 				MusicInfo mi;
 				try {
@@ -198,12 +192,8 @@ public class MiraiSongPlugin extends JavaPlugin {
 		if (cb == null)
 			throw new IllegalArgumentException("card template not exists");
 		return (event, args) -> {
-			String sn;
-			try {
-				sn = URLEncoder.encode(String.join(spliter, Arrays.copyOfRange(args, 1, args.length)), "UTF-8");
-			} catch (UnsupportedEncodingException ignored) {
-				return;
-			}
+			String sn = String.join(spliter, Arrays.copyOfRange(args, 1, args.length));
+
 			exec.execute(() -> {
 				for (MusicSource mc : sources.values()) {
 					if (!mc.isVisible())
@@ -257,7 +247,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 		File local = new File("SongPluginLocal.json");
 		if (!local.exists()) {
 			try {
-				Gson gs=new GsonBuilder().setPrettyPrinting().create();
+				Gson gs = new GsonBuilder().setPrettyPrinting().create();
 				local.createNewFile();
 				JsonArray datas = new JsonArray();
 				JsonObject obj = new JsonObject();
@@ -268,8 +258,8 @@ public class MiraiSongPlugin extends JavaPlugin {
 				obj.addProperty("jumpUrl", "点击跳转url");
 				obj.addProperty("source", "本地");
 				datas.add(obj);
-				try(OutputStreamWriter fw = new OutputStreamWriter(new FileOutputStream(local),"UTF-8")){
-					gs.toJson(datas,fw);
+				try (OutputStreamWriter fw = new OutputStreamWriter(new FileOutputStream(local), "UTF-8")) {
+					gs.toJson(datas, fw);
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -284,7 +274,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 				String[] args = Utils.getPlainText(event.getMessage()).split(spliter);
 				BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
 				if (exec != null)
-					if (matcher.match(event.getSender()).isAllowed())
+					if (matcher.match(new MatchInfo(args[0], event.getSender())).isAllowed())
 						exec.accept(event, args);
 
 			}
@@ -294,7 +284,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 				String[] args = Utils.getPlainText(event.getMessage()).split(spliter);
 				BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
 				if (exec != null)
-					if (matcher.match(event.getSender(),false).isAllowed())
+					if (matcher.match(new MatchInfo(args[0], event.getSender(), false)).isAllowed())
 						exec.accept(event, args);
 
 			}
@@ -304,7 +294,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 				String[] args = Utils.getPlainText(event.getMessage()).split(spliter);
 				BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
 				if (exec != null)
-					if (matcher.match(event.getSender(), true).isAllowed())
+					if (matcher.match(new MatchInfo(args[0], event.getSender(), true)).isAllowed())
 						exec.accept(event, args);
 
 			}
@@ -318,20 +308,6 @@ public class MiraiSongPlugin extends JavaPlugin {
 		matcher.load(this.getDataFolder());
 		YamlMap excs = (YamlMap) cfg.get(new YamlLiteral("extracommands"));
 		String addDefault = cfg.getStringOrNull("adddefault");
-		try {
-			List<Object> adms = cfg.getList("admins");
-			if (adms != null)
-				for (Object o : adms) {
-					try {
-						admins.add(Long.parseLong(String.valueOf(o)));
-					} catch (Exception ex) {
-						this.getLogger().warning(ex);
-					}
-				}
-		} catch (Exception ex) {
-			this.getLogger().warning("未配置管理列表，可能导致无法管理！");
-		}
-
 		commands.clear();
 		if (addDefault == null || addDefault.equals("true")) {
 			commands.put("#音乐", makeSearchesTemplate("Mirai"));
@@ -343,12 +319,8 @@ public class MiraiSongPlugin extends JavaPlugin {
 			commands.put("#酷狗", makeTemplate("酷狗", "Mirai"));
 			commands.put("#千千", makeTemplate("千千", "XML"));
 			commands.put("#点歌", (event, args) -> {
-				String sn;
-				try {
-					sn = URLEncoder.encode(String.join(spliter, Arrays.copyOfRange(args, 3, args.length)), "UTF-8");
-				} catch (UnsupportedEncodingException ignored) {
-					return;
-				}
+				String sn = String.join(spliter, Arrays.copyOfRange(args, 3, args.length));
+
 				exec.execute(() -> {
 					try {
 						MusicSource ms = sources.get(args[1]);
@@ -389,12 +361,24 @@ public class MiraiSongPlugin extends JavaPlugin {
 						((YamlMap) excs.get(cmd)).getString("card")));
 			}
 		commands.put("/msp", (ev, args) -> {
-			if (!admins.contains(ev.getSender().getId()))
+			if (!matcher.match(new MatchInfo(args[0] + "." + args[1], ev.getSender(), true)).isForceAllowed())
 				return;
 			if (args[1].equals("reload")) {
+
 				reload();
 				ev.getSender().sendMessage("重载成功！");
 			} else if (args[1].equals("setperm")) {
+				if (ev instanceof GroupMessageEvent) {
+					GroupMessageEvent gev = (GroupMessageEvent) ev;
+					try {
+						matcher.loadString(args[2], gev.getGroup(), ev.getBot());
+						ev.getSender().sendMessage("本机权限设置成功！");
+					} catch (Exception ex) {
+						ev.getSender().sendMessage("本机权限设置失败！");
+						getLogger().warning(ex);
+					}
+				}
+			} else if (args[1].equals("setbperm")) {
 				try {
 					matcher.loadString(args[2], ev.getBot());
 					ev.getSender().sendMessage("本机权限设置成功！");
@@ -418,25 +402,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 					ev.getSender().sendMessage("权限整理失败！");
 					getLogger().warning(ex);
 				}
-			}/* else if (args[1].equals("addcmd")) {
-				try {
-					commands.put(args[2], makeTemplate(args[3], args[4]));
-					YamlMap cfgx = Yaml.getDefault().decodeYamlMapFromString(new String(
-							Utils.readAll(new File(this.getDataFolder(), "config.yml")), StandardCharsets.UTF_8));
-					YamlMap ec = (YamlMap) cfg.get(new YamlLiteral("extracommands"));
-					Map<YamlElement, YamlElement> ym = new HashMap<>(2);
-					ym.put(new YamlLiteral("source"), new YamlLiteral(args[3]));
-					ym.put(new YamlLiteral("card"), new YamlLiteral(args[4]));
-					
-					ec.put(new YamlLiteral(args[2]), new YamlMap(ym));
-					try (FileOutputStream fos = new FileOutputStream(new File(this.getDataFolder(), "config.yml"))) {
-						fos.write(Yaml.getDefault().encodeToString(cfgx).getBytes(StandardCharsets.UTF_8));
-					}
-				} catch (Exception ex) {
-					ev.getSender().sendMessage("指令添加失败！");
-					getLogger().warning(ex);
-				}
-			}*/
+			}
 		});
 		AmrVoiceProvider.ffmpeg = SilkVoiceProvider.ffmpeg = cfg.getString("ffmpeg_path");
 		String amras = cfg.getStringOrNull("amrqualityshift");

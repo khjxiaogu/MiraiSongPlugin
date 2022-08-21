@@ -51,7 +51,6 @@ public class LocalFileSource implements MusicSource {
 
 	@Override
 	public MusicInfo get(String keyword) throws Exception {
-		String rkw = URLDecoder.decode(keyword, "UTF-8");
 		try(FileReader fr=new FileReader("SongPluginLocal.json")){
 			JsonArray localfs = JsonParser.parseReader(fr).getAsJsonArray();
 		
@@ -60,7 +59,7 @@ public class LocalFileSource implements MusicSource {
 			for (JsonElement je : localfs) {
 				JsonObject cur = je.getAsJsonObject();
 				String ckw = forceGetJsonString(cur, "title");
-				double curm = Utils.compare(rkw, ckw);
+				double curm = Utils.compare(keyword, ckw);
 				if (curm < min) {
 					min = curm;
 					result = cur;

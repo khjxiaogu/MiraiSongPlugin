@@ -20,14 +20,12 @@ package com.khjxiaogu.MiraiSongPlugin.permission;
 import java.util.Arrays;
 import java.util.List;
 
-import net.mamoe.mirai.Bot;
-
 public class QQMatcher implements PermissionMatcher {
 	PermissionResult result;
 	long qq;
 	@Override
-	public PermissionResult match(long id, long group, Bot bot) {
-		if(id==qq)
+	public PermissionResult match(MatchInfo info) {
+		if(info.callerid==qq)
 			return result;
 		return PermissionResult.UNSPECIFIED;
 	}

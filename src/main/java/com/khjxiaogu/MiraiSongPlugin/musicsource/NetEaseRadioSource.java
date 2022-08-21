@@ -137,7 +137,7 @@ public class NetEaseRadioSource implements MusicSource {
 	public MusicInfo get(String keyword, String songname) throws Exception {
 
 		JsonObject params = new JsonObject();
-		params.addProperty("s",URLDecoder.decode(keyword, "UTF-8"));
+		params.addProperty("s",keyword);
 		params.addProperty("type",1009);
 		params.addProperty("offset",0);
 		params.addProperty("limit",3);

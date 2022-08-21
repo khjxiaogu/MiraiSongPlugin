@@ -23,8 +23,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Objects;
@@ -101,7 +103,14 @@ public final class Utils {
 		}
 		return new byte[0];
 	}
-
+	public static String urlEncode(String text) {
+		try {
+			return URLEncoder.encode(text,"UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			return URLEncoder.encode(text);
+		}
+	}
 	/**
 	 * Gets current time.<br>
 	 * 获取当前时间.

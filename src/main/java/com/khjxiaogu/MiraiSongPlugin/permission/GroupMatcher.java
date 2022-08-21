@@ -24,9 +24,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.khjxiaogu.MiraiSongPlugin.permission.BotMatcher.PermissionFactory;
+import com.khjxiaogu.MiraiSongPlugin.permission.CommandMatcher.PermissionFactory;
 
-import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.contact.User;
 
@@ -36,28 +35,12 @@ public class GroupMatcher implements PermissionMatcher {
 	Map<Long,PermissionResult> memberpermissions=new ConcurrentHashMap<>(10);
 	
 	@Override
-	public PermissionResult match(Member m) {
-		PermissionResult pr=wildcard;
-		
-		for(PermissionMatcher sp:restricted.values()) {
-			pr=pr.and(sp.match(m));
-		}
-		//MiraiSongPlugin.getMLogger().info("brm"+pr.name());
-		pr=pr.and(memberpermissions.getOrDefault(m.getId(),PermissionResult.UNSPECIFIED));
-		//MiraiSongPlugin.getMLogger().info("arm"+pr.name());
-		return pr;
-	}
-	@Override
-	public PermissionResult match(User u, boolean temp) {
-		return PermissionMatcher.super.match(u, temp);
-	}
-	@Override
-	public PermissionResult match(long id, long group, Bot bot) {
+	public PermissionResult match(MatchInfo info) {
 		PermissionResult pr=wildcard;
 		for(PermissionMatcher sp:restricted.values()) {
-			pr=pr.and(sp.match(id, group,bot));
+			pr=pr.and(sp.match(info));
 		}
-		pr=pr.and(memberpermissions.getOrDefault(id,PermissionResult.UNSPECIFIED));
+		pr=pr.and(memberpermissions.getOrDefault(info.callerid,PermissionResult.UNSPECIFIED));
 		return pr;
 	}
 	public List<String> getValue(){
@@ -71,30 +54,34 @@ public class GroupMatcher implements PermissionMatcher {
 		}
 		return pl;
 	}
-	void load(String param) {
-		if(param.length()==0)return;
+	boolean load(String param) {
+		if(param.length()==0)return false;
 		char isr=param.charAt(0);
 		if(Character.isDigit(isr)) {
 			memberpermissions.put(Long.parseLong(param),PermissionResult.DISALLOW);
+			return true;
+		}
+		boolean result=false;
+		String s;
+		switch(isr) {
+		case '#':return false;
+		case '+':result=true;s=param.substring(1);break;
+		case '-':s=param.substring(1);break;
+		default:s=param;break;
+		}
+		if(Character.isDigit(s.charAt(0))) {
+			memberpermissions.put(Long.parseLong(s),PermissionResult.valueOf(result));
+			return true;
+		}else if(s.charAt(0)=='*') {
+			wildcard=PermissionResult.valueOf(result);
+			return true;
 		}else {
-			boolean result=false;
-			String s;
-			switch(isr) {
-			case '#':return;
-			case '+':result=true;s=param.substring(1);break;
-			case '-':s=param.substring(1);break;
-			default:s=param;break;
-			}
-			if(Character.isDigit(s.charAt(0))) {
-				memberpermissions.put(Long.parseLong(s),PermissionResult.valueOf(result));
-			}else if(s.charAt(0)=='*') {
-				wildcard=PermissionResult.valueOf(result);
-			}else {
-				PermissionFactory pf=Matchers.get(s);
-				if(pf!=null) {
-					restricted.put(s,pf.create(result));
-				}
+			PermissionFactory pf=Matchers.get(s);
+			if(pf!=null) {
+				restricted.put(s,pf.create(result));
+				return true;
 			}
 		}
+		return false;
 	}
 }

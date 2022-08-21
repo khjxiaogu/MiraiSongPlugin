@@ -34,6 +34,7 @@ public class KugouMusicSource implements MusicSource {
 
 	@Override
 	public MusicInfo get(String keyword) throws Exception {
+		keyword=Utils.urlEncode(keyword);
 		HttpURLConnection huc = (HttpURLConnection) new URL(
 				"http://msearchcdn.kugou.com/api/v3/search/song?showtype=14&highlight=em&pagesize=1&tag_aggr=1&tagtype=%E5%85%A8%E9%83%A8&plat=0&sver=5&correct=1&api_ver=1&version=9108&page=1&area_code=1&tag=1&with_res_tag=1&keyword="
 						+ keyword).openConnection();

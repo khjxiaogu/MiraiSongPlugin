@@ -42,6 +42,7 @@ public class NetEaseMusicSource implements MusicSource {
 
 	@Override
 	public MusicInfo get(String keyword) throws Exception {
+		keyword=Utils.urlEncode(keyword);
 		JsonObject params = new JsonObject();
 		params.addProperty("s", URLDecoder.decode(keyword, "UTF-8"));
 		params.addProperty("type",1);

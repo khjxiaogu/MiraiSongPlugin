@@ -33,6 +33,7 @@ public class BaiduMusicSource implements MusicSource {
 
 	@Override
 	public MusicInfo get(String keyword) throws Exception {
+		keyword=Utils.urlEncode(keyword);
 		JsonObject jo;
 		HttpURLConnection huc;
 		int requested = 0;

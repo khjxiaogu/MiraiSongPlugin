@@ -20,7 +20,7 @@ package com.khjxiaogu.MiraiSongPlugin.permission;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.khjxiaogu.MiraiSongPlugin.permission.BotMatcher.PermissionFactory;
+import com.khjxiaogu.MiraiSongPlugin.permission.CommandMatcher.PermissionFactory;
 
 public class Matchers {
 	static Map<String,PermissionFactory> subfactories=new HashMap<>();

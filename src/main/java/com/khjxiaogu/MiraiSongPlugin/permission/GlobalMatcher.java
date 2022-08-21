@@ -31,71 +31,70 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.khjxiaogu.MiraiSongPlugin.MiraiSongPlugin;
 
 import net.mamoe.mirai.Bot;
+import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.contact.User;
 
-public class GlobalMatcher implements PermissionMatcher{
+public class GlobalMatcher implements PermissionMatcher {
 	BotMatcher global;
-	Map<Long,BotMatcher> local=new ConcurrentHashMap<>();
-	@Override
-	public PermissionResult match(Member m) {
-		BotMatcher bm=local.getOrDefault(m.getBot().getId(),global);
-		return bm.match(m);
-	}
+	Map<Long, BotMatcher> local = new ConcurrentHashMap<>();
 
 	@Override
-	public PermissionResult match(User u, boolean temp) {
-		BotMatcher bm=local.getOrDefault(u.getBot().getId(),global);
-		return bm.match(u,temp);
+	public PermissionResult match(MatchInfo info) {
+		BotMatcher bm = local.getOrDefault(info.bot.getId(), global);
+		return bm.match(info);
 	}
 
-	@Override
-	public PermissionResult match(long id, long group, Bot bot) {
-		BotMatcher bm=local.getOrDefault(bot.getId(),global);
-		return bm.match(id,group,bot);
-	}
-	public void loadString(String s,Bot b) {
-		BotMatcher bm=local.get(b.getId());
-		if(bm==null) {
-			bm=new BotMatcher();
-			local.put(b.getId(),bm);
+	public boolean loadString(String s, Bot b) {
+		BotMatcher bm = local.computeIfAbsent(b.getId(), x -> new BotMatcher());
+		if (bm.loadMatcher(s, 0)) {
+			try (FileOutputStream fis = new FileOutputStream(new File(loadfrom, b.getId() + ".permission"), true);
+					PrintStream sc = new PrintStream(fis)) {
+				sc.println();
+				sc.print(s);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			return true;
 		}
-		bm.loadMatcher(s);
-		try(FileOutputStream fis=new FileOutputStream(new File(loadfrom,b.getId()+".permission"),true);PrintStream sc=new PrintStream(fis)){
-			sc.println();
-			sc.print(s);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		return false;
 	}
-	public void loadString(String s) {
-		global.loadMatcher(s);
-		try(FileOutputStream fis=new FileOutputStream(new File(loadfrom,"global.permission"),true);PrintStream sc=new PrintStream(fis)){
-			sc.println();
-			sc.print(s);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+
+	public boolean loadString(String s) {
+		if (global.loadMatcher(s, 0)) {
+			try (FileOutputStream fis = new FileOutputStream(new File(loadfrom, "global.permission"), true);
+					PrintStream sc = new PrintStream(fis)) {
+				sc.println();
+				sc.print(s);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			return true;
 		}
+		return false;
 	}
+
 	public void rebuildConfig() {
-		try(FileOutputStream fis=new FileOutputStream(new File(loadfrom,"global.permission"),false);PrintStream sc=new PrintStream(fis)){
-			boolean nfirst=false;
-			for(String s:global.getValue()) {
-				if(nfirst)
+		try (FileOutputStream fis = new FileOutputStream(new File(loadfrom, "global.permission"), false);
+				PrintStream sc = new PrintStream(fis)) {
+			boolean nfirst = false;
+			for (String s : global.getValue()) {
+				if (nfirst)
 					sc.println();
-				nfirst=true;
+				nfirst = true;
 				sc.print(s);
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		for(Entry<Long, BotMatcher> i:local.entrySet()){
-			try(FileOutputStream fis=new FileOutputStream(new File(loadfrom,i.getKey()+".permission"),false);PrintStream sc=new PrintStream(fis)){
-				boolean nfirst=false;
-				for(String s:global.getValue()) {
-					if(nfirst)
+		for (Entry<Long, BotMatcher> i : local.entrySet()) {
+			try (FileOutputStream fis = new FileOutputStream(new File(loadfrom, i.getKey() + ".permission"), false);
+					PrintStream sc = new PrintStream(fis)) {
+				boolean nfirst = false;
+				for (String s : i.getValue().getValue()) {
+					if (nfirst)
 						sc.println();
-					nfirst=true;
+					nfirst = true;
 					sc.print(s);
 				}
 			} catch (IOException e) {
@@ -103,54 +102,58 @@ public class GlobalMatcher implements PermissionMatcher{
 			}
 		}
 	}
+
 	File loadfrom;
+
 	public void load(File f) {
-		loadfrom=f;
-		global=null;
+		loadfrom = f;
+		global = null;
 		local.clear();
-		File gc=new File(f,"global.permission");
-		global=new BotMatcher();
-		try(FileInputStream fis=new FileInputStream(gc);Scanner sc=new Scanner(fis)){
-			int i=0;
-			while(sc.hasNextLine()) {
+		File gc = new File(f, "global.permission");
+		global = new BotMatcher();
+		try (FileInputStream fis = new FileInputStream(gc); Scanner sc = new Scanner(fis)) {
+			int i = 0;
+			while (sc.hasNextLine()) {
 				i++;
 				try {
-					global.loadMatcher(sc.nextLine());
-				}catch(Exception ex) {
+					global.loadMatcher(sc.nextLine(), 0);
+				} catch (Exception ex) {
 					MiraiSongPlugin.getMLogger().warning(ex);
-					MiraiSongPlugin.getMLogger().warning("权限配置文件"+gc.getName()+"的第"+i+"行有语法错误！");
+					MiraiSongPlugin.getMLogger().warning("权限配置文件" + gc.getName() + "的第" + i + "行有语法错误！");
 				}
 			}
-		}catch(Exception ex) {
+		} catch (Exception ex) {
 			MiraiSongPlugin.getMLogger().warning(ex);
-			MiraiSongPlugin.getMLogger().warning("权限配置文件"+gc.getName()+"读取失败！"+ex.getMessage());
-			
+			MiraiSongPlugin.getMLogger().warning("权限配置文件" + gc.getName() + "读取失败！" + ex.getMessage());
+
 		}
-		for(File ff:f.listFiles()) {
+		for (File ff : f.listFiles()) {
 			try {
-			if(ff.getName().endsWith(".permission")) {
-				String fn=ff.getName().split("\\.")[0];
-				if(Character.isDigit(fn.charAt(0))) {
-					long gn=Long.parseLong(fn);
-					BotMatcher bm=new BotMatcher();
-					try(FileInputStream fis=new FileInputStream(ff);Scanner sc=new Scanner(fis)){
-						int i=0;
-						while(sc.hasNextLine()) {
-							i++;
-							try {
-								bm.loadMatcher(sc.nextLine());
-							}catch(Exception ex) {
-								MiraiSongPlugin.getMLogger().warning(ex);
-								MiraiSongPlugin.getMLogger().warning("权限配置文件"+ff.getName()+"的第"+i+"行有语法错误！");
+				if (ff.getName().endsWith(".permission")) {
+					String fn = ff.getName().split("\\.")[0];
+					if (Character.isDigit(fn.charAt(0))) {
+						long gn = Long.parseLong(fn);
+						BotMatcher bm = new BotMatcher();
+						try (FileInputStream fis = new FileInputStream(ff); Scanner sc = new Scanner(fis)) {
+							int i = 0;
+							while (sc.hasNextLine()) {
+								i++;
+								try {
+									bm.loadMatcher(sc.nextLine(), 0);
+									continue;
+								} catch (Exception ex) {
+									MiraiSongPlugin.getMLogger().warning(ex);
+								}
+								MiraiSongPlugin.getMLogger()
+								.warning("权限配置文件" + ff.getName() + "的第" + i + "行有语法错误！");
 							}
 						}
+						local.put(gn, bm);
 					}
-					local.put(gn,bm);
 				}
-			}
-			}catch(Exception ex) {
+			} catch (Exception ex) {
 				MiraiSongPlugin.getMLogger().warning(ex);
-				MiraiSongPlugin.getMLogger().warning("权限配置文件"+ff.getName()+"读取失败："+ex.getMessage());
+				MiraiSongPlugin.getMLogger().warning("权限配置文件" + ff.getName() + "读取失败：" + ex.getMessage());
 			}
 		}
 	}
@@ -158,5 +161,20 @@ public class GlobalMatcher implements PermissionMatcher{
 	@Override
 	public List<String> getValue() {
 		return global.getValue();
+	}
+
+	public boolean loadString(String s, Group g, Bot b) {
+		BotMatcher bm = local.computeIfAbsent(b.getId(), x -> new BotMatcher());
+		if (bm.loadMatcher(s, g.getId())) {
+			try (FileOutputStream fis = new FileOutputStream(new File(loadfrom, b.getId() + ".permission"), true);
+					PrintStream sc = new PrintStream(fis)) {
+				sc.println();
+				sc.print(s);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			return true;
+		}
+		return false;
 	}
 }
