@@ -22,7 +22,6 @@ import java.util.List;
 
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
-import net.mamoe.mirai.contact.User;
 
 public class MemberPermissionMatcher implements PermissionMatcher {
 	PermissionResult result;

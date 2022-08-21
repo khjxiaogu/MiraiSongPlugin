@@ -24,9 +24,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.contact.MemberPermission;
-import net.mamoe.mirai.contact.User;
 
 public class CommandMatcher implements PermissionMatcher {
 	PermissionResult wildcard = PermissionResult.UNSPECIFIED;

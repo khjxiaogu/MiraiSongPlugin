@@ -10,6 +10,7 @@ public class MatchInfo {
 	long groupid;
 	String cmd;
 	boolean isTemp;
+	boolean mustMatchCommand;
 	public MatchInfo() {
 	}
 	public MatchInfo(String cmd,long memberid,long groupid,Bot bot) {
@@ -26,5 +27,9 @@ public class MatchInfo {
 	public MatchInfo(String cmd,User u,boolean temp) {
 		this(cmd,u.getId(),0,u.getBot());
 		this.isTemp=temp;
+	}
+	public MatchInfo mustMatchCommand() {
+		mustMatchCommand=true;
+		return this;
 	}
 }

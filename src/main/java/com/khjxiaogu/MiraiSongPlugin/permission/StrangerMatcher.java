@@ -20,9 +20,6 @@ package com.khjxiaogu.MiraiSongPlugin.permission;
 import java.util.Arrays;
 import java.util.List;
 
-import net.mamoe.mirai.contact.Member;
-import net.mamoe.mirai.contact.User;
-
 public class StrangerMatcher implements PermissionMatcher {
 	PermissionResult result;
 	@Override

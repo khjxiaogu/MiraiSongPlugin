@@ -32,8 +32,6 @@ import com.khjxiaogu.MiraiSongPlugin.MiraiSongPlugin;
 
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.contact.Group;
-import net.mamoe.mirai.contact.Member;
-import net.mamoe.mirai.contact.User;
 
 public class GlobalMatcher implements PermissionMatcher {
 	BotMatcher global;

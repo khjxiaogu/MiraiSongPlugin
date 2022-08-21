@@ -26,9 +26,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.khjxiaogu.MiraiSongPlugin.permission.CommandMatcher.PermissionFactory;
 
-import net.mamoe.mirai.contact.Member;
-import net.mamoe.mirai.contact.User;
-
 public class GroupMatcher implements PermissionMatcher {
 	PermissionResult wildcard=PermissionResult.UNSPECIFIED;
 	LinkedHashMap<String,PermissionMatcher> restricted=new LinkedHashMap<>(5);

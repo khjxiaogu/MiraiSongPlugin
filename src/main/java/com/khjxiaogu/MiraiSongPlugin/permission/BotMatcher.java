@@ -38,8 +38,14 @@ public class BotMatcher implements PermissionMatcher {
 
 	@Override
 	public PermissionResult match(MatchInfo info) {
+		if(info.mustMatchCommand) {
+			PermissionMatcher pmc = commands.get(info.cmd);
+			if(pmc!=null)
+				return pmc.match(info);
+			return PermissionResult.UNSPECIFIED;
+		}
 		PermissionResult pr = wildcard;
-
+		
 		for (PermissionMatcher pm : restricted.values()) {
 			pr = pr.and(pm.match(info));
 		}

@@ -19,9 +19,6 @@ package com.khjxiaogu.MiraiSongPlugin.permission;
 
 import java.util.List;
 
-import net.mamoe.mirai.contact.Member;
-import net.mamoe.mirai.contact.User;
-
 public interface PermissionMatcher {
 	PermissionResult match(MatchInfo info);
 
