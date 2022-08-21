@@ -162,15 +162,15 @@ public class MiraiSongPlugin extends JavaPlugin {
 					mi = mc.get(sn);
 				} catch (Throwable t) {
 					this.getLogger().debug(t);
-					Utils.getRealSender(event).sendMessage(unfoundSong);
+					Utils.getProperReceiver(event).sendMessage(unfoundSong);
 					return;
 				}
 				try {
-					Utils.getRealSender(event).sendMessage(cb.process(mi, Utils.getRealSender(event)));
+					Utils.getProperReceiver(event).sendMessage(cb.process(mi, Utils.getProperReceiver(event)));
 				} catch (Throwable t) {
 					this.getLogger().debug(t);
 					// this.getLogger().
-					Utils.getRealSender(event).sendMessage(unavailableShare);
+					Utils.getProperReceiver(event).sendMessage(unavailableShare);
 					return;
 				}
 			});
@@ -202,14 +202,14 @@ public class MiraiSongPlugin extends JavaPlugin {
 						continue;
 					}
 					try {
-						Utils.getRealSender(event).sendMessage(cb.process(mi, Utils.getRealSender(event)));
+						Utils.getProperReceiver(event).sendMessage(cb.process(mi, Utils.getProperReceiver(event)));
 					} catch (Throwable t) {
 						this.getLogger().debug(t);
-						Utils.getRealSender(event).sendMessage(unavailableShare);
+						Utils.getProperReceiver(event).sendMessage(unavailableShare);
 					}
 					return;
 				}
-				Utils.getRealSender(event).sendMessage(unfoundSong);
+				Utils.getProperReceiver(event).sendMessage(unfoundSong);
 			});
 
 		};
@@ -321,12 +321,12 @@ public class MiraiSongPlugin extends JavaPlugin {
 					try {
 						MusicSource ms = sources.get(args[1]);
 						if (ms == null) {
-							Utils.getRealSender(event).sendMessage("无法找到源");
+							Utils.getProperReceiver(event).sendMessage("无法找到源");
 							return;
 						}
 						MusicCardProvider mcp = cards.get(args[2]);
 						if (mcp == null) {
-							Utils.getRealSender(event).sendMessage("无法找到模板");
+							Utils.getProperReceiver(event).sendMessage("无法找到模板");
 							return;
 						}
 						MusicInfo mi;
@@ -334,19 +334,19 @@ public class MiraiSongPlugin extends JavaPlugin {
 							mi = ms.get(sn);
 						} catch (Throwable t) {
 							this.getLogger().debug(t);
-							Utils.getRealSender(event).sendMessage(unfoundSong);
+							Utils.getProperReceiver(event).sendMessage(unfoundSong);
 							return;
 						}
 						try {
-							Utils.getRealSender(event).sendMessage(mcp.process(mi, Utils.getRealSender(event)));
+							Utils.getProperReceiver(event).sendMessage(mcp.process(mi, Utils.getProperReceiver(event)));
 						} catch (Throwable t) {
 							this.getLogger().debug(t);
-							Utils.getRealSender(event).sendMessage(unavailableShare);
+							Utils.getProperReceiver(event).sendMessage(unavailableShare);
 							return;
 						}
 					} catch (Throwable e) {
 						e.printStackTrace();
-						Utils.getRealSender(event).sendMessage(unfoundSong);
+						Utils.getProperReceiver(event).sendMessage(unfoundSong);
 					}
 				});
 			});

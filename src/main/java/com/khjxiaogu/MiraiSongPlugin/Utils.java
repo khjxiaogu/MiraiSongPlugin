@@ -173,7 +173,7 @@ public final class Utils {
 	}
 
 	/**
-	 * Gets the sender to send message.<br>
+	 * Gets the receiver to send message.<br>
 	 * 获取应该发信息的联系人.
 	 *
 	 * @param ev the message event<br>
@@ -181,7 +181,7 @@ public final class Utils {
 	 * @return sender to send message to<br>
 	 *         应该发信息的联系人
 	 */
-	public static Contact getRealSender(MessageEvent ev) {
+	public static Contact getProperReceiver(MessageEvent ev) {
 		if (ev instanceof GroupMessageEvent)
 			return ((GroupMessageEvent) ev).getGroup();
 		return ev.getSender();
