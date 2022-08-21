@@ -303,7 +303,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 	}
 
 	public void reload() {
-		YamlMap cfg = Yaml.Default.decodeYamlMapFromString(
+		YamlMap cfg = Yaml.getDefault().decodeYamlMapFromString(
 				new String(Utils.readAll(new File(this.getDataFolder(), "config.yml")), StandardCharsets.UTF_8));
 		matcher.load(this.getDataFolder());
 		YamlMap excs = (YamlMap) cfg.get(new YamlLiteral("extracommands"));
