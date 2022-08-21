@@ -121,7 +121,6 @@ Linux:
 |`amrwb`|是否启用amr_wb模式，缺省默认为true。<br>设置值：true/启用amr_wb，音质会比较好，但是电脑qq可能不能正常播放，手机qq进度条显示异常。 false/关闭amr_wb，此时`amrqualityshift`强制为false，音质会比较差，但是显示和播放都正常。|
 |`use_custom_ffmpeg_command`|是否启用自定义ffmpeg指令，如果启用，上述的amr配置和ffmpeg路径配置将被忽略。|
 |`custom_ffmpeg_command`|自定义ffmpeg命令，会把%input%替换为输入文件绝对路径，%output%替换为输出文件绝对路径。|
-|`admins`|管理员QQ列表，对应QQ号可以使用插件设置命令`/msp`|
 |`hintsongnotfound`|找不到歌曲文本提示|
 |`hintcarderror`|分享失败文本提示|
 |`hintnotemplate`|找不到卡片文本提示|
