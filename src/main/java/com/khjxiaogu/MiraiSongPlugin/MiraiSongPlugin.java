@@ -371,29 +371,38 @@ public class MiraiSongPlugin extends JavaPlugin {
 				if (ev instanceof GroupMessageEvent) {
 					GroupMessageEvent gev = (GroupMessageEvent) ev;
 					try {
-						matcher.loadString(args[2], gev.getGroup(), ev.getBot());
-						ev.getSender().sendMessage("本机权限设置成功！");
+						if (matcher.loadString(args[2], gev.getGroup(), ev.getBot())) {
+							ev.getSender().sendMessage("本群权限设置成功！");
+							return;
+						}
 					} catch (Exception ex) {
-						ev.getSender().sendMessage("本机权限设置失败！");
+
 						getLogger().warning(ex);
 					}
+					ev.getSender().sendMessage("本机权限设置失败！");
 				}
 			} else if (args[1].equals("setbperm")) {
 				try {
-					matcher.loadString(args[2], ev.getBot());
-					ev.getSender().sendMessage("本机权限设置成功！");
+					if (matcher.loadString(args[2], ev.getBot())) {
+						ev.getSender().sendMessage("本机权限设置成功！");
+						return;
+					}
 				} catch (Exception ex) {
-					ev.getSender().sendMessage("本机权限设置失败！");
+
 					getLogger().warning(ex);
 				}
+				ev.getSender().sendMessage("本机权限设置失败！");
 			} else if (args[1].equals("setgperm")) {
 				try {
-					matcher.loadString(args[2]);
-					ev.getSender().sendMessage("全局权限设置成功！");
+					if (matcher.loadString(args[2])) {
+						ev.getSender().sendMessage("全局权限设置成功！");
+						return;
+					}
 				} catch (Exception ex) {
-					ev.getSender().sendMessage("全局权限设置失败！");
+
 					getLogger().warning(ex);
 				}
+				ev.getSender().sendMessage("全局权限设置失败！");
 			} else if (args[1].equals("buildperm")) {
 				try {
 					matcher.rebuildConfig();
