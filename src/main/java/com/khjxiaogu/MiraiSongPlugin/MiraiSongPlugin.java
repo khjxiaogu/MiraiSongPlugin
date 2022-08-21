@@ -361,7 +361,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 						((YamlMap) excs.get(cmd)).getString("card")));
 			}
 		commands.put("/msp", (ev, args) -> {
-			if (!matcher.match(new MatchInfo(args[0] + "." + args[1], ev.getSender(), true)).isForceAllowed())
+			if (!matcher.match(new MatchInfo(args[0], ev.getSender(), true)).and(matcher.match(new MatchInfo(args[0] + "." + args[1], ev.getSender(), true))).isForceAllowed())
 				return;
 			if (args[1].equals("reload")) {
 
