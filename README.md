@@ -52,8 +52,10 @@
 - 2.0-M2-1-dev-1
 - 2.7-M1-dev-5
 - 2.7-M1
+- 2.12.2
 ### 测试可用的mirai-core版本
-1.2.1-2.7(每个发行版本都测试过)
+1.2.1-2.7(每个发行版本都测试过)   
+2.12.2
 # 基本使用方法
 0. 从[Release](https://github.com/khjxiaogu/MiraiSongPlugin/releases)下载
 1. 放置于plugins文件夹
