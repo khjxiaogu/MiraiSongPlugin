@@ -67,6 +67,7 @@ import net.mamoe.mirai.event.events.FriendMessageEvent;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.event.events.StrangerMessageEvent;
+import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.utils.MiraiLogger;
 import net.mamoe.yamlkt.Yaml;
 import net.mamoe.yamlkt.YamlElement;
@@ -179,13 +180,16 @@ public class MiraiSongPlugin extends JavaPlugin {
 					return;
 				}
 				try {
-					Utils.getProperReceiver(event).sendMessage(cb.process(mi, Utils.getProperReceiver(event)));
+					Message m=cb.process(mi, Utils.getProperReceiver(event));
+					if(m!=null) {
+						Utils.getProperReceiver(event).sendMessage(m);
+						return;
+					}
 				} catch (Throwable t) {
 					this.getLogger().debug(t);
-					// this.getLogger().
-					Utils.getProperReceiver(event).sendMessage(unavailableShare);
-					return;
 				}
+				Utils.getProperReceiver(event).sendMessage(unavailableShare);
+				return;
 			});
 		};
 	}
@@ -215,11 +219,15 @@ public class MiraiSongPlugin extends JavaPlugin {
 						continue;
 					}
 					try {
-						Utils.getProperReceiver(event).sendMessage(cb.process(mi, Utils.getProperReceiver(event)));
+						Message m=cb.process(mi, Utils.getProperReceiver(event));
+						if(m!=null) {
+							Utils.getProperReceiver(event).sendMessage(m);
+							return;
+						}
 					} catch (Throwable t) {
 						this.getLogger().debug(t);
-						Utils.getProperReceiver(event).sendMessage(unavailableShare);
 					}
+					Utils.getProperReceiver(event).sendMessage(unavailableShare);
 					return;
 				}
 				Utils.getProperReceiver(event).sendMessage(unfoundSong);

@@ -168,7 +168,7 @@ public final class Utils {
 	 */
 	public static String removeLeadings(String leading, String orig) {
 		if (orig.startsWith(leading))
-			return orig.substring(leading.length()).replace(leading, "").trim();
+			return orig.substring(leading.length()).trim();
 		return orig;
 	}
 
@@ -188,7 +188,7 @@ public final class Utils {
 	}
 
 	/**
-	 * Execute command,wait until finished.<br>
+	 * Execute OS command,wait until finished.<br>
 	 * 执行操作平台命令，等待完成。
 	 * 
 	 * @param commandStr the command string<br>
@@ -208,7 +208,7 @@ public final class Utils {
 	}
 
 	/**
-	 * Execute command,wait until finished.<br>
+	 * Execute OS command,wait until finished.<br>
 	 * 执行操作平台命令，等待完成。
 	 * 
 	 * @param commandStr the command string<br>
