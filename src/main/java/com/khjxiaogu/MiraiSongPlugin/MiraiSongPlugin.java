@@ -92,7 +92,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 	private Executor exec = Executors.newFixedThreadPool(8);
 
 	/** 命令列表. */
-	public static final Map<String, BiConsumer<MessageEvent, String[]>> commands = new ConcurrentHashMap<>();
+	private static final Map<String, BiConsumer<MessageEvent, String[]>> commands = new ConcurrentHashMap<>();
 
 	/** 音乐来源. */
 	public static final Map<String, MusicSource> sources = Collections.synchronizedMap(new LinkedHashMap<>());
@@ -112,6 +112,19 @@ public class MiraiSongPlugin extends JavaPlugin {
 		sources.put("Bilibili", new BiliBiliMusicSource());
 		sources.put("喜马拉雅", new XimalayaSource());
 		sources.put("本地", new LocalFileSource());
+		//Register music source
+		sources.put("QQMusic", new QQMusicSource());
+		sources.put("QQMusicHQ", new QQMusicHQSource());
+		sources.put("NeteaseCloudMusic", new NetEaseMusicSource());
+		sources.put("NeteaseRadioProgramme", new NetEaseAdvancedRadio());
+		sources.put("NeteaseRadio", new NetEaseRadioSource());
+		sources.put("NeteaseHQ", new NetEaseHQMusicSource());
+		sources.put("Kugou", new KugouMusicSource());
+		sources.put("Qianqian", new BaiduMusicSource());
+		sources.put("Bilibili", new BiliBiliMusicSource());
+		sources.put("Ximalaya", new XimalayaSource());
+		sources.put("Local", new LocalFileSource());
+		
 		// 注册外观
 		// cards.put("LightApp", new LightAppCardProvider());
 		cards.put("LightApp", new MiraiMusicCard());
@@ -137,15 +150,15 @@ public class MiraiSongPlugin extends JavaPlugin {
 	String unavailableShare;
 	String templateNotFound;
 	String sourceNotFound;
-
-	/**
-	 * 使用现有的来源和外观制作指令执行器
-	 * 
-	 * @param source 音乐来源名称
-	 * @param card   音乐外观名称
-	 * @return return 返回一个指令执行器，可以注册到命令列表里面
-	 */
-	public BiConsumer<MessageEvent, String[]> makeTemplate(String source, String card) {
+	public void makeCommand(String cmd,String source, String card) {
+		if(cmd.equals("/msp"))
+			throw new IllegalArgumentException("/msp can not be overriden");
+		commands.put(cmd,makeTemplate(source,card));
+	}
+	public void removeCommand(String cmd) {
+		commands.remove(cmd);
+	}
+	private BiConsumer<MessageEvent, String[]> makeTemplate(String source, String card) {
 		if (source.equals("all"))
 			return makeSearchesTemplate(card);
 		MusicCardProvider cb = cards.get(card);
@@ -183,7 +196,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 	 * @param card 音乐外观名称
 	 * @return return 返回一个指令执行器，可以注册到命令列表里面
 	 */
-	public BiConsumer<MessageEvent, String[]> makeSearchesTemplate(String card) {
+	private BiConsumer<MessageEvent, String[]> makeSearchesTemplate(String card) {
 		MusicCardProvider cb = cards.get(card);
 		if (cb == null)
 			throw new IllegalArgumentException("card template not exists");
@@ -353,8 +366,8 @@ public class MiraiSongPlugin extends JavaPlugin {
 		}
 		if (excs != null)
 			for (YamlElement cmd : excs.getKeys()) {
-				commands.put(cmd.toString(), makeTemplate(((YamlMap) excs.get(cmd)).getString("source"),
-						((YamlMap) excs.get(cmd)).getString("card")));
+				makeCommand(cmd.toString(),((YamlMap) excs.get(cmd)).getString("source"),
+						((YamlMap) excs.get(cmd)).getString("card"));
 			}
 		commands.put("/msp", (ev, args) -> {
 			if (!matcher.match(new MatchInfo(args[0], ev.getSender(), true).mustMatchCommand()).and(matcher.match(new MatchInfo(args[0] + "." + args[1], ev.getSender(), true).mustMatchCommand())).isForceAllowed())
