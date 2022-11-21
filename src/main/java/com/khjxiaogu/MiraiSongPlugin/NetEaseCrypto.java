@@ -217,4 +217,13 @@ public final class NetEaseCrypto {
 		return result;
 
 	}
+	public static String weapiEncryptParam(String content) {
+		String[] encrypt=weapiEncrypt(content);
+		StringBuilder sb = new StringBuilder("params=");
+		sb.append(encrypt[0]);
+		sb.append("&encSecKey=");
+		sb.append(encrypt[1]);
+		return sb.toString();
+
+	}
 }

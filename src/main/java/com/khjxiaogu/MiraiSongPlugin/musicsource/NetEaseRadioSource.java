@@ -17,17 +17,13 @@
  */
 package com.khjxiaogu.MiraiSongPlugin.musicsource;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.khjxiaogu.MiraiSongPlugin.HttpRequestBuilder;
+import com.khjxiaogu.MiraiSongPlugin.JsonBuilder;
 import com.khjxiaogu.MiraiSongPlugin.MusicInfo;
 import com.khjxiaogu.MiraiSongPlugin.MusicSource;
 import com.khjxiaogu.MiraiSongPlugin.NetEaseCrypto;
@@ -42,49 +38,36 @@ public class NetEaseRadioSource implements MusicSource {
 		return "http://music.163.com/song/media/outer/url?id=" + id + ".mp3";
 	}
 	protected JsonObject getSlice(String id,int offset,int limit) throws IOException {
-		JsonObject params = new JsonObject();
-		params.addProperty("radioId",id);
-		params.addProperty("limit",limit);
-		params.addProperty("offset",offset);
-		params.addProperty("asc", true);
-		String[] encrypt = NetEaseCrypto.weapiEncrypt(params.toString());
-		StringBuilder sb = new StringBuilder("params=");
-		sb.append(encrypt[0]);
-		sb.append("&encSecKey=");
-		sb.append(encrypt[1]);
-		byte[] towrite = sb.toString().getBytes("UTF-8");
-		URL u = new URL("https://music.163.com/weapi/dj/program/byradio?csrf_token=");
-		HttpURLConnection conn = (HttpURLConnection) u.openConnection();
-		conn.setRequestMethod("POST");
-		conn.setDoOutput(true);
-		conn.setDoInput(true);
-		conn.setConnectTimeout(4000);
-		conn.setReadTimeout(4000);
-		conn.setFixedLengthStreamingMode(towrite.length);
-		conn.setInstanceFollowRedirects(true);
-		conn.setRequestProperty("Accept", "*/*");
-		conn.setRequestProperty("Accept-Language", "zh-CN,zh;q=0.8,gl;q=0.6,zh-TW;q=0.4");
-		conn.setRequestProperty("Connection", "keep-alive");
-		conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-		conn.setRequestProperty("Content-Length", Integer.toString(towrite.length));
-		conn.setRequestProperty("Referer", "https://music.163.com");
-		conn.setRequestProperty("Host", "music.163.com");
-		conn.setRequestProperty("User-Agent", NetEaseCrypto.getUserAgent());
-		conn.connect();
-		conn.getOutputStream().write(towrite);
-		
-		if (conn.getResponseCode() == 200) {
-			InputStream is = conn.getInputStream();
-			byte[] bs = null;
-			bs = Utils.readAll(is);
-			is.close();
-			conn.disconnect();
-			return JsonParser.parseString(new String(bs, "UTF-8")).getAsJsonObject();
-			
+		return HttpRequestBuilder.create("music.163.com")
+				.url("/weapi/dj/program/byradio?csrf_token=")
+				.defUA()
+				.contenttype("application/x-www-form-urlencoded")
+				.referer("https://music.163.com")
+				.ua(NetEaseCrypto.getUserAgent())
+				.post()
+				.send(NetEaseCrypto.weapiEncryptParam(JsonBuilder.object()
+						.add("radioId",id)
+						.add("limit",limit)
+						.add("offset",offset)
+						.add("asc", true)
+						.toString()))
+				.readJson();
+	}
+	protected JsonObject getProgramSong(String id) throws IOException {
+		JsonObject main=HttpRequestBuilder.create("music.163.com")
+		.url("/weapi/dj/program/detail?csrf_token=")
+		.defUA()
+		.contenttype("application/x-www-form-urlencoded")
+		.referer("https://music.163.com")
+		.ua(NetEaseCrypto.getUserAgent())
+		.post()
+		.send(NetEaseCrypto.weapiEncryptParam(JsonBuilder.object().add("id",id).toString()))
+		.readJson();
+		if (main != null && main.get("code").getAsInt() == 200) {
+			return main.get("program").getAsJsonObject();
 		}
 		return null;
 	}
-
 	protected JsonObject getRadioSong(String id, String keyword) throws IOException {
 		JsonObject main = getSlice(id, 0, 10);
 		int cur=10;
@@ -135,49 +118,48 @@ public class NetEaseRadioSource implements MusicSource {
 
 	public MusicInfo get(String keyword, String songname) throws Exception {
 
-		JsonObject params = new JsonObject();
-		params.addProperty("s",keyword);
-		params.addProperty("type",1009);
-		params.addProperty("offset",0);
-		params.addProperty("limit",3);
-		String[] encrypt = NetEaseCrypto.weapiEncrypt(params.toString());
-		StringBuilder sb = new StringBuilder("params=");
-		sb.append(encrypt[0]);
-		sb.append("&encSecKey=");
-		sb.append(encrypt[1]);
-		URL url = new URL("https://music.163.com/weapi/cloudsearch/get/web?csrf_token=");
-		HttpURLConnection huc = (HttpURLConnection) url.openConnection();
-		huc.setDoInput(true);
-		huc.setDoOutput(true);
-		huc.setRequestMethod("POST");
-		huc.setRequestProperty("Referer", "http://music.163.com/");
-		huc.setRequestProperty("Cookie", "appver=1.5.0.75771;");
-		huc.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
-		huc.connect();
-		huc.getOutputStream().write(sb.toString().getBytes(StandardCharsets.UTF_8));
-		JsonArray ja;
+
+		JsonArray ja=HttpRequestBuilder.create("music.163.com")
+		.url("/weapi/cloudsearch/get/web?csrf_token=")
+		.ua(NetEaseCrypto.getUserAgent())
+		.cookie("appver=1.5.0.75771;")
+		.referer("http://music.163.com/")
+		.contenttype("application/x-www-form-urlencoded")
+		.post()
+		.send(NetEaseCrypto.weapiEncryptParam(JsonBuilder.object()
+				.add("s",keyword)
+				.add("type",1009)
+				.add("offset",0)
+				.add("limit",3)
+				.toString()))
+		.readJson()
+		.get("result").getAsJsonObject()
+		.get("djRadios").getAsJsonArray();
+
 		String murl;
-		if (huc.getResponseCode() == 200) {
-			String s = new String(Utils.readAll(huc.getInputStream()), StandardCharsets.UTF_8);
-			ja = JsonParser.parseString(s).getAsJsonObject().get("result").getAsJsonObject().get("djRadios")
-					.getAsJsonArray();
-		} else
-			throw new FileNotFoundException();
-
 		JsonObject detail = ja.get(0).getAsJsonObject();
-
 		JsonObject jo = getRadioSong(detail.get("id").getAsString(), songname);
 		murl = queryRealUrl(jo.get("id").getAsString());
 		JsonObject dj = detail.get("dj").getAsJsonObject();
 		return new MusicInfo(jo.get("name").getAsString(), dj.get("nickname").getAsString(),
 				detail.get("picUrl").getAsString(), murl,
-				"http://music.163.com/program/" + detail.get("lastProgramId").getAsString() + "/"
-						+ dj.get("userId").getAsString() + "/?userid=" + dj.get("userId").getAsString(),
+				"http://music.163.com/program?id=" + detail.get("lastProgramId").getAsString(),
 				"网易云电台", "", 100495085);
 	}
 
 	@Override
 	public boolean isVisible() {
 		return false;
+	}
+
+	@Override
+	public MusicInfo getId(String id) throws Exception {
+		JsonObject jo = getProgramSong(id);
+		String murl = queryRealUrl(jo.get("mainSong").getAsJsonObject().get("id").getAsString());
+		JsonObject dj = jo.get("dj").getAsJsonObject();
+		return new MusicInfo(jo.get("name").getAsString(), dj.get("nickname").getAsString(),
+				jo.get("radio").getAsJsonObject().get("picUrl").getAsString(), murl,
+				"http://music.163.com/program?id=" + id,
+				"网易云电台", "", 100495085);
 	}
 }

@@ -71,4 +71,9 @@ public class LocalFileSource implements MusicSource {
 		}
 	}
 
+	@Override
+	public MusicInfo getId(String id) throws Exception {
+		throw new UnsupportedOperationException("暂不支持");
+	}
+
 }

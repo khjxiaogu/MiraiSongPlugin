@@ -37,6 +37,15 @@ public interface MusicSource {
 	 * @throws Exception 如果发生异常或者找不到音乐，都抛出异常。
 	 */
 	public MusicInfo get(String keyword) throws Exception;
+	/**
+	 * 搜索对应音乐ID并返回音乐信息.<br>
+	 * 返回音乐信息不能为null。
+	 * 
+	 * @param keyword 音乐
+	 * @return return 返回音乐信息数据类
+	 * @throws Exception 如果发生异常或者找不到音乐，都抛出异常。
+	 */
+	public MusicInfo getId(String id) throws Exception;
 
 	/**
 	 * 返回是否对全部搜索可见<br>

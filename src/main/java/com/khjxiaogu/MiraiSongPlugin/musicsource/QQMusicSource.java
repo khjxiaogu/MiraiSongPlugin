@@ -18,14 +18,11 @@
 package com.khjxiaogu.MiraiSongPlugin.musicsource;
 
 import java.io.FileNotFoundException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.khjxiaogu.MiraiSongPlugin.HttpRequestBuilder;
+import com.khjxiaogu.MiraiSongPlugin.JsonBuilder;
 import com.khjxiaogu.MiraiSongPlugin.MusicInfo;
 import com.khjxiaogu.MiraiSongPlugin.MusicSource;
 import com.khjxiaogu.MiraiSongPlugin.Utils;
@@ -37,21 +34,14 @@ public class QQMusicSource implements MusicSource {
 
 	public String queryRealUrl(String songmid) {
 		try {
-			StringBuilder urlsb = new StringBuilder(
-					"https://u.y.qq.com/cgi-bin/musicu.fcg?format=json&data=%7B%22req_0%22%3A%7B%22module%22%3A%22vkey.GetVkeyServer%22%2C%22method%22%3A%22CgiGetVkey%22%2C%22param%22%3A%7B%22guid%22%3A%22358840384%22%2C%22songmid%22%3A%5B%22");
-			urlsb.append(songmid);
-			urlsb.append(
-					"%22%5D%2C%22songtype%22%3A%5B0%5D%2C%22uin%22%3A%221443481947%22%2C%22loginflag%22%3A1%2C%22platform%22%3A%2220%22%7D%7D%2C%22comm%22%3A%7B%22uin%22%3A%2218585073516%22%2C%22format%22%3A%22json%22%2C%22ct%22%3A24%2C%22cv%22%3A0%7D%7D");
-			URL u = new URL(urlsb.toString());
-			HttpURLConnection conn = (HttpURLConnection) u.openConnection();
-			conn.setRequestMethod("GET");
-			conn.setRequestProperty("Host", "u.y.qq.com");
-			conn.setRequestProperty("User-Agent",
-					"Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1");
-			conn.connect();
-			byte[] bs = Utils.readAll(conn.getInputStream());
-
-			JsonObject out = JsonParser.parseString(new String(bs, "UTF-8")).getAsJsonObject();
+			JsonObject out =HttpRequestBuilder.create("u.y.qq.com")
+			.url("/cgi-bin/musicu.fcg?format=json&data=%7B%22req_0%22%3A%7B%22module%22%3A%22vkey.GetVkeyServer%22%2C%22method%22%3A%22CgiGetVkey%22%2C%22param%22%3A%7B%22guid%22%3A%22358840384%22%2C%22songmid%22%3A%5B%22")
+			.url(songmid)
+			.url(
+					"%22%5D%2C%22songtype%22%3A%5B0%5D%2C%22uin%22%3A%221443481947%22%2C%22loginflag%22%3A1%2C%22platform%22%3A%2220%22%7D%7D%2C%22comm%22%3A%7B%22uin%22%3A%2218585073516%22%2C%22format%22%3A%22json%22%2C%22ct%22%3A24%2C%22cv%22%3A0%7D%7D")
+			.defUA()
+			.get()
+			.readJson();
 			if (out.get("code").getAsInt() != 0) {
 				return null;
 			}
@@ -67,35 +57,69 @@ public class QQMusicSource implements MusicSource {
 		return null;
 	}
 
+	public String fetchMid(String songid) {
+		try {
+			JsonObject out =HttpRequestBuilder.create("c.y.qq.com")
+			.url("/v8/fcg-bin/fcg_play_single_song.fcg?tpl=yqq_song_detail&format=json&songid=")
+			.url(songid)
+			.defUA()
+			.get()
+			.readJson();
+			
+			return out.get("data").getAsJsonArray().get(0).getAsJsonObject().get("mid").getAsString();
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public JsonObject querySongDetail(String songmid) {
+		try {
+			JsonObject out =HttpRequestBuilder.create("u.y.qq.com")
+			.url("/cgi-bin/musicu.fcg?format=json&data=%7B%22req_0%22%3A%7B%22module%22%3A%22music.pf_song_detail_svr%22%2C%22method%22%3A%22get_song_detail_yqq%22%2C%22param%22%3A%7B%22song_mid%22%3A%22")
+			.url(songmid)
+			.url("%22%7D%7D%2C%22comm%22%3A%7B%22uin%22%3A%221905222%22%2C%22format%22%3A%22json%22%2C%22ct%22%3A24%2C%22cv%22%3A0%7D%7D")
+			.defUA()
+			.get()
+			.readJson();
+			if (out.get("code").getAsInt() != 0) {
+				return null;
+			}
+			return out.get("req_0").getAsJsonObject().get("data").getAsJsonObject().get("track_info").getAsJsonObject();
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	@Override
 	public MusicInfo get(String keyword) throws Exception {
-		URL url = new URL("https://u.y.qq.com/cgi-bin/musicu.fcg");
-		HttpURLConnection huc = (HttpURLConnection) url.openConnection();
-		huc.setRequestProperty("User-Agent",
-				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36");
+		
 
-		JsonObject scs=new JsonObject();
-		JsonObject search=new JsonObject();
-		JsonObject searchParam=new JsonObject();
-		searchParam.addProperty("query", keyword);
-		searchParam.addProperty("num_per_page",3);
-		searchParam.addProperty("search_type",0);
-		searchParam.addProperty("page_num",1);
-		search.add("param",searchParam);
-		search.addProperty("module","music.search.SearchCgiService");
-		search.addProperty("method", "DoSearchForQQMusicDesktop");
-		scs.add("music.search.SearchCgiService", search);
-		huc.setRequestMethod("POST");
-		huc.setRequestProperty("referer","https://y.qq.com");
-		huc.setDoOutput(true);
-		huc.connect();
-		huc.getOutputStream().write(scs.toString().getBytes(StandardCharsets.UTF_8));
-		String s=new String(Utils.readAll(huc.getInputStream()), StandardCharsets.UTF_8);
-		s=s.substring(s.indexOf("{"));
-		s=s.substring(0,s.lastIndexOf("}")+1);
-		JsonArray ss = JsonParser.parseString(s).getAsJsonObject().get("music.search.SearchCgiService")
-				.getAsJsonObject().get("data").getAsJsonObject().get("body").getAsJsonObject().get("song").getAsJsonObject().get("list")
-				.getAsJsonArray();
+		JsonArray ss =HttpRequestBuilder.create("u.y.qq.com")
+		.url("/cgi-bin/musicu.fcg")
+		.defUA()
+		.referer("https://y.qq.com")
+		.post()
+		.send(JsonBuilder.object()
+				.object("music.search.SearchCgiService")
+					.add("module", "music.search.SearchCgiService")
+					.add("method", "DoSearchForQQMusicDesktop")
+					.object("param")
+						.add("query", keyword)
+						.add("num_per_page", 3)
+						.add("search_type", 0)
+						.add("page_num", 1)
+					.end()
+				.end()
+			.toString())
+		.readJson()
+		.getAsJsonObject()
+		.get("music.search.SearchCgiService").getAsJsonObject()
+		.get("data").getAsJsonObject()
+		.get("body").getAsJsonObject()
+		.get("song").getAsJsonObject()
+		.get("list").getAsJsonArray();
 		JsonObject song = ss.get(0).getAsJsonObject();// .data.song.list
 		String mid = song.get("mid").getAsString();
 		String musicURL = queryRealUrl(mid);
@@ -119,13 +143,44 @@ public class QQMusicSource implements MusicSource {
 			desc = song.get("album").getAsJsonObject().get("name").getAsString();
 		}
 
-		if (musicURL == null) {
+		if (musicURL == null) 
 			throw new FileNotFoundException();
-		}
+		
 		return new MusicInfo(song.get("title").getAsString(), desc,
-				"http://y.gtimg.cn/music/photo_new/T002R300x300M000" + song.get("album").getAsJsonObject().get("mid").getAsString() + ".jpg",
+				"http://y.gtimg.cn/music/photo_new/T002R300x300M000"
+						+ song.get("album").getAsJsonObject().get("mid").getAsString() + ".jpg",
 				musicURL, "https://i.y.qq.com/v8/playsong.html?_wv=1&songid=" + song.get("id").getAsString()
 						+ "&source=qqshare&ADTAG=qqshare",
+				"QQ音乐", "https://url.cn/PwqZ4Jpi", 100497308);
+	}
+
+	@Override
+	public MusicInfo getId(String id) throws Exception {
+		String mid=null;
+		try {
+			long l=Long.parseLong(id);
+			if(id.length()>11)
+				throw new RuntimeException();
+			mid=fetchMid(id);
+		}catch(RuntimeException ex) {
+			mid=id;
+		}
+		if(mid==null)throw new IllegalArgumentException("错误的歌曲ID或MID");
+		JsonObject song = querySongDetail(mid);
+		String desc;
+		JsonArray singers = song.get("singer").getAsJsonArray();
+		StringBuilder sgs = new StringBuilder();
+		for (JsonElement je : singers) {
+			sgs.append(je.getAsJsonObject().get("name").getAsString());
+			sgs.append(";");
+		}
+		sgs.deleteCharAt(sgs.length() - 1);
+		desc = sgs.toString();
+		return new MusicInfo(song.get("title").getAsString(), desc,
+				"http://y.gtimg.cn/music/photo_new/T002R300x300M000"
+						+ song.get("album").getAsJsonObject().get("mid").getAsString() + ".jpg",
+				queryRealUrl(song.get("mid").getAsString()), "https://i.y.qq.com/v8/playsong.html?_wv=1&songid="
+						+ song.get("id").getAsString() + "&source=qqshare&ADTAG=qqshare",
 				"QQ音乐", "https://url.cn/PwqZ4Jpi", 100497308);
 	}
 

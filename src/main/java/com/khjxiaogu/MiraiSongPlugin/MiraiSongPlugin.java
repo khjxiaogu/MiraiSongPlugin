@@ -24,9 +24,11 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
@@ -52,7 +54,6 @@ import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseAdvancedRadio;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseHQMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.NetEaseRadioSource;
-import com.khjxiaogu.MiraiSongPlugin.musicsource.QQMusicHQSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.QQMusicSource;
 import com.khjxiaogu.MiraiSongPlugin.musicsource.XimalayaSource;
 import com.khjxiaogu.MiraiSongPlugin.permission.GlobalMatcher;
@@ -103,7 +104,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 	static {
 		// 注册音乐来源
 		sources.put("QQ音乐", new QQMusicSource());
-		sources.put("QQ音乐HQ", new QQMusicHQSource());
+		sources.put("QQ音乐HQ", new QQMusicSource());
 		sources.put("网易", new NetEaseMusicSource());
 		sources.put("网易电台节目", new NetEaseAdvancedRadio());
 		sources.put("网易电台", new NetEaseRadioSource());
@@ -113,9 +114,9 @@ public class MiraiSongPlugin extends JavaPlugin {
 		sources.put("Bilibili", new BiliBiliMusicSource());
 		sources.put("喜马拉雅", new XimalayaSource());
 		sources.put("本地", new LocalFileSource());
-		//Register music source
+		// Register music source
 		sources.put("QQMusic", new QQMusicSource());
-		sources.put("QQMusicHQ", new QQMusicHQSource());
+		sources.put("QQMusicHQ", new QQMusicSource());
 		sources.put("NeteaseCloudMusic", new NetEaseMusicSource());
 		sources.put("NeteaseRadioProgramme", new NetEaseAdvancedRadio());
 		sources.put("NeteaseRadio", new NetEaseRadioSource());
@@ -125,7 +126,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 		sources.put("Bilibili", new BiliBiliMusicSource());
 		sources.put("Ximalaya", new XimalayaSource());
 		sources.put("Local", new LocalFileSource());
-		
+
 		// 注册外观
 		// cards.put("LightApp", new LightAppCardProvider());
 		cards.put("LightApp", new MiraiMusicCard());
@@ -137,28 +138,29 @@ public class MiraiSongPlugin extends JavaPlugin {
 		cards.put("Message", new PlainMusicInfoProvider());
 		cards.put("Mirai", new MiraiMusicCard());
 	}
-	static {
-		HttpURLConnection.setFollowRedirects(true);
-	}
 	private static MiraiSongPlugin plugin;
 
 	public static MiraiLogger getMLogger() {
 		return plugin.getLogger();
 	}
 
+	public static List<SongIdMatcher> urlMatchers = new ArrayList<>();
 	GlobalMatcher matcher = new GlobalMatcher();
 	String unfoundSong;
 	String unavailableShare;
 	String templateNotFound;
 	String sourceNotFound;
-	public void makeCommand(String cmd,String source, String card) {
-		if(cmd.equals("/msp"))
+	boolean enableParser;
+	public void makeCommand(String cmd, String source, String card) {
+		if (cmd.equals("/msp"))
 			throw new IllegalArgumentException("/msp can not be overriden");
-		commands.put(cmd,makeTemplate(source,card));
+		commands.put(cmd, makeTemplate(source, card));
 	}
+
 	public void removeCommand(String cmd) {
 		commands.remove(cmd);
 	}
+
 	private BiConsumer<MessageEvent, String[]> makeTemplate(String source, String card) {
 		if (source.equals("all"))
 			return makeSearchesTemplate(card);
@@ -180,8 +182,8 @@ public class MiraiSongPlugin extends JavaPlugin {
 					return;
 				}
 				try {
-					Message m=cb.process(mi, Utils.getProperReceiver(event));
-					if(m!=null) {
+					Message m = cb.process(mi, Utils.getProperReceiver(event));
+					if (m != null) {
 						Utils.getProperReceiver(event).sendMessage(m);
 						return;
 					}
@@ -219,8 +221,8 @@ public class MiraiSongPlugin extends JavaPlugin {
 						continue;
 					}
 					try {
-						Message m=cb.process(mi, Utils.getProperReceiver(event));
-						if(m!=null) {
+						Message m = cb.process(mi, Utils.getProperReceiver(event));
+						if (m != null) {
 							Utils.getProperReceiver(event).sendMessage(m);
 							return;
 						}
@@ -288,45 +290,85 @@ public class MiraiSongPlugin extends JavaPlugin {
 		GlobalEventChannel.INSTANCE.registerListenerHost(new SimpleListenerHost(this.getCoroutineContext()) {
 			@EventHandler
 			public void onGroup(GroupMessageEvent event) {
-				String[] args = Utils.getPlainText(event.getMessage()).split(spliter);
+				String orig = Utils.getPlainText(event.getMessage());
+				String[] args = orig.split(spliter);
 				BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
-				if (exec != null)
+				if (exec != null) {
 					if (matcher.match(new MatchInfo(args[0], event.getSender())).isAllowed())
 						exec.accept(event, args);
+					return;
+				}
+				if (enableParser&&matcher.match(new MatchInfo("parse", event.getSender())).isAllowed())
+					parseExternLink(orig,event);
 
 			}
 
 			@EventHandler
 			public void onFriend(FriendMessageEvent event) {
-				String[] args = Utils.getPlainText(event.getMessage()).split(spliter);
+				String orig = Utils.getPlainText(event.getMessage());
+				String[] args = orig.split(spliter);
 				BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
-				if (exec != null)
+				if (exec != null) {
 					if (matcher.match(new MatchInfo(args[0], event.getSender(), false)).isAllowed())
 						exec.accept(event, args);
+					return;
+				}
+				if (enableParser&&matcher.match(new MatchInfo("parse", event.getSender(), false)).isAllowed())
+					parseExternLink(orig,event);
 
 			}
 
 			@EventHandler
 			public void onTemp(StrangerMessageEvent event) {
-				String[] args = Utils.getPlainText(event.getMessage()).split(spliter);
+				String orig = Utils.getPlainText(event.getMessage());
+				String[] args = orig.split(spliter);
 				BiConsumer<MessageEvent, String[]> exec = commands.get(args[0]);
-				if (exec != null)
+				if (exec != null) {
 					if (matcher.match(new MatchInfo(args[0], event.getSender(), true)).isAllowed())
 						exec.accept(event, args);
+					return;
+				}
+				if (enableParser&&matcher.match(new MatchInfo("parse", event.getSender(), true)).isAllowed())
+					parseExternLink(orig,event);
 
 			}
 		});
 		getLogger().info("插件加载完毕!");
 	}
 
+	public void parseExternLink(String orig, MessageEvent event) {
+
+		for (SongIdMatcher sim : urlMatchers) {
+			Message m = null;
+			try {
+				m = sim.test(orig, event.getSender());
+			} catch (Exception e) {
+				continue;
+			}
+			if (m != null) {
+				Utils.getProperReceiver(event).sendMessage(m);
+				break;
+			}
+		}
+	}
+	public static SongIdMatcher makeMatcher(String pattern,String source,String card) {
+		return new SongIdMatcher(pattern,sources.get(source),cards.get(card));
+	}
 	public void reload() {
 		YamlMap cfg = Yaml.getDefault().decodeYamlMapFromString(
 				new String(Utils.readAll(new File(this.getDataFolder(), "config.yml")), StandardCharsets.UTF_8));
 		matcher.load(this.getDataFolder());
 		YamlMap excs = (YamlMap) cfg.get(new YamlLiteral("extracommands"));
+		YamlMap exps = (YamlMap) cfg.get(new YamlLiteral("extraparsers"));
 		String addDefault = cfg.getStringOrNull("adddefault");
 		commands.clear();
+		
+		
+		
 		if (addDefault == null || addDefault.equals("true")) {
+			urlMatchers.add(makeMatcher("music\\.163\\.com.*/song.*\\?.*id=([0-9]+)","网易","Mirai"));
+			urlMatchers.add(makeMatcher("i\\.y\\.qq\\.com/v8/playsong\\.html\\?.*songid=([0-9]+)","QQ音乐","Mirai"));
+			urlMatchers.add(makeMatcher("y\\.qq\\.com/n/yqq/song/([0-9A-Za-z]+)","QQ音乐","Mirai"));
 			commands.put("#音乐", makeSearchesTemplate("Mirai"));
 			commands.put("#外链", makeSearchesTemplate("Message"));
 			commands.put("#语音", makeSearchesTemplate("AMR"));
@@ -374,11 +416,17 @@ public class MiraiSongPlugin extends JavaPlugin {
 		}
 		if (excs != null)
 			for (YamlElement cmd : excs.getKeys()) {
-				makeCommand(cmd.toString(),((YamlMap) excs.get(cmd)).getString("source"),
+				makeCommand(cmd.toString(), ((YamlMap) excs.get(cmd)).getString("source"),
 						((YamlMap) excs.get(cmd)).getString("card"));
 			}
+		if (exps != null)
+			for (YamlElement cmd : exps.getKeys()) {
+				urlMatchers.add(makeMatcher(((YamlMap) excs.get(cmd)).getString("pattern"),((YamlMap) excs.get(cmd)).getString("source"),((YamlMap) excs.get(cmd)).getString("card")));
+			}
 		commands.put("/msp", (ev, args) -> {
-			if (!matcher.match(new MatchInfo(args[0], ev.getSender(), true).mustMatchCommand()).and(matcher.match(new MatchInfo(args[0] + "." + args[1], ev.getSender(), true).mustMatchCommand())).isForceAllowed())
+			if (!matcher.match(new MatchInfo(args[0], ev.getSender(), true).mustMatchCommand())
+					.and(matcher.match(new MatchInfo(args[0] + "." + args[1], ev.getSender(), true).mustMatchCommand()))
+					.isForceAllowed())
 				return;
 			if (args[1].equals("reload")) {
 
@@ -436,6 +484,8 @@ public class MiraiSongPlugin extends JavaPlugin {
 		String usecc = cfg.getStringOrNull("use_custom_ffmpeg_command");
 		String ulocal = cfg.getStringOrNull("enable_local");
 		String vb = cfg.getStringOrNull("verbose");
+		String it=cfg.getStringOrNull("enableParser");
+		enableParser=it==null||it.equals("true");
 		unfoundSong = cfg.getStringOrNull("hintsongnotfound");
 		if (unfoundSong == null)
 			unfoundSong = "无法找到歌曲。";

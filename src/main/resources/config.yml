@@ -11,6 +11,7 @@ hintsongnotfound: "无法找到歌曲。"
 hintcarderror: "分享歌曲失败。"
 hintnotemplate: "无法找到卡片。"
 hintsourcenotfound: "无法找到来源。"
+enableParser: 1
 admins: 
   - 0
 extracommands: 

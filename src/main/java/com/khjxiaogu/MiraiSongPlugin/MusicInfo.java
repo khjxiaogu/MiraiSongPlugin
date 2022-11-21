@@ -122,4 +122,10 @@ public class MusicInfo {
 		this.icon = icon;
 		this.appid = 0;
 	}
+
+	@Override
+	public String toString() {
+		return "歌曲信息\n歌名：" + title + "\n作者：" + desc + "\n封面：" + purl + "\n音频：" + murl + "\n链接：" + jurl
+				+ "\n来自：" + source + "\n小图标：" + icon + "\nAPPID：" + appid;
+	}
 }

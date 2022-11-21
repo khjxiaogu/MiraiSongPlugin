@@ -17,11 +17,9 @@
  */
 package com.khjxiaogu.MiraiSongPlugin.musicsource;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.khjxiaogu.MiraiSongPlugin.HttpRequestBuilder;
 import com.khjxiaogu.MiraiSongPlugin.MusicInfo;
 import com.khjxiaogu.MiraiSongPlugin.MusicSource;
 import com.khjxiaogu.MiraiSongPlugin.Utils;
@@ -35,31 +33,33 @@ public class KugouMusicSource implements MusicSource {
 	@Override
 	public MusicInfo get(String keyword) throws Exception {
 		keyword=Utils.urlEncode(keyword);
-		HttpURLConnection huc = (HttpURLConnection) new URL(
-				"http://msearchcdn.kugou.com/api/v3/search/song?showtype=14&highlight=em&pagesize=1&tag_aggr=1&tagtype=%E5%85%A8%E9%83%A8&plat=0&sver=5&correct=1&api_ver=1&version=9108&page=1&area_code=1&tag=1&with_res_tag=1&keyword="
-						+ keyword).openConnection();
-		huc.setRequestMethod("GET");
-		huc.setRequestProperty("Host", "msearchcdn.kugou.com");
-		huc.connect();
 		JsonObject je = JsonParser
-				.parseString(new String(Utils.readAll(huc.getInputStream()), "UTF-8").replaceAll("<!--[_A-Z]+-->", ""))
-				.getAsJsonObject();
+				.parseString(HttpRequestBuilder.create("http","msearchcdn.kugou.com")
+		.url("/api/v3/search/song?showtype=14&highlight=em&pagesize=1&tag_aggr=1&tagtype=%E5%85%A8%E9%83%A8&plat=0&sver=5&correct=1&api_ver=1&version=9108&page=1&area_code=1&tag=1&with_res_tag=1&keyword=")
+		.url(keyword)
+		.get().readString().replaceAll("<!--[_A-Z]+-->", ""))
+		.getAsJsonObject();
 		String song = je.get("data").getAsJsonObject().get("info").getAsJsonArray().get(0).getAsJsonObject().get("hash")
 				.getAsString();
 		String album_id = je.get("data").getAsJsonObject().get("info").getAsJsonArray().get(0).getAsJsonObject()
 				.get("album_id").getAsString();
-		HttpURLConnection ihuc = (HttpURLConnection) new URL(
-				"https://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash=" + song + "&album_id=" + album_id + "&_="
-						+ Utils.getTime()).openConnection();
-		ihuc.setRequestMethod("GET");
-		ihuc.setRequestProperty("Host", "www.kugou.com");
-		ihuc.setRequestProperty("Cookie", COOKIE);
-		ihuc.connect();
-		JsonObject info = JsonParser.parseString(new String(Utils.readAll(ihuc.getInputStream()), "UTF-8"))
-				.getAsJsonObject().get("data").getAsJsonObject();
+		JsonObject info = HttpRequestBuilder.create("wwwapi.kugou.com")
+		.url("/yy/index.php?r=play/getdata&hash=")
+		.url(song)
+		.url("&album_id=")
+		.url(album_id)
+		.url("&_=")
+		.url(String.valueOf(Utils.getTime()))
+		.cookie(COOKIE)
+		.get().readJson().get("data").getAsJsonObject();
 		return new MusicInfo(info.get("audio_name").getAsString(), info.get("author_name").getAsString(),
 				info.get("img").getAsString(), info.get("play_url").getAsString(),
 				"https://www.kugou.com/song/#hash=" + song + "&album_id=" + info.get("album_id").getAsString(), "酷狗","",205141);
+	}
+
+	@Override
+	public MusicInfo getId(String id) throws Exception {
+		throw new UnsupportedOperationException("暂不支持");
 	}
 
 }

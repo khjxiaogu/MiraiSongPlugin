@@ -34,6 +34,7 @@
 - XML卡片在群聊中会变成链接，经查是被阻挡了。
 - Share卡片在群聊中无法发送，同上。
 - LightApp已经完全改成Mirai，旧版本LightApp卡片无法继续发送。
+- 百度音乐（千千）API暂时失效，请等待修复。
 # 声明
 - 本插件仅作为学习交流等使用，请勿用于盈利，否则法律后果自负。
 - 本插件提供的所有API均来源于公开资料，如有侵权请发邮件或者issue联系进行删除。
@@ -129,7 +130,8 @@ Linux:
 |`hintsourcenotfound`|找不到源文本提示|
 |`enable_local`|全部搜索时是否包含本地搜索，默认不包含。|
 |`verbose`|是否启用命令执行输出，缺省默认为true。<br>设置值：true/执行语音操作时在控制台输出详细信息 false/不输出信息，直接执行|
-|`adddefault`|是否添加默认指令，缺省默认为true。<br>设置值：true/添加readme所述的指令列表 false/不添加任何指令|
+|`adddefault`|是否添加默认指令，缺省默认为true。<br>设置值：true/添加readme所述的指令列表并添加默认解析 false/不添加任何指令和解析|
+|`enableParser`|是否启用链接解析，缺省默认为true。启用机器人会对每一条信息进行正则匹配并在找到音乐分享链接时发送对应卡片，因此对机器人可能会有一定的性能负担。true/启用，false/关闭。详见[后文](#自定义解析)|
 |`extracommands`|通过配置添加新指令的列表，可以完全自定义指令。详见[后文](#自定义指令)|
 # 自定义指令
 范例：
@@ -175,6 +177,25 @@ extracommands:
     source: 网易电台节目
     card: Mirai
 ```
+# 自定义解析
+范例：
+```
+extraparsers: 
+  "0": #解析名称，只要各个解析的名称不重复即可
+    pattern: "music\\.163\\.com/.*song/([0-9]+)"
+    source: 网易 #搜索来源
+    card: AMR #分享外观
+  "1": 
+    ...
+```
+|参数|值范围|用途|
+|------|------|------|
+|pattern|正则表达式|在搜索消息中的歌曲时，会使用该正则表达式进行匹配，如果匹配成功，则会把group(1)的结果作为歌曲ID进行搜索，并发送卡片|
+|source|QQ音乐<br>网易<br>网易HQ<br>酷狗<br>千千<br>喜马拉雅<br>本地<br>Bilibili|设定搜索歌曲的来源<br>注意：部分平台不支持。|
+|card|LightApp:小程序分享<br>Mirai:采用Mirai的MusicShare卡片，如果不存在则fallback为XML卡片<br>XML:卡片分享<br>Share:普通分享(不能播放)<br>Message:以纯信息形式分享，可以很方便取得音乐的各种链接。<br>AMR:AMR语音，需要配置好`ffmpeg_path`<br>Silk:SILK语音，需要同时配置好`silkenc_path`和`ffmpeg_path`，由于tx限流，质量可能很差（不推荐使用）|设定分享出来的音乐的外观|  
+
+如果不需要原版的解析，可以设置配置项`adddefault`为false。  
+
 # 权限系统
 权限系统可以用于配置各个机器人、群和好友的权限。  
 权限文件位于`data/com.khjxiaogu.mirai.MiraiSongPlugin`目录下。
