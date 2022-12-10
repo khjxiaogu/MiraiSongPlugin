@@ -368,7 +368,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 		if (addDefault == null || addDefault.equals("true")) {
 			urlMatchers.add(makeMatcher("music\\.163\\.com.*/song.*\\?.*id=([0-9]+)","网易","Mirai"));
 			urlMatchers.add(makeMatcher("i\\.y\\.qq\\.com/v8/playsong\\.html\\?.*songid=([0-9]+)","QQ音乐","Mirai"));
-			urlMatchers.add(makeMatcher("i\\.y\\.qq\\.com/v8/playsong\\.html\\?.*songmid=([0-9]+)","QQ音乐","Mirai"));
+			urlMatchers.add(makeMatcher("i\\.y\\.qq\\.com/v8/playsong\\.html\\?.*songmid=([0-9a-zA-Z]+)","QQ音乐","Mirai"));
 			urlMatchers.add(makeMatcher("y\\.qq\\.com/n/yqq/song/([0-9A-Za-z]+)","QQ音乐","Mirai"));
 			commands.put("#音乐", makeSearchesTemplate("Mirai"));
 			commands.put("#外链", makeSearchesTemplate("Message"));
