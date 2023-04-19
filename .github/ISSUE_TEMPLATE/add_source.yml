@@ -21,3 +21,11 @@ body:
       description: 它有什么独特之处或者独有版权？
     validations:
       required: true
+  - type: checkboxes
+    attributes: 
+      label: 提交前我已确定：
+      options: 
+        - label: 我已阅读README，没有发现对应内容。
+          required: true
+        - label: 我已在issue内搜索，没有发现已有的issue。
+          required: true
