@@ -28,3 +28,11 @@ body:
       description: 这个外观的mirai码/分享方法/Mirai项目的相关文档
     validations:
       required: true
+  - type: checkboxes
+    attributes: 
+      label: 提交前我已确定：
+      options: 
+        - label: 我已阅读README，没有发现对应内容。
+          required: true
+        - label: 我已在issue内搜索，没有发现已有的issue。
+          required: true
