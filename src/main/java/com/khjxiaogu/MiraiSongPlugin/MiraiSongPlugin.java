@@ -361,9 +361,9 @@ public class MiraiSongPlugin extends JavaPlugin {
 		YamlMap excs = (YamlMap) cfg.get(new YamlLiteral("extracommands"));
 		YamlMap exps = (YamlMap) cfg.get(new YamlLiteral("extraparsers"));
 		String addDefault = cfg.getStringOrNull("adddefault");
+		String neteaseCookie=cfg.getStringOrNull("neteasecookies");
+		NetEaseCrypto.cookie=neteaseCookie;
 		commands.clear();
-		
-		
 		
 		if (addDefault == null || addDefault.equals("true")) {
 			urlMatchers.add(makeMatcher("music\\.163\\.com.*/song.*\\?.*id=([0-9]+)","网易","Mirai"));

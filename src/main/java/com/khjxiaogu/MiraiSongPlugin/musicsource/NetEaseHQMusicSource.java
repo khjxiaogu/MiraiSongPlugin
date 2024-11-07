@@ -35,6 +35,7 @@ public class NetEaseHQMusicSource extends NetEaseMusicSource {
 		.url("/weapi/song/enhance/player/url?csrf_token=")
 		.contenttype("application/x-www-form-urlencoded")
 		.referer("https://music.163.com")
+		.cookie(NetEaseCrypto.cookie)
 		.ua(NetEaseCrypto.getUserAgent())
 		.post()
 		.send(NetEaseCrypto.weapiEncryptParam(JsonBuilder.object().add("ids","[" + id + "]").add("br",999000).toString()))

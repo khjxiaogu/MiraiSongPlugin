@@ -99,7 +99,7 @@ public final class NetEaseCrypto {
 	 * 输入向量.
 	 */
 	private static String iv = "0102030405060708";
-
+	public static String cookie="";
 	/**
 	 * Create a AES secret key.<br>
 	 * 生成AES密钥
