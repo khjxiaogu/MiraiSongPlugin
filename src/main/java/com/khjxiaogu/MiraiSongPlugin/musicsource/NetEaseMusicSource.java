@@ -47,7 +47,6 @@ public class NetEaseMusicSource implements MusicSource {
 		.post()
 		.send(NetEaseCrypto.weapiEncryptParam(JsonBuilder.object().add("s", keyword).add("type", 1).add("offset", 0).add("limit", 3).toString()))
 		.readJson();
-		System.out.println(jom);
 		JsonArray ja=jom
 		.get("result").getAsJsonObject().get("songs").getAsJsonArray();
 		JsonObject jo = ja.get(0).getAsJsonObject();
