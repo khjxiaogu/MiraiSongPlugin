@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.message.data.Message;
 
-public class SongIdMatcher {
+public class SongIdMatcher implements ISongUrlMatcher {
 	Pattern mc;
 	MusicSource src;
 	MusicCardProvider card;
@@ -16,6 +16,7 @@ public class SongIdMatcher {
 		this.src=Objects.requireNonNull(src);
 		this.card=Objects.requireNonNull(cd);
 	}
+	@Override
 	public Message test(String s,Contact ct) throws Exception {
 		Matcher m=mc.matcher(s);
 		if(m.find()) {

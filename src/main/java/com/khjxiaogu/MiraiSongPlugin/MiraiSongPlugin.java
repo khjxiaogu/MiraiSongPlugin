@@ -61,6 +61,7 @@ import com.khjxiaogu.MiraiSongPlugin.permission.MatchInfo;
 
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
+import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.event.SimpleListenerHost;
@@ -144,7 +145,7 @@ public class MiraiSongPlugin extends JavaPlugin {
 		return plugin.getLogger();
 	}
 
-	public static List<SongIdMatcher> urlMatchers = new ArrayList<>();
+	public static List<ISongUrlMatcher> urlMatchers = new ArrayList<>();
 	GlobalMatcher matcher = new GlobalMatcher();
 	String unfoundSong;
 	String unavailableShare;
@@ -336,9 +337,9 @@ public class MiraiSongPlugin extends JavaPlugin {
 		getLogger().info("插件加载完毕!");
 	}
 
-	public void parseExternLink(String orig, MessageEvent event) {
+	public static void parseExternLink(String orig, MessageEvent event) {
 
-		for (SongIdMatcher sim : urlMatchers) {
+		for (ISongUrlMatcher sim : urlMatchers) {
 			Message m = null;
 			try {
 				m = sim.test(orig, event.getSender());
@@ -351,8 +352,41 @@ public class MiraiSongPlugin extends JavaPlugin {
 			}
 		}
 	}
-	public static SongIdMatcher makeMatcher(String pattern,String source,String card) {
+	public static Message parseExternLink(String orig,Contact ct) {
+
+		for (ISongUrlMatcher sim : urlMatchers) {
+			Message m = null;
+			try {
+				m = sim.test(orig, ct);
+			} catch (Exception e) {
+				continue;
+			}
+			if(m!=null)
+				return m;
+		}
+		return null;
+	}
+	public static Message parseExternLinkIgnores(String orig,Contact ct,ISongUrlMatcher matcher) {
+
+		for (ISongUrlMatcher sim : urlMatchers) {
+			if(matcher==sim)continue;
+			Message m = null;
+			
+			try {
+				m = sim.test(orig, ct);
+			} catch (Exception e) {
+				continue;
+			}
+			if(m!=null)
+				return m;
+		}
+		return null;
+	}
+	public static ISongUrlMatcher makeMatcher(String pattern,String source,String card) {
 		return new SongIdMatcher(pattern,sources.get(source),cards.get(card));
+	}
+	public static ISongUrlMatcher makeRedMatcher(String pattern) {
+		return new SongIdRedirectMatcher(pattern);
 	}
 	public void reload() {
 		YamlMap cfg = Yaml.getDefault().decodeYamlMapFromString(
@@ -363,13 +397,15 @@ public class MiraiSongPlugin extends JavaPlugin {
 		String addDefault = cfg.getStringOrNull("adddefault");
 		commands.clear();
 		
-		
+		urlMatchers.clear();
 		
 		if (addDefault == null || addDefault.equals("true")) {
 			urlMatchers.add(makeMatcher("music\\.163\\.com.*/song.*\\?.*id=([0-9]+)","网易","Mirai"));
 			urlMatchers.add(makeMatcher("i\\.y\\.qq\\.com/v8/playsong\\.html\\?.*songid=([0-9]+)","QQ音乐","Mirai"));
 			urlMatchers.add(makeMatcher("i\\.y\\.qq\\.com/v8/playsong\\.html\\?.*songmid=([0-9a-zA-Z]+)","QQ音乐","Mirai"));
 			urlMatchers.add(makeMatcher("y\\.qq\\.com/n/yqq/song/([0-9A-Za-z]+)","QQ音乐","Mirai"));
+			urlMatchers.add(makeMatcher("y\\.qq\\.com/n/ryqq/songDetail/([0-9A-Za-z]+)","QQ音乐","Mirai"));
+			urlMatchers.add(makeRedMatcher("(c6\\.y\\.qq\\.com)(/base/fcgi-bin/u\\?__=[0-9A-Za-z]+)"));
 			commands.put("#音乐", makeSearchesTemplate("Mirai"));
 			commands.put("#外链", makeSearchesTemplate("Message"));
 			commands.put("#语音", makeSearchesTemplate("AMR"));
@@ -422,7 +458,11 @@ public class MiraiSongPlugin extends JavaPlugin {
 			}
 		if (exps != null)
 			for (YamlElement cmd : exps.getKeys()) {
-				urlMatchers.add(makeMatcher(((YamlMap) excs.get(cmd)).getString("pattern"),((YamlMap) excs.get(cmd)).getString("source"),((YamlMap) excs.get(cmd)).getString("card")));
+				YamlMap matcher=(YamlMap) exps.get(cmd);
+				if("true".equals(matcher.getStringOrNull("redirect")))
+					urlMatchers.add(makeRedMatcher(matcher.getString("pattern")));
+				else
+					urlMatchers.add(makeMatcher(matcher.getString("pattern"),matcher.getString("source"),matcher.getString("card")));
 			}
 		commands.put("/msp", (ev, args) -> {
 			if (!matcher.match(new MatchInfo(args[0], ev.getSender(), true).mustMatchCommand())

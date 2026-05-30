@@ -17,6 +17,8 @@
  */
 package com.khjxiaogu.MiraiSongPlugin.musicsource;
 
+import java.net.URLEncoder;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.khjxiaogu.MiraiSongPlugin.HttpRequestBuilder;
@@ -40,12 +42,12 @@ public class NetEaseMusicSource implements MusicSource {
 	public MusicInfo get(String keyword) throws Exception {
 		String murl;
 		JsonArray ja=HttpRequestBuilder.create("music.163.com")
-		.url("/weapi/cloudsearch/get/web?csrf_token=")
+		.url("/api/search/pc")
 		.referer("http://music.163.com/")
 		.cookie("appver=1.5.0.75771;")
 		.contenttype("application/x-www-form-urlencoded")
 		.post()
-		.send(NetEaseCrypto.weapiEncryptParam(JsonBuilder.object().add("s", keyword).add("type", 1).add("offset", 0).add("limit", 3).toString()))
+		.send("type=1&offset=0&limit=20&s="+URLEncoder.encode(keyword))
 		.readJson().get("result").getAsJsonObject().get("songs").getAsJsonArray();
 		JsonObject jo = ja.get(0).getAsJsonObject();
 		murl = queryRealUrl(jo.get("id").getAsString());

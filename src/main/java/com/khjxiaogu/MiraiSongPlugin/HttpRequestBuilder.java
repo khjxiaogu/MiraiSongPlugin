@@ -15,7 +15,7 @@ public class HttpRequestBuilder {
 	private StringBuilder url;
 	
 	List<String[]> headers=new ArrayList<>();
-	
+	boolean followRedirect=true;
 	public HttpRequestBuilder(String ourl) {
 		url=new StringBuilder(ourl);
 	}
@@ -66,6 +66,10 @@ public class HttpRequestBuilder {
 		headers.add(new String[] {"User-Agent",v});
 		return this;
 	}
+	public HttpRequestBuilder noRedirect() {
+		this.followRedirect=false;
+		return this;
+	}
 	public static class OpenedConnectionBuilder {
 		HttpURLConnection huc;
 		public OutputStream os;
@@ -83,6 +87,7 @@ public class HttpRequestBuilder {
 			if(os==null)
 				os=huc.getOutputStream();
 			os.write(s.getBytes(StandardCharsets.UTF_8));
+			
 			return this;
 		}
 		public OpenedConnectionBuilder send(byte[] s) throws IOException {
@@ -91,17 +96,24 @@ public class HttpRequestBuilder {
 			os.write(s);
 			return this;
 		}
+		public String getRedirect() {
+			String res= huc.getHeaderField("Location");
+			return res;
+		}
 		public String readString() throws IOException {
 			return new String(Utils.readAll(huc.getInputStream()), StandardCharsets.UTF_8);
 		}
 		public JsonObject readJson() throws IOException {
-			return JsonParser.parseString(new String(Utils.readAll(huc.getInputStream()), StandardCharsets.UTF_8)).getAsJsonObject();
+			JsonObject json= JsonParser.parseString(new String(Utils.readAll(huc.getInputStream()), StandardCharsets.UTF_8)).getAsJsonObject();
+			System.out.println(json);
+			return json;
 		}
 	}
 	private HttpURLConnection openConn() throws IOException {
 		URL url = new URL(this.url.toString());
 		HttpURLConnection huc = (HttpURLConnection) url.openConnection();
-		huc.setInstanceFollowRedirects(true);
+		huc.setInstanceFollowRedirects(followRedirect);
+		
 		huc.setConnectTimeout(5000);
 		huc.setReadTimeout(5000);
 		for(String[] header:headers) {
@@ -124,7 +136,7 @@ public class HttpRequestBuilder {
 		huc.setRequestMethod("POST");
 		huc.setDoOutput(true);
 		huc.setDoInput(true);
-		huc.connect();
+		//huc.connect();
 		return new OpenedConnectionBuilder(huc,true);
 	}
 	public OpenedConnectionBuilder get(boolean doOutput) throws IOException {
