@@ -41,14 +41,16 @@ public class NetEaseMusicSource implements MusicSource {
 	@Override
 	public MusicInfo get(String keyword) throws Exception {
 		String murl;
-		JsonArray ja=HttpRequestBuilder.create("music.163.com")
+		JsonObject jom=HttpRequestBuilder.create("music.163.com")
 		.url("/api/search/pc")
 		.referer("http://music.163.com/")
-		.cookie("appver=1.5.0.75771;")
+		.cookie("appver=1.5.0.75771;"+NetEaseCrypto.cookie)
 		.contenttype("application/x-www-form-urlencoded")
 		.post()
 		.send("type=1&offset=0&limit=20&s="+URLEncoder.encode(keyword))
-		.readJson().get("result").getAsJsonObject().get("songs").getAsJsonArray();
+		.readJson();
+		JsonArray ja=jom
+		.get("result").getAsJsonObject().get("songs").getAsJsonArray();
 		JsonObject jo = ja.get(0).getAsJsonObject();
 		murl = queryRealUrl(jo.get("id").getAsString());
 		int i = 0;
@@ -68,7 +70,7 @@ public class NetEaseMusicSource implements MusicSource {
 		JsonObject jo =HttpRequestBuilder.create("music.163.com")
 				.url("/weapi/song/detail?csrf_token=")
 				.referer("http://music.163.com/")
-				.cookie("appver=1.5.0.75771;")
+				.cookie("appver=1.5.0.75771;"+NetEaseCrypto.cookie)
 				.contenttype("application/x-www-form-urlencoded")
 				.post()
 				.send(NetEaseCrypto.weapiEncryptParam(JsonBuilder.object().array("ids").add(id).end().toString()))
